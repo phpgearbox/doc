@@ -1,0 +1,44 @@
+#!/usr/bin/env php
+<?php
+////////////////////////////////////////////////////////////////////////////////
+// __________ __             ________                   __________              
+// \______   \  |__ ______  /  _____/  ____ _____ ______\______   \ _______  ___
+//  |     ___/  |  \\____ \/   \  ____/ __ \\__  \\_  __ \    |  _//  _ \  \/  /
+//  |    |   |   Y  \  |_> >    \_\  \  ___/ / __ \|  | \/    |   (  <_> >    < 
+//  |____|   |___|  /   __/ \______  /\___  >____  /__|  |______  /\____/__/\_ \
+//                \/|__|           \/     \/     \/             \/            \/
+// -----------------------------------------------------------------------------
+//          Designed and Developed by Brad Jones <brad @="bjc.id.au" />         
+// -----------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////////
+
+// Find and load the composer autoloader
+if (file_exists(__DIR__.'/vendor/autoload.php'))
+{
+	require_once(__DIR__.'/vendor/autoload.php');
+}
+elseif (file_exists(__DIR__.'/../../autoload.php'))
+{
+	require_once(__DIR__.'/../../autoload.php');
+}
+else
+{
+	echo
+	(
+		PHP_EOL.
+		'Oh No! Missing Dependencies!'.PHP_EOL.
+		'This command requires the composer package manager for PHP.'.PHP_EOL.
+		'To quickly fix this issue please run the following commands:'.PHP_EOL.
+		PHP_EOL.
+		'wget http://getcomposer.org/composer.phar'.PHP_EOL.
+		'php composer.phar install'.PHP_EOL.
+		PHP_EOL.
+		'For more info on what composer is go to: http://getcomposer.org/'.
+		PHP_EOL
+	);
+
+	exit(1);
+}
+
+// Start the console app
+Gears\Doc\Console\Application::boot();
