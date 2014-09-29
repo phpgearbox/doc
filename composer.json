@@ -14,6 +14,7 @@
 	"require":
 	{
 		"gears/string": "*",
+		"gears/arrays": "*",
 		"gears/view": "*",
 		"erusev/parsedown": "1.*",
 		"symfony/console": "2.*",

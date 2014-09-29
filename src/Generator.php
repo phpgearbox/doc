@@ -16,12 +16,13 @@ use SplFileInfo;
 use Parsedown;
 use Gears\View;
 use Gears\String as Str;
+use Gears\Arrays as Arr;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Filesystem\Filesystem;
 
 class Generator
 {
-	private $input = './src';
+	private $input = './src/';
 
 	private $output = './docs';
 
@@ -42,9 +43,24 @@ class Generator
 		}
 
 		if (!isset($this->deps['view'])) $this->deps['view'] = new View(__DIR__.'/Views');
-		if (!isset($this->deps['mdParser'])) $this->deps['mdParser'] = new Parsedown();
+		if (!isset($this->deps['md'])) $this->deps['md'] = new Parsedown();
 		if (!isset($this->deps['fileSystem'])) $this->deps['fileSystem'] = new Filesystem();
 		if (!isset($this->deps['finder'])) $this->deps['finder'] = function() { return new Finder(); };
+
+		$this->normalisePaths();
+	}
+
+	private function normalisePaths()
+	{
+		if (Str::endsWith($this->input, DIRECTORY_SEPARATOR))
+		{
+			$this->input = substr($this->input, 0, -1);
+		}
+
+		if (Str::endsWith($this->output, DIRECTORY_SEPARATOR))
+		{
+			$this->output = substr($this->output, 0, -1);
+		}
 	}
 
 	public function run()
@@ -53,7 +69,6 @@ class Generator
 		if (!is_dir($this->output) || !is_writable($this->output))
 		{
 			// It is on the user to create the root output folder
-			// TODO: Setup our ouwn exception
 			throw new Exception
 			(
 				'Please create the output folder with appropriate permissions!'
@@ -66,46 +81,51 @@ class Generator
 			$this->deps['finder']()->in($this->output)
 		);
 
-		// Create a list of files
-		$files = [];
+		// Create the data needed to make all our views
+		$output_files = []; $nav = [];
 
 		// Loop through each source file
 		foreach ($this->getInputFiles() as $file)
 		{
-			// Loop through each docblock in the file
-			$files[] =
+			// Extract the docblocks from the source file
+			$blocks = $this->extractDocBlocks($file);
+
+			// Skip to next file if no blocks found
+			if (empty($blocks)) continue;
+
+			// The following sets up our nav array
+			$segments = Str::split($file->getRelativePath(), DIRECTORY_SEPARATOR);
+			$existing = Arr::get($nav, $segments, []);
+			$link = Str::replace($file->getRelativePathname(), $file->getExtension(), 'html');
+			$existing[] = $link;
+			Arr::set($nav, $segments, $existing);
+
+			// Add the file and blocks to our list of views to create
+			$output_files[$this->output.'/'.$link] =
 			[
-				'file' => $file,
-				'blocks' => $this->extractDocBlocks($file)
+				'src_file' => $file,
+				'blocks' => $blocks
 			];
 		}
 
-		// Setup navigation / sidebar
-		// ???
-		
 		// Now finally write each static file
-		foreach ($files as $file)
+		foreach ($output_files as $output_file => $data)
 		{
 			// Create our blade view
 			$html = $this->deps['view']
 				->make('master')
 				->withNav($nav)
-				->withFileInfo($file['file'])
-				->withBlocks($blocks['blocks'])
+				->withFileInfo($data['src_file'])
+				->withBlocks($data['blocks'])
 			;
 
 			// Save the generated html
-			$this->writeHtmlDocument($file, $html);
+			$this->writeHtmlDocument($output_file, $html);
 		}
 	}
 
-	private function writeHtmlDocument($file, $html)
+	private function writeHtmlDocument($filename, $html)
 	{
-		// Create the filename of the html document
-		$filename = $this->output.'/';
-		$filename .= Str::replace($file->getPathname(), $this->input, '');
-		$filename = Str::replace($filename, '//', '/');
-
 		// Create any needed folders
 		$folder = pathinfo($filename, PATHINFO_DIRNAME);
 		if (!$this->deps['fileSystem']->exists($folder))
@@ -146,8 +166,8 @@ class Generator
 				{
 					// Add a new block to our array
 					$block = [];
-					$block['line'] = $start+1,
-					$block['md'] = rtrim($current_block),
+					$block['lines'] = [$start+1, $line_no+1];
+					$block['md'] = rtrim($current_block);
 					$block['html'] = $this->deps['md']->text($block['md']);
 					$block['signature'] = trim($lines[$line_no+1]);
 					$blocks[] = $block;
