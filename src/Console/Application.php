@@ -41,8 +41,7 @@ class Application extends SymfonyApplication
 	/**
 	 * Method: getDefaultCommands
 	 * =========================================================================
-	 * Add our commands to the list of default commands,
-	 * so we don't have to call the "add" method at run time.
+	 * Add our commands to the list of default commands.
 	 *
 	 * Parameters:
 	 * -------------------------------------------------------------------------

@@ -11,75 +11,150 @@
 // -----------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////
 
-use Exception;
 use SplFileInfo;
+use RuntimeException;
 use Parsedown;
 use Gears\View;
+use Gears\Di\Container;
 use Gears\String as Str;
 use Gears\Arrays as Arr;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Filesystem\Filesystem;
 
-class Generator
+class Generator extends Container
 {
-	private $input = './src/';
+	/**
+	 * Property: inputPath
+	 * =========================================================================
+	 * The path of where your src files are located.
+	 * Defaults to: ```./src```
+	 */
+	protected $injectInputPath;
 
-	private $output = './docs';
+	/**
+	 * Property: outputPath
+	 * =========================================================================
+	 * The path of where we will output the generated documentation.
+	 * Defaults to: ```./docs```
+	 */
+	protected $injectOutputPath;
 
-	private $ignore = [];
+	/**
+	 * Property: ignorePaths
+	 * =========================================================================
+	 * Optional array that can be supplied of paths to ignore.
+	 * Each path would be relative to the inputPath.
+	 */
+	protected $injectIgnorePaths;
 
-	private $exts = ['php', 'js', 'css', 'less', 'sccs'];
+	/**
+	 * Property: exts
+	 * =========================================================================
+	 * An array of file extensions to parse.
+	 * Only extensions listed here will be checked for docblocks.
+	 * It defaults to: ```php, js, css, less, sccs```
+	 */
+	protected $injectExts;
 
-	private $deps = [];
+	/**
+	 * Property: view
+	 * =========================================================================
+	 * An instance of: ```Gears\View``` or ```Illuminate\View\Factory```
+	 */
+	protected $injectView;
 
-	public function __construct($options = [])
+	/**
+	 * Property: parsedown
+	 * =========================================================================
+	 * An instance of: ```Parsedown```
+	 */
+	protected $injectParsedown;
+
+	/**
+	 * Property: filesystem
+	 * =========================================================================
+	 * An instance of: ```Symfony\Component\Filesystem\Filesystem```
+	 */
+	protected $injectFilesystem;
+
+	/**
+	 * Property: finder
+	 * =========================================================================
+	 * An factory for: ```Symfony\Component\Finder\Finder```
+	 */
+	protected $injectFinder;
+
+	/**
+	 * Method: setDefaults
+	 * =========================================================================
+	 * This is where we set all our defaults. If you need to customise this
+	 * container this is a good place to look to see what can be configured
+	 * and how to configure it.
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * n/a
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * void
+	 */
+	protected function setDefaults()
 	{
-		foreach ($options as $key => $value)
-		{
-			if (isset($this->{$key}))
-			{
-				$this->{$key} = $value;
-			}
-		}
+		$this->inputPath = './src';
 
-		if (!isset($this->deps['view'])) $this->deps['view'] = new View(__DIR__.'/Views');
-		if (!isset($this->deps['md'])) $this->deps['md'] = new Parsedown();
-		if (!isset($this->deps['fileSystem'])) $this->deps['fileSystem'] = new Filesystem();
-		if (!isset($this->deps['finder'])) $this->deps['finder'] = function() { return new Finder(); };
+		$this->outputPath = './docs';
 
-		$this->normalisePaths();
+		$this->ignorePaths = [];
+
+		$this->exts = ['php', 'js', 'css', 'less', 'sccs'];
+
+		$this->view = function () { return new View(__DIR__.'/Views'); };
+
+		$this->parsedown = function () { return new Parsedown(); };
+
+		$this->filesystem = function () { return new Filesystem(); };
+
+		$this->finder = $this->factory(function () { return new Finder(); });
 	}
 
-	private function normalisePaths()
-	{
-		if (Str::endsWith($this->input, DIRECTORY_SEPARATOR))
-		{
-			$this->input = substr($this->input, 0, -1);
-		}
-
-		if (Str::endsWith($this->output, DIRECTORY_SEPARATOR))
-		{
-			$this->output = substr($this->output, 0, -1);
-		}
-	}
-
+	/**
+	 * Method: run
+	 * =========================================================================
+	 * Once the container is configured, simply run this method
+	 * and we will generate the documenation.
+	 * 
+	 * > WARNING: All content in the output path will be deleted!
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * n/a
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * void
+	 * 
+	 * Throws:
+	 * -------------------------------------------------------------------------
+	 * - RuntimeException: When the output path is not writeable.
+	 */
 	public function run()
 	{
+		// Make sure the paths don't have trailing slashes
+		$this->normalisePaths();
+
 		// Make sure the output folder exists and is writeable
-		if (!is_dir($this->output) || !is_writable($this->output))
+		if (!is_dir($this->outputPath) || !is_writeable($this->outputPath))
 		{
 			// It is on the user to create the root output folder
-			throw new Exception
+			throw new RuntimeException
 			(
 				'Please create the output folder with appropriate permissions!'
 			);
 		}
 
 		// Remove all contents of output folder
-		$this->deps['fileSystem']->remove
-		(
-			$this->deps['finder']()->in($this->output)
-		);
+		$this->filesystem->remove($this->finder->in($this->outputPath));
 
 		// Create the data needed to make all our views
 		$output_files = []; $nav = [];
@@ -101,7 +176,7 @@ class Generator
 			Arr::set($nav, $segments, $existing);
 
 			// Add the file and blocks to our list of views to create
-			$output_files[$this->output.'/'.$link] =
+			$output_files[$this->outputPath.'/'.$link] =
 			[
 				'src_file' => $file,
 				'blocks' => $blocks
@@ -112,7 +187,7 @@ class Generator
 		foreach ($output_files as $output_file => $data)
 		{
 			// Create our blade view
-			$html = $this->deps['view']
+			$html = $this->view
 				->make('master')
 				->withNav($nav)
 				->withFileInfo($data['src_file'])
@@ -124,19 +199,119 @@ class Generator
 		}
 	}
 
-	private function writeHtmlDocument($filename, $html)
+	/**
+	 * Method: normalisePaths
+	 * =========================================================================
+	 * Ensure the paths don't have trailing slashes.
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * n/a
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * void
+	 */
+	private function normalisePaths()
 	{
-		// Create any needed folders
-		$folder = pathinfo($filename, PATHINFO_DIRNAME);
-		if (!$this->deps['fileSystem']->exists($folder))
+		if (Str::endsWith($this->inputPath, DIRECTORY_SEPARATOR))
 		{
-			$this->deps['fileSystem']->mkdir($folder);
+			$this->inputPath = substr($this->inputPath, 0, -1);
 		}
 
-		// Save the new markdown document
-		file_put_contents($filename, $html);
+		if (Str::endsWith($this->outputPath, DIRECTORY_SEPARATOR))
+		{
+			$this->outputPath = substr($this->outputPath, 0, -1);
+		}
 	}
 
+	/**
+	 * Method: getInputFiles
+	 * =========================================================================
+	 * Sets up a finder object to list all our input source files.
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * n/a
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * Symfony\Component\Finder\Finder
+	 */
+	private function getInputFiles()
+	{
+		// Create our finder
+		$finder = $this->finder;
+
+		// Look for files in the input dir
+		$finder->files()->in($this->inputPath);
+
+		// Exclude any dirs
+		foreach ($this->ignorePaths as $dir)
+		{
+			$finder->exclude($dir);
+		}
+
+		// Only look for registered extensions
+		foreach ($this->exts as $ext)
+		{
+			$finder->name('*.'.$ext);	
+		}
+
+		// Return the finder
+		return $finder;
+	}
+
+	/**
+	 * Method: writeHtmlDocument
+	 * =========================================================================
+	 * Writes the given html to the given filename
+	 * and creates folders as needed.
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * - $filepath: The filepath to the new document.
+	 * - $html: The html to write into the new document.
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * void
+	 * 
+	 * Throws:
+	 * -------------------------------------------------------------------------
+	 * - RuntimeException: When we failed to write the new file.
+	 */
+	private function writeHtmlDocument($filepath, $html)
+	{
+		// Create any needed folders
+		$folder = pathinfo($filepath, PATHINFO_DIRNAME);
+		if (!$this->filesystem->exists($folder))
+		{
+			$this->filesystem->mkdir($folder);
+		}
+
+		// Save the new html document
+		if (file_put_contents($filepath, $html) === false)
+		{
+			throw new RuntimeException('Failed to write file: '.$filepath);
+		}
+	}
+
+	/**
+	 * Method: extractDocBlocks
+	 * =========================================================================
+	 * Extracts each docblock using regular expression in the given file.
+	 * We do not use any form of Reflection, we do not include the file.
+	 * We only read it as a string.
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * - $file: A SplFileInfo object for the file.
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * array
+	 */
 	private function extractDocBlocks(SplFileInfo $file)
 	{
 		// Create our docblocks array
@@ -168,7 +343,7 @@ class Generator
 					$block = [];
 					$block['lines'] = [$start+1, $line_no+1];
 					$block['md'] = rtrim($current_block);
-					$block['html'] = $this->deps['md']->text($block['md']);
+					$block['html'] = $this->parsedown->text($block['md']);
 					$block['signature'] = trim($lines[$line_no+1]);
 					$blocks[] = $block;
 
@@ -191,29 +366,5 @@ class Generator
 
 		// Return the blocks we found, if any
 		return $blocks;
-	}
-
-	private function getInputFiles()
-	{
-		// Create our finder
-		$finder = $this->deps['finder']();
-
-		// Look for files in the input dir
-		$finder->files()->in($this->input);
-
-		// Exclude any dirs
-		foreach ($this->ignore as $dir)
-		{
-			$finder->exclude($dir);
-		}
-
-		// Only look for registered extensions
-		foreach ($this->exts as $ext)
-		{
-			$finder->name('*.'.$ext);	
-		}
-
-		// Return the finder
-		return $finder;
 	}
 }

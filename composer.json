@@ -13,6 +13,7 @@
 	},
 	"require":
 	{
+		"gears/di": "*",
 		"gears/string": "*",
 		"gears/arrays": "*",
 		"gears/view": "*",
