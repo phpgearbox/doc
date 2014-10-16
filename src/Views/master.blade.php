@@ -3,6 +3,11 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Brads Local Dev Server</title>
+		
+		@if ($base)
+			<base href="{{ $base }}">
+		@endif
+		
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
 		<style type="text/css">
@@ -154,10 +159,13 @@ body {
 						@include('nav', array('items' => $value))
 					</li>
 				@else
-					<li><a href="{{$value}}">{{$value}}</a></li>
+					<li><a href="./{{$value}}">{{$value}}</a></li>
 				@endif
 			@endforeach
           </ul>
+          @if (!$base)
+          	@include('base-auto-detect')
+          @endif
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <h1 class="page-header">Dashboard</h1>

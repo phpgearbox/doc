@@ -85,6 +85,13 @@ class Generator extends Container
 	protected $injectFinder;
 
 	/**
+	 * Property: base
+	 * =========================================================================
+	 * This is the base path we use for the HTML ```<base href="">``` tag.
+	 */
+	protected $injectBase;
+
+	/**
 	 * Method: setDefaults
 	 * =========================================================================
 	 * This is where we set all our defaults. If you need to customise this
@@ -116,6 +123,8 @@ class Generator extends Container
 		$this->filesystem = function () { return new Filesystem(); };
 
 		$this->finder = $this->factory(function () { return new Finder(); });
+
+		$this->base = false;
 	}
 
 	/**
@@ -156,6 +165,12 @@ class Generator extends Container
 		// Remove all contents of output folder
 		$this->filesystem->remove($this->finder->in($this->outputPath));
 
+		// Add the base detection file
+		if (!$this->base)
+		{
+			file_put_contents($this->outputPath.'/base.html', '<!-- base -->');
+		}
+
 		// Create the data needed to make all our views
 		$output_files = []; $nav = [];
 
@@ -192,6 +207,7 @@ class Generator extends Container
 				->withNav($nav)
 				->withFileInfo($data['src_file'])
 				->withBlocks($data['blocks'])
+				->withBase($this->base)
 			;
 
 			// Save the generated html

@@ -6,7 +6,7 @@
 				@include('nav', array('items', $value))
 			</li>
 		@else
-			<li><a href="{{$value}}">{{$value}}</a></li>
+			<li><a href="./{{$value}}">{{$value}}</a></li>
 		@endif
 	@endforeach
 </ul>
