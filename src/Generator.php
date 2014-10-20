@@ -85,13 +85,6 @@ class Generator extends Container
 	protected $injectFinder;
 
 	/**
-	 * Property: base
-	 * =========================================================================
-	 * This is the base path we use for the HTML ```<base href="">``` tag.
-	 */
-	protected $injectBase;
-
-	/**
 	 * Method: setDefaults
 	 * =========================================================================
 	 * This is where we set all our defaults. If you need to customise this
@@ -123,8 +116,6 @@ class Generator extends Container
 		$this->filesystem = function () { return new Filesystem(); };
 
 		$this->finder = $this->factory(function () { return new Finder(); });
-
-		$this->base = false;
 	}
 
 	/**
@@ -165,12 +156,6 @@ class Generator extends Container
 		// Remove all contents of output folder
 		$this->filesystem->remove($this->finder->in($this->outputPath));
 
-		// Add the base detection file
-		if (!$this->base)
-		{
-			file_put_contents($this->outputPath.'/base.html', '<!-- base -->');
-		}
-
 		// Create the data needed to make all our views
 		$output_files = []; $nav = [];
 
@@ -184,14 +169,28 @@ class Generator extends Container
 			if (empty($blocks)) continue;
 
 			// The following sets up our nav array
-			$segments = Str::split($file->getRelativePath(), DIRECTORY_SEPARATOR);
-			$existing = Arr::get($nav, $segments, []);
-			$link = Str::replace($file->getRelativePathname(), $file->getExtension(), 'html');
-			$existing[] = $link;
-			Arr::set($nav, $segments, $existing);
+			$segments = Str::split($file->getRelativePath(), '/');
+			if ($segments == [''])
+			{
+				$nav[] = $file;
+			}
+			else
+			{
+				$existing = Arr::get($nav, $segments, []);
+				$existing[] = $file;
+				Arr::set($nav, $segments, $existing);
+			}
+
+			// Create the output filename
+			$output_file_name = $this->outputPath.'/'.Str::replace
+			(
+				$file->getRelativePathname(),
+				$file->getExtension(),
+				'html'
+			);
 
 			// Add the file and blocks to our list of views to create
-			$output_files[$this->outputPath.'/'.$link] =
+			$output_files[$output_file_name] =
 			[
 				'src_file' => $file,
 				'blocks' => $blocks
@@ -204,15 +203,154 @@ class Generator extends Container
 			// Create our blade view
 			$html = $this->view
 				->make('master')
-				->withNav($nav)
+				->withNav($this->generateJsonTree($nav, $data['src_file']))
 				->withFileInfo($data['src_file'])
 				->withBlocks($data['blocks'])
-				->withBase($this->base)
 			;
 
 			// Save the generated html
 			$this->writeHtmlDocument($output_file, $html);
 		}
+	}
+
+	private function generateJsonTree($nav, $file)
+	{
+		$tree = [];
+
+		foreach ($nav as $key => $link)
+		{
+			$active = false;
+
+			if (is_array($link))
+			{
+				if (in_array($key, Str::split($file->getRelativePath(), '/')))
+				{
+					$expanded = true;
+				}
+				else
+				{
+					$expanded = false;
+				}
+
+				$tree[] =
+				[
+					'title' => $key,
+					'folder' => true,
+					'expanded' => $expanded,
+					'children' => $this->generateJsonTree($link, $file)
+				];
+			}
+			else
+			{
+				// This is our own link
+				if ($link->getRelativePathname() == $file->getRelativePathname())
+				{
+					$active = true;
+					$uri = '#';
+				}
+
+				// We are in root, thus the full relative path will do.
+				elseif ($file->getRelativePath() == '')
+				{
+					$uri = $link->getRelativePathname();
+				}
+
+				// The link is below us in the tree.
+				elseif (Str::contains($link->getRelativePathname(), $file->getRelativePath()))
+				{
+					$uri = Str::replace
+					(
+						$link->getRelativePathname(),
+						$file->getRelativePath().'/',
+						''
+					);
+				}
+
+				// The link must be above us in the tree
+				else
+				{
+					// Start our uri string
+					$uri = '';
+
+					// Split the relative paths
+					$segments_file = Str::split($file->getRelativePath(), '/');
+					$segments_link = Str::split($link->getRelativePath(), '/');
+
+					// Remove similar segments
+					foreach ($segments_file as $segkey => $segment)
+					{
+						if (isset($segments_link[$segkey]))
+						{
+							if ($segment == $segments_link[$segkey])
+							{
+								array_shift($segments_file);
+								array_shift($segments_link);
+							}
+						}
+						else
+						{
+							break;
+						}
+					}
+
+					// Add parent directory paths
+					for ($i = 1; $i <= count($segments_file); $i++)
+					{
+						$uri .= '../';
+					}
+
+					// Join the link segments again
+					$segments_link = implode('/', $segments_link);
+
+					// Create the final uri
+					$uri = Str::replace
+					(
+						$uri.$segments_link.'/'.$link->getFileName(),
+						'//',
+						'/'
+					);
+				}
+
+				// Add in the title for the link
+				// And make sure the extension is always ".html"
+				$tree[] =
+				[
+					'title' => $link->getFileName(),
+					'active' => $active,
+					'focus' => $active,
+					'href' => Str::replace
+					(
+						$uri,
+						'.'.$link->getExtension(),
+						'.html'
+					)
+				];
+			}
+		}
+
+		// Ensure folders are on top
+		$temp = [];
+
+		foreach ($tree as $key => $value)
+		{
+			if (isset($value['folder']))
+			{
+				$temp[] = $value;
+			}
+		}
+
+		foreach ($tree as $key => $value)
+		{
+			if (!isset($value['folder']))
+			{
+				$temp[] = $value;
+			}
+		}
+
+		$tree = $temp;
+
+		// Return our tree
+		return $tree;
 	}
 
 	/**
@@ -360,7 +498,12 @@ class Generator extends Container
 					$block['lines'] = [$start+1, $line_no+1];
 					$block['md'] = rtrim($current_block);
 					$block['html'] = $this->parsedown->text($block['md']);
-					$block['signature'] = trim($lines[$line_no+1]);
+					
+					if (isset($lines[$line_no+1]))
+					{
+						$block['signature'] = trim($lines[$line_no+1]);
+					}
+					
 					$blocks[] = $block;
 
 					// Reset the loop

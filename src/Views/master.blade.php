@@ -3,13 +3,11 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Brads Local Dev Server</title>
-		
-		@if ($base)
-			<base href="{{ $base }}">
-		@endif
-		
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/jquery.fancytree/2.3.0/skin-win8/ui.fancytree.min.css">
+
+		
 		<style type="text/css">
 		/*
  * Base structure
@@ -118,8 +116,27 @@ body {
 }
 
 		</style>
-		<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+		<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+		<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/jquery.fancytree/2.3.0/jquery.fancytree-all.min.js"></script>
+		<script>
+			$(document).ready(function()
+			{
+				$("div.sidebar").fancytree
+				({
+					source: <?php echo json_encode($nav); ?>,
+
+					activate: function(event, data)
+					{
+						if (typeof data.node.data.href != 'undefined')
+						{
+							window.location = data.node.data.href;
+						}
+					}
+				});
+			});
+		</script>
 	</head>
 	<body>
 
@@ -150,23 +167,7 @@ body {
 
     <div class="container-fluid">
       <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar">
-          <ul class="nav nav-sidebar">
-          	@foreach ($nav as $key => $value)
-				@if (is_array($value))
-					<li>
-						{{$key}}/
-						@include('nav', array('items' => $value))
-					</li>
-				@else
-					<li><a href="./{{$value}}">{{$value}}</a></li>
-				@endif
-			@endforeach
-          </ul>
-          @if (!$base)
-          	@include('base-auto-detect')
-          @endif
-        </div>
+        <div class="col-sm-3 col-md-2 sidebar"></div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <h1 class="page-header">Dashboard</h1>
 

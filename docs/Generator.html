@@ -3,10 +3,11 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Brads Local Dev Server</title>
-		
-				
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/jquery.fancytree/2.3.0/skin-win8/ui.fancytree.min.css">
+
+		
 		<style type="text/css">
 		/*
  * Base structure
@@ -114,178 +115,30 @@ body {
   border-radius: 50%;
 }
 
-ol.tree
-{
-	padding: 0 0 0 30px;
-	width: 300px;
-}
-	li 
-	{ 
-		position: relative; 
-		margin-left: -15px;
-		list-style: none;
-	}
-	li.file
-	{
-		margin-left: -1px !important;
-	}
-		li.file a
-		{
-			background: url(document.png) 0 0 no-repeat;
-			color: #fff;
-			padding-left: 21px;
-			text-decoration: none;
-			display: block;
-		}
-		li.file a[href *= '.pdf']	{ background: url(document.png) 0 0 no-repeat; }
-		li.file a[href *= '.html']	{ background: url(document.png) 0 0 no-repeat; }
-		li.file a[href $= '.css']	{ background: url(document.png) 0 0 no-repeat; }
-		li.file a[href $= '.js']		{ background: url(document.png) 0 0 no-repeat; }
-	li input
-	{
-		position: absolute;
-		left: 0;
-		margin-left: 0;
-		opacity: 0;
-		z-index: 2;
-		cursor: pointer;
-		height: 1em;
-		width: 1em;
-		top: 0;
-	}
-		li input + ol
-		{
-			background: url(toggle-small-expand.png) 40px 0 no-repeat;
-			margin: -0.938em 0 0 -44px; /* 15px */
-			height: 1em;
-		}
-		li input + ol > li { display: none; margin-left: -14px !important; padding-left: 1px; }
-	li label
-	{
-		background: url(folder-horizontal.png) 15px 1px no-repeat;
-		cursor: pointer;
-		display: block;
-		padding-left: 37px;
-	}
-
-	li input:checked + ol
-	{
-		background: url(toggle-small.png) 40px 5px no-repeat;
-		margin: -1.25em 0 0 -44px; /* 20px */
-		padding: 1.563em 0 0 80px;
-		height: auto;
-	}
-		li input:checked + ol > li { display: block; margin: 0 0 0.125em;  /* 2px */}
-		li input:checked + ol > li:last-child { margin: 0 0 0.063em; /* 1px */ }
-
 		</style>
-		<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+		<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+		<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/jquery.fancytree/2.3.0/jquery.fancytree-all.min.js"></script>
+		<script>
+			$(document).ready(function()
+			{
+				$("div.sidebar").fancytree
+				({
+					source: [{"title":"Console","folder":true,"expanded":false,"children":[{"title":"test","folder":true,"expanded":false,"children":[{"title":"test2","folder":true,"expanded":false,"children":[{"title":"a.php","active":false,"focus":false,"href":"Console\/test\/test2\/a.html"},{"title":"b.php","active":false,"focus":false,"href":"Console\/test\/test2\/b.html"},{"title":"testing.php","active":false,"focus":false,"href":"Console\/test\/test2\/testing.html"}]}]},{"title":"Commands","folder":true,"expanded":false,"children":[{"title":"Generate.php","active":false,"focus":false,"href":"Console\/Commands\/Generate.html"}]},{"title":"Application.php","active":false,"focus":false,"href":"Console\/Application.html"}]},{"title":"Generator.php","active":true,"focus":true,"href":"#"}],
+
+					activate: function(event, data)
+					{
+						if (typeof data.node.data.href != 'undefined')
+						{
+							window.location = data.node.data.href;
+						}
+					}
+				});
+			});
+		</script>
 	</head>
 	<body>
-	<ol class="tree">
-		<li>
-			<label for="folder1">Folder 1</label> <input type="checkbox" checked disabled id="folder1" /> 
-			<ol>
-				<li class="file"><a href="document.html.pdf">File 1</a></li>
-				<li>
-					<label for="subfolder1">Subfolder 1</label> <input type="checkbox" id="subfolder1" /> 
-					<ol>
-						<li class="file"><a href="">Filey 1</a></li>
-						<li>
-							<label for="subsubfolder1">Subfolder 1</label> <input type="checkbox" id="subsubfolder1" /> 
-							<ol>
-								<li class="file"><a href="">File 1</a></li>
-								<li>
-									<label for="subsubfolder2">Subfolder 1</label> <input type="checkbox" id="subsubfolder2" /> 
-									<ol>
-										<li class="file"><a href="">Subfile 1</a></li>
-										<li class="file"><a href="">Subfile 2</a></li>
-										<li class="file"><a href="">Subfile 3</a></li>
-										<li class="file"><a href="">Subfile 4</a></li>
-										<li class="file"><a href="">Subfile 5</a></li>
-										<li class="file"><a href="">Subfile 6</a></li>
-									</ol>
-								</li>
-							</ol>
-						</li>
-						<li class="file"><a href="">File 3</a></li>
-						<li class="file"><a href="">File 4</a></li>
-						<li class="file"><a href="">File 5</a></li>
-						<li class="file"><a href="">File 6</a></li>
-					</ol>
-				</li>
-			</ol>
-		</li>
-		<li>
-			<label for="folder2">Folder 2</label> <input type="checkbox" id="folder2" /> 
-			<ol>
-				<li class="file"><a href="">File 1</a></li>
-				<li>
-					<label for="subfolder2">Subfolder 1</label> <input type="checkbox" id="subfolder2" /> 
-					<ol>
-						<li class="file"><a href="">Subfile 1</a></li>
-						<li class="file"><a href="">Subfile 2</a></li>
-						<li class="file"><a href="">Subfile 3</a></li>
-						<li class="file"><a href="">Subfile 4</a></li>
-						<li class="file"><a href="">Subfile 5</a></li>
-						<li class="file"><a href="">Subfile 6</a></li>
-					</ol>
-				</li>
-			</ol>
-		</li>
-		<li>
-			<label for="folder3">Folder 3</label> <input type="checkbox" id="folder3" /> 
-			<ol>
-				<li class="file"><a href="">File 1</a></li>
-				<li>
-					<label for="subfolder3">Subfolder 1</label> <input type="checkbox" id="subfolder3" /> 
-					<ol>
-						<li class="file"><a href="">Subfile 1</a></li>
-						<li class="file"><a href="">Subfile 2</a></li>
-						<li class="file"><a href="">Subfile 3</a></li>
-						<li class="file"><a href="">Subfile 4</a></li>
-						<li class="file"><a href="">Subfile 5</a></li>
-						<li class="file"><a href="">Subfile 6</a></li>
-					</ol>
-				</li>
-			</ol>
-		</li>
-		<li>
-			<label for="folder4">Folder 4</label> <input type="checkbox" id="folder4" /> 
-			<ol>
-				<li class="file"><a href="">File 1</a></li>
-				<li>
-					<label for="subfolder4">Subfolder 1</label> <input type="checkbox" id="subfolder4" /> 
-					<ol>
-						<li class="file"><a href="">Subfile 1</a></li>
-						<li class="file"><a href="">Subfile 2</a></li>
-						<li class="file"><a href="">Subfile 3</a></li>
-						<li class="file"><a href="">Subfile 4</a></li>
-						<li class="file"><a href="">Subfile 5</a></li>
-						<li class="file"><a href="">Subfile 6</a></li>
-					</ol>
-				</li>
-			</ol>
-		</li>
-		<li>
-			<label for="folder5">Folder 5</label> <input type="checkbox" id="folder5" /> 
-			<ol>
-				<li class="file"><a href="">File 1</a></li>
-				<li>
-					<label for="subfolder5">Subfolder 1</label> <input type="checkbox" id="subfolder5" /> 
-					<ol>
-						<li class="file"><a href="">Subfile 1</a></li>
-						<li class="file"><a href="">Subfile 2</a></li>
-						<li class="file"><a href="">Subfile 3</a></li>
-						<li class="file"><a href="">Subfile 4</a></li>
-						<li class="file"><a href="">Subfile 5</a></li>
-						<li class="file"><a href="">Subfile 6</a></li>
-					</ol>
-				</li>
-			</ol>
-		</li>
-	</ol>
 
 		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container-fluid">
@@ -314,40 +167,7 @@ ol.tree
 
     <div class="container-fluid">
       <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar">
-          <ul class="nav nav-sidebar">
-          										<li>
-						Console/
-						<ul>
-						<li><a href="./Console/Application.html">Console/Application.html</a></li>
-			</ul>					</li>
-																<li>
-						/
-						<ul>
-						<li><a href="./Generator.html">Generator.html</a></li>
-			</ul>					</li>
-							          </ul>
-                    	<script>
-	function findBase(url)
-	{
-		$.get(url, function(data)
-		{
-			var base = url.replace('/base.html', '');
-
-			$('ul.nav-sidebar a').each(function(index, element)
-			{
-				$(element).attr('href', base+$(element).attr('href').replace('./', '/'));
-			});
-		})
-		.fail(function()
-		{
-			path.pop(); findBase(path.join('/') + '/base.html');
-		});
-	}
-
-	var path = window.location.pathname.split('/'); path.pop();
-	findBase(path.join('/') + '/base.html');
-</script>                  </div>
+        <div class="col-sm-3 col-md-2 sidebar"></div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <h1 class="page-header">Dashboard</h1>
 

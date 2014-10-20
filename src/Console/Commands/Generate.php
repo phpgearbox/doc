@@ -20,6 +20,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Generate extends Command
 {
+	/**
+	 * Methodhhj
+	 */
 	protected function configure()
 	{
 		$this
@@ -32,6 +35,9 @@ class Generate extends Command
 		;
 	}
 
+	/**
+	 * dhdfghjfg
+	 */
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		$generator = new Generator();
