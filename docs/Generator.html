@@ -3,328 +3,1378 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Brads Local Dev Server</title>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/jquery.fancytree/2.3.0/skin-win8/ui.fancytree.min.css">
-
-		
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+		<link rel="stylesheet" href="//cdn.jsdelivr.net/jquery.fancytree/2.3.0/skin-win8/ui.fancytree.min.css">
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
 		<style type="text/css">
-		/*
- * Base structure
- */
+	/**
+	 * Base structure
+	 */
 
-/* Move down content because we have a fixed navbar that is 50px tall */
-body {
-  padding-top: 50px;
-}
-
-
-/*
- * Global add-ons
- */
-
-.sub-header {
-  padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
-}
-
-/*
- * Top navigation
- * Hide default border to remove 1px line.
- */
-.navbar-fixed-top {
-  border: 0;
-}
-
-/*
- * Sidebar
- */
-
-/* Hide for mobile, show later */
-.sidebar {
-  display: none;
-}
-@media (min-width: 768px) {
-  .sidebar {
-    position: fixed;
-    top: 51px;
-    bottom: 0;
-    left: 0;
-    z-index: 1000;
-    display: block;
-    padding: 20px;
-    overflow-x: hidden;
-    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-    background-color: #f5f5f5;
-    border-right: 1px solid #eee;
-  }
-}
-
-/* Sidebar navigation */
-.nav-sidebar {
-  margin-right: -21px; /* 20px padding + 1px border */
-  margin-bottom: 20px;
-  margin-left: -20px;
-}
-.nav-sidebar > li > a {
-  padding-right: 20px;
-  padding-left: 20px;
-}
-.nav-sidebar > .active > a,
-.nav-sidebar > .active > a:hover,
-.nav-sidebar > .active > a:focus {
-  color: #fff;
-  background-color: #428bca;
-}
+	/* Move down content because we have a fixed navbar that is 50px tall */
+	body {
+	  padding-top: 50px;
+	}
 
 
-/*
- * Main content
- */
+	/**
+	 * Global add-ons
+	 */
 
-.main {
-  padding: 20px;
-}
-@media (min-width: 768px) {
-  .main {
-    padding-right: 40px;
-    padding-left: 40px;
-  }
-}
-.main .page-header {
-  margin-top: 0;
-}
+	.sub-header {
+	  padding-bottom: 10px;
+	  border-bottom: 1px solid #eee;
+	}
+
+	/**
+	 * Top navigation
+	 * Hide default border to remove 1px line.
+	 */
+	.navbar-fixed-top {
+	  border: 0;
+	}
+
+	/**
+	 * Sidebar
+	 */
+
+	/* Hide for mobile, show later */
+	.sidebar {
+	  display: none;
+	}
+	@media (min-width: 768px) {
+	  .sidebar {
+	    position: fixed;
+	    top: 51px;
+	    bottom: 0;
+	    left: 0;
+	    z-index: 1000;
+	    display: block;
+	    padding: 20px;
+	    overflow-x: hidden;
+	    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+	    background-color: #f5f5f5;
+	    border-right: 1px solid #eee;
+	  }
+
+	  .toc {
+	    position: fixed;
+	    top: 51px;
+	    bottom: 0;
+	    right: 0;
+	    z-index: 1000;
+	    display: block;
+	    padding: 20px;
+	    overflow-x: hidden;
+	    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+	    background-color: #f5f5f5;
+	    border-right: 1px solid #eee;
+	  }
+	}
 
 
-/*
- * Placeholder dashboard ideas
- */
+	/**
+	 * Main content
+	 */
 
-.placeholders {
-  margin-bottom: 30px;
-  text-align: center;
-}
-.placeholders h4 {
-  margin-bottom: 0;
-}
-.placeholder {
-  margin-bottom: 20px;
-}
-.placeholder img {
-  display: inline-block;
-  border-radius: 50%;
-}
+	.main {
+	  padding: 20px;
+	}
+	@media (min-width: 768px) {
+	  .main {
+	    padding-right: 40px;
+	    padding-left: 40px;
+	  }
+	}
+	.main .page-header {
+	  margin-top: 0;
+	}
 
-		</style>
-		<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-		<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/jquery.fancytree/2.3.0/jquery.fancytree-all.min.js"></script>
-		<script>
-			$(document).ready(function()
-			{
-				$("div.sidebar").fancytree
-				({
-					source: [{"title":"Console","folder":true,"expanded":false,"children":[{"title":"test","folder":true,"expanded":false,"children":[{"title":"test2","folder":true,"expanded":false,"children":[{"title":"a.php","active":false,"focus":false,"href":"Console\/test\/test2\/a.html"},{"title":"b.php","active":false,"focus":false,"href":"Console\/test\/test2\/b.html"},{"title":"testing.php","active":false,"focus":false,"href":"Console\/test\/test2\/testing.html"}]}]},{"title":"Commands","folder":true,"expanded":false,"children":[{"title":"Generate.php","active":false,"focus":false,"href":"Console\/Commands\/Generate.html"}]},{"title":"Application.php","active":false,"focus":false,"href":"Console\/Application.html"}]},{"title":"Generator.php","active":true,"focus":true,"href":"#"}],
+	.search
+	{
+		padding-bottom:10px;
+		text-align: center;
+	}
 
-					activate: function(event, data)
-					{
-						if (typeof data.node.data.href != 'undefined')
-						{
-							window.location = data.node.data.href;
-						}
-					}
-				});
-			});
-		</script>
-	</head>
+	.main .panel-body h2
+	{
+		font-size:18px;
+	}
+
+	.view-source
+	{
+		cursor: pointer;
+		float: right;
+	}
+
+	#sourceModal .modal-dialog
+	{
+		width: 80%;
+	}
+
+	.toc .list-group-item
+	{
+		cursor: pointer;
+	}
+
+</style>	</head>
 	<body>
 
-		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Project name</a>
-        </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="#">Settings</a></li>
-            <li><a href="#">Profile</a></li>
-            <li><a href="#">Help</a></li>
-          </ul>
-          <form class="navbar-form navbar-right">
-            <input type="text" class="form-control" placeholder="Search...">
-          </form>
-        </div>
-      </div>
-    </div>
+				<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">Project name</a>
+				</div>
+				<div class="navbar-collapse collapse">
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="#">Dashboard</a></li>
+						<li><a href="#">Settings</a></li>
+						<li><a href="#">Profile</a></li>
+						<li><a href="#">Help</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
 
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar"></div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <h1 class="page-header">Dashboard</h1>
+		<div class="container-fluid">
+			<div class="row">
 
-          <div class="row placeholders">
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
-            </div>
-          </div>
+								<div class="col-sm-3 col-md-2 sidebar">
+					<form class="form-inline search" role="form">
+						<div class="form-group">
+							<label class="sr-only" for="search-query">Search Query</label>
+							<input type="text" name="q" class="form-control" id="search-query" placeholder="Search...">
+						</div>
+						<button type="submit" class="btn btn-default">Go</button>
+					</form>
+					<div class="fancytree"></div>
+				</div>
 
-          <h2 class="sub-header">Section title</h2>
-          <div class="table-responsive">
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Header</th>
-                  <th>Header</th>
-                  <th>Header</th>
-                  <th>Header</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>1,001</td>
-                  <td>Lorem</td>
-                  <td>ipsum</td>
-                  <td>dolor</td>
-                  <td>sit</td>
-                </tr>
-                <tr>
-                  <td>1,002</td>
-                  <td>amet</td>
-                  <td>consectetur</td>
-                  <td>adipiscing</td>
-                  <td>elit</td>
-                </tr>
-                <tr>
-                  <td>1,003</td>
-                  <td>Integer</td>
-                  <td>nec</td>
-                  <td>odio</td>
-                  <td>Praesent</td>
-                </tr>
-                <tr>
-                  <td>1,003</td>
-                  <td>libero</td>
-                  <td>Sed</td>
-                  <td>cursus</td>
-                  <td>ante</td>
-                </tr>
-                <tr>
-                  <td>1,004</td>
-                  <td>dapibus</td>
-                  <td>diam</td>
-                  <td>Sed</td>
-                  <td>nisi</td>
-                </tr>
-                <tr>
-                  <td>1,005</td>
-                  <td>Nulla</td>
-                  <td>quis</td>
-                  <td>sem</td>
-                  <td>at</td>
-                </tr>
-                <tr>
-                  <td>1,006</td>
-                  <td>nibh</td>
-                  <td>elementum</td>
-                  <td>imperdiet</td>
-                  <td>Duis</td>
-                </tr>
-                <tr>
-                  <td>1,007</td>
-                  <td>sagittis</td>
-                  <td>ipsum</td>
-                  <td>Praesent</td>
-                  <td>mauris</td>
-                </tr>
-                <tr>
-                  <td>1,008</td>
-                  <td>Fusce</td>
-                  <td>nec</td>
-                  <td>tellus</td>
-                  <td>sed</td>
-                </tr>
-                <tr>
-                  <td>1,009</td>
-                  <td>augue</td>
-                  <td>semper</td>
-                  <td>porta</td>
-                  <td>Mauris</td>
-                </tr>
-                <tr>
-                  <td>1,010</td>
-                  <td>massa</td>
-                  <td>Vestibulum</td>
-                  <td>lacinia</td>
-                  <td>arcu</td>
-                </tr>
-                <tr>
-                  <td>1,011</td>
-                  <td>eget</td>
-                  <td>nulla</td>
-                  <td>Class</td>
-                  <td>aptent</td>
-                </tr>
-                <tr>
-                  <td>1,012</td>
-                  <td>taciti</td>
-                  <td>sociosqu</td>
-                  <td>ad</td>
-                  <td>litora</td>
-                </tr>
-                <tr>
-                  <td>1,013</td>
-                  <td>torquent</td>
-                  <td>per</td>
-                  <td>conubia</td>
-                  <td>nostra</td>
-                </tr>
-                <tr>
-                  <td>1,014</td>
-                  <td>per</td>
-                  <td>inceptos</td>
-                  <td>himenaeos</td>
-                  <td>Curabitur</td>
-                </tr>
-                <tr>
-                  <td>1,015</td>
-                  <td>sodales</td>
-                  <td>ligula</td>
-                  <td>in</td>
-                  <td>libero</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
+								<div class="col-sm-9 col-sm-offset-3 col-md-8 col-md-offset-2 main">
+					
+					<h1 class="page-header">
+						Generator.php
+						<a class="view-source" title="View Source" data-toggle="modal" data-target="#sourceModal">
+							<i class="fa fa-file-code-o"></i>
+						</a>
+					</h1>
+					
+											
+						<div id="block_0" class="panel panel-default panel-primary">
+															<div class="panel-heading">
+									<h3 class="panel-title">
+										Class: Generator
+										<a
+											class="view-source"
+											title="Take me to the code..."
+											data-start-line="24"
+											data-end-line="65"
+										>
+											<i class="fa fa-file-code-o"></i>
+										</a>
+									</h3>
+								</div>
+														<div class="panel-body">
+																	<pre><code class="php">class Generator extends Container</code></pre>
+																
+<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
+ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis
+parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec,
+pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.</p>
+<h2>How To Use:</h2>
+<p>Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu.
+In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.
+Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus.
+Vivamus elementum semper nisi. Aenean vulputate eleifend tellus.</p>
+<pre><code class="language-php">// Make sure the paths don't have trailing slashes
+$this-&gt;normalisePaths();
 
+// Make sure the output folder exists and is writeable
+if (!is_dir($this-&gt;outputPath) || !is_writeable($this-&gt;outputPath))
+{
+    // It is on the user to create the root output folder
+    throw new RuntimeException
+    (
+        'Please create the output folder with appropriate permissions!'
+    );
+}
+
+// Remove all contents of output folder
+$this-&gt;filesystem-&gt;remove($this-&gt;finder-&gt;in($this-&gt;outputPath));
+
+// Create the data needed to make all our views
+$output_files = []; $nav = [];</code></pre>
+<h2>Other Info:</h2>
+<ul>
+<li>123</li>
+<li>abc</li>
+<li>xyz</li>
+</ul>
+							</div>
+						</div>
+
+											
+						<div id="block_1" class="panel panel-default panel-success">
+															<div class="panel-heading">
+									<h3 class="panel-title">
+										Property: inputPath
+										<a
+											class="view-source"
+											title="Take me to the code..."
+											data-start-line="68"
+											data-end-line="73"
+										>
+											<i class="fa fa-file-code-o"></i>
+										</a>
+									</h3>
+								</div>
+														<div class="panel-body">
+																	<pre><code class="php">protected $injectInputPath;</code></pre>
+																
+<p>The path of where your src files are located.
+Defaults to: <code>./src</code></p>
+							</div>
+						</div>
+
+											
+						<div id="block_2" class="panel panel-default panel-success">
+															<div class="panel-heading">
+									<h3 class="panel-title">
+										Property: outputPath
+										<a
+											class="view-source"
+											title="Take me to the code..."
+											data-start-line="76"
+											data-end-line="81"
+										>
+											<i class="fa fa-file-code-o"></i>
+										</a>
+									</h3>
+								</div>
+														<div class="panel-body">
+																	<pre><code class="php">protected $injectOutputPath;</code></pre>
+																
+<p>The path of where we will output the generated documentation.
+Defaults to: <code>./docs</code></p>
+							</div>
+						</div>
+
+											
+						<div id="block_3" class="panel panel-default panel-success">
+															<div class="panel-heading">
+									<h3 class="panel-title">
+										Property: ignorePaths
+										<a
+											class="view-source"
+											title="Take me to the code..."
+											data-start-line="84"
+											data-end-line="89"
+										>
+											<i class="fa fa-file-code-o"></i>
+										</a>
+									</h3>
+								</div>
+														<div class="panel-body">
+																	<pre><code class="php">protected $injectIgnorePaths;</code></pre>
+																
+<p>Optional array that can be supplied of paths to ignore.
+Each path would be relative to the inputPath.</p>
+							</div>
+						</div>
+
+											
+						<div id="block_4" class="panel panel-default panel-success">
+															<div class="panel-heading">
+									<h3 class="panel-title">
+										Property: exts
+										<a
+											class="view-source"
+											title="Take me to the code..."
+											data-start-line="92"
+											data-end-line="98"
+										>
+											<i class="fa fa-file-code-o"></i>
+										</a>
+									</h3>
+								</div>
+														<div class="panel-body">
+																	<pre><code class="php">protected $injectExts;</code></pre>
+																
+<p>An array of file extensions to parse.
+Only extensions listed here will be checked for docblocks.
+It defaults to: <code>php, js, css, less, sccs</code></p>
+							</div>
+						</div>
+
+											
+						<div id="block_5" class="panel panel-default panel-success">
+															<div class="panel-heading">
+									<h3 class="panel-title">
+										Property: view
+										<a
+											class="view-source"
+											title="Take me to the code..."
+											data-start-line="101"
+											data-end-line="105"
+										>
+											<i class="fa fa-file-code-o"></i>
+										</a>
+									</h3>
+								</div>
+														<div class="panel-body">
+																	<pre><code class="php">protected $injectView;</code></pre>
+																
+<p>An instance of: <code>Gears\View</code> or <code>Illuminate\View\Factory</code></p>
+							</div>
+						</div>
+
+											
+						<div id="block_6" class="panel panel-default panel-success">
+															<div class="panel-heading">
+									<h3 class="panel-title">
+										Property: parsedown
+										<a
+											class="view-source"
+											title="Take me to the code..."
+											data-start-line="108"
+											data-end-line="112"
+										>
+											<i class="fa fa-file-code-o"></i>
+										</a>
+									</h3>
+								</div>
+														<div class="panel-body">
+																	<pre><code class="php">protected $injectParsedown;</code></pre>
+																
+<p>An instance of: <code>Parsedown</code></p>
+							</div>
+						</div>
+
+											
+						<div id="block_7" class="panel panel-default panel-success">
+															<div class="panel-heading">
+									<h3 class="panel-title">
+										Property: filesystem
+										<a
+											class="view-source"
+											title="Take me to the code..."
+											data-start-line="115"
+											data-end-line="119"
+										>
+											<i class="fa fa-file-code-o"></i>
+										</a>
+									</h3>
+								</div>
+														<div class="panel-body">
+																	<pre><code class="php">protected $injectFilesystem;</code></pre>
+																
+<p>An instance of: <code>Symfony\Component\Filesystem\Filesystem</code></p>
+							</div>
+						</div>
+
+											
+						<div id="block_8" class="panel panel-default panel-success">
+															<div class="panel-heading">
+									<h3 class="panel-title">
+										Property: finder
+										<a
+											class="view-source"
+											title="Take me to the code..."
+											data-start-line="122"
+											data-end-line="126"
+										>
+											<i class="fa fa-file-code-o"></i>
+										</a>
+									</h3>
+								</div>
+														<div class="panel-body">
+																	<pre><code class="php">protected $injectFinder;</code></pre>
+																
+<p>An factory for: <code>Symfony\Component\Finder\Finder</code></p>
+							</div>
+						</div>
+
+											
+						<div id="block_9" class="panel panel-default panel-info">
+															<div class="panel-heading">
+									<h3 class="panel-title">
+										Method: setDefaults
+										<a
+											class="view-source"
+											title="Take me to the code..."
+											data-start-line="129"
+											data-end-line="143"
+										>
+											<i class="fa fa-file-code-o"></i>
+										</a>
+									</h3>
+								</div>
+														<div class="panel-body">
+																	<pre><code class="php">protected function setDefaults()</code></pre>
+																
+<p>This is where we set all our defaults. If you need to customise this
+container this is a good place to look to see what can be configured
+and how to configure it.</p>
+<h2>Parameters:</h2>
+<p>n/a</p>
+<h2>Returns:</h2>
+<p>void</p>
+							</div>
+						</div>
+
+											
+						<div id="block_10" class="panel panel-default panel-info">
+															<div class="panel-heading">
+									<h3 class="panel-title">
+										Method: run
+										<a
+											class="view-source"
+											title="Take me to the code..."
+											data-start-line="163"
+											data-end-line="182"
+										>
+											<i class="fa fa-file-code-o"></i>
+										</a>
+									</h3>
+								</div>
+														<div class="panel-body">
+																	<pre><code class="php">public function run()</code></pre>
+																
+<p>Once the container is configured, simply run this method
+and we will generate the documenation.</p>
+<blockquote>
+<p>WARNING: All content in the output path will be deleted!</p>
+</blockquote>
+<h2>Parameters:</h2>
+<p>n/a</p>
+<h2>Returns:</h2>
+<p>void</p>
+<h2>Throws:</h2>
+<ul>
+<li>RuntimeException: When the output path is not writeable.</li>
+</ul>
+							</div>
+						</div>
+
+											
+						<div id="block_11" class="panel panel-default panel-info">
+															<div class="panel-heading">
+									<h3 class="panel-title">
+										Method: normalisePaths
+										<a
+											class="view-source"
+											title="Take me to the code..."
+											data-start-line="397"
+											data-end-line="409"
+										>
+											<i class="fa fa-file-code-o"></i>
+										</a>
+									</h3>
+								</div>
+														<div class="panel-body">
+																	<pre><code class="php">private function normalisePaths()</code></pre>
+																
+<p>Ensure the paths don't have trailing slashes.</p>
+<h2>Parameters:</h2>
+<p>n/a</p>
+<h2>Returns:</h2>
+<p>void</p>
+							</div>
+						</div>
+
+											
+						<div id="block_12" class="panel panel-default panel-info">
+															<div class="panel-heading">
+									<h3 class="panel-title">
+										Method: getInputFiles
+										<a
+											class="view-source"
+											title="Take me to the code..."
+											data-start-line="423"
+											data-end-line="435"
+										>
+											<i class="fa fa-file-code-o"></i>
+										</a>
+									</h3>
+								</div>
+														<div class="panel-body">
+																	<pre><code class="php">private function getInputFiles()</code></pre>
+																
+<p>Sets up a finder object to list all our input source files.</p>
+<h2>Parameters:</h2>
+<p>n/a</p>
+<h2>Returns:</h2>
+<p>Symfony\Component\Finder\Finder</p>
+							</div>
+						</div>
+
+											
+						<div id="block_13" class="panel panel-default panel-info">
+															<div class="panel-heading">
+									<h3 class="panel-title">
+										Method: writeHtmlDocument
+										<a
+											class="view-source"
+											title="Take me to the code..."
+											data-start-line="460"
+											data-end-line="478"
+										>
+											<i class="fa fa-file-code-o"></i>
+										</a>
+									</h3>
+								</div>
+														<div class="panel-body">
+																	<pre><code class="php">private function writeHtmlDocument($filepath, $html)</code></pre>
+																
+<p>Writes the given html to the given filename
+and creates folders as needed.</p>
+<h2>Parameters:</h2>
+<ul>
+<li>$filepath: The filepath to the new document.</li>
+<li>$html: The html to write into the new document.</li>
+</ul>
+<h2>Returns:</h2>
+<p>void</p>
+<h2>Throws:</h2>
+<ul>
+<li>RuntimeException: When we failed to write the new file.</li>
+</ul>
+							</div>
+						</div>
+
+											
+						<div id="block_14" class="panel panel-default panel-info">
+															<div class="panel-heading">
+									<h3 class="panel-title">
+										Method: extractDocBlocks
+										<a
+											class="view-source"
+											title="Take me to the code..."
+											data-start-line="495"
+											data-end-line="509"
+										>
+											<i class="fa fa-file-code-o"></i>
+										</a>
+									</h3>
+								</div>
+														<div class="panel-body">
+																	<pre><code class="php">private function extractDocBlocks(SplFileInfo $file)</code></pre>
+																
+<p>Extracts each docblock using regular expression in the given file.
+We do not use any form of Reflection, we do not include the file.
+We only read it as a string.</p>
+<h2>Parameters:</h2>
+<ul>
+<li>$file: A SplFileInfo object for the file.</li>
+</ul>
+<h2>Returns:</h2>
+<p>array</p>
+							</div>
+						</div>
+
+					
+					<div class="modal fade" id="sourceModal" tabindex="-1" role="dialog" aria-labelledby="sourceModalLabel" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">
+										<span aria-hidden="true">&times;</span>
+										<span class="sr-only">Close</span>
+									</button>
+									<h4 class="modal-title" id="sourceModalLabel}">
+										Generator.php
+									</h4>
+								</div>
+								<div class="modal-body">
+									<pre><code class="php">&lt;?php namespace Gears\Doc;
+////////////////////////////////////////////////////////////////////////////////
+// __________ __             ________                   __________              
+// \______   \  |__ ______  /  _____/  ____ _____ ______\______   \ _______  ___
+//  |     ___/  |  \\____ \/   \  ____/ __ \\__  \\_  __ \    |  _//  _ \  \/  /
+//  |    |   |   Y  \  |_&gt; &gt;    \_\  \  ___/ / __ \|  | \/    |   (  &lt;_&gt; &gt;    &lt; 
+//  |____|   |___|  /   __/ \______  /\___  &gt;____  /__|  |______  /\____/__/\_ \
+//                \/|__|           \/     \/     \/             \/            \/
+// -----------------------------------------------------------------------------
+//          Designed and Developed by Brad Jones &lt;brad @=&quot;bjc.id.au&quot; /&gt;         
+// -----------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////////
+
+use SplFileInfo;
+use RuntimeException;
+use Parsedown;
+use Gears\View;
+use Gears\Di\Container;
+use Gears\String as Str;
+use Gears\Arrays as Arr;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Filesystem\Filesystem;
+
+/**
+ * Class: Generator
+ * =============================================================================
+ * Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
+ * ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis
+ * parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec,
+ * pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.
+ * 
+ * How To Use:
+ * -----------------------------------------------------------------------------
+ * Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu.
+ * In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.
+ * Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus.
+ * Vivamus elementum semper nisi. Aenean vulputate eleifend tellus.
+ * 
+ * ```php
+ * // Make sure the paths don&#039;t have trailing slashes
+ * $this-&gt;normalisePaths();
+ * 
+ * // Make sure the output folder exists and is writeable
+ * if (!is_dir($this-&gt;outputPath) || !is_writeable($this-&gt;outputPath))
+ * {
+ * 	// It is on the user to create the root output folder
+ * 	throw new RuntimeException
+ * 	(
+ * 		&#039;Please create the output folder with appropriate permissions!&#039;
+ * 	);
+ * }
+ * 
+ * // Remove all contents of output folder
+ * $this-&gt;filesystem-&gt;remove($this-&gt;finder-&gt;in($this-&gt;outputPath));
+ * 
+ * // Create the data needed to make all our views
+ * $output_files = []; $nav = [];
+ * ```
+ * 
+ * Other Info:
+ * -----------------------------------------------------------------------------
+ * - 123
+ * - abc
+ * - xyz
+ */
+class Generator extends Container
+{
+	/**
+	 * Property: inputPath
+	 * =========================================================================
+	 * The path of where your src files are located.
+	 * Defaults to: ```./src```
+	 */
+	protected $injectInputPath;
+
+	/**
+	 * Property: outputPath
+	 * =========================================================================
+	 * The path of where we will output the generated documentation.
+	 * Defaults to: ```./docs```
+	 */
+	protected $injectOutputPath;
+
+	/**
+	 * Property: ignorePaths
+	 * =========================================================================
+	 * Optional array that can be supplied of paths to ignore.
+	 * Each path would be relative to the inputPath.
+	 */
+	protected $injectIgnorePaths;
+
+	/**
+	 * Property: exts
+	 * =========================================================================
+	 * An array of file extensions to parse.
+	 * Only extensions listed here will be checked for docblocks.
+	 * It defaults to: ```php, js, css, less, sccs```
+	 */
+	protected $injectExts;
+
+	/**
+	 * Property: view
+	 * =========================================================================
+	 * An instance of: ```Gears\View``` or ```Illuminate\View\Factory```
+	 */
+	protected $injectView;
+
+	/**
+	 * Property: parsedown
+	 * =========================================================================
+	 * An instance of: ```Parsedown```
+	 */
+	protected $injectParsedown;
+
+	/**
+	 * Property: filesystem
+	 * =========================================================================
+	 * An instance of: ```Symfony\Component\Filesystem\Filesystem```
+	 */
+	protected $injectFilesystem;
+
+	/**
+	 * Property: finder
+	 * =========================================================================
+	 * An factory for: ```Symfony\Component\Finder\Finder```
+	 */
+	protected $injectFinder;
+
+	/**
+	 * Method: setDefaults
+	 * =========================================================================
+	 * This is where we set all our defaults. If you need to customise this
+	 * container this is a good place to look to see what can be configured
+	 * and how to configure it.
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * n/a
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * void
+	 */
+	protected function setDefaults()
+	{
+		$this-&gt;inputPath = &#039;./src&#039;;
+
+		$this-&gt;outputPath = &#039;./docs&#039;;
+
+		$this-&gt;ignorePaths = [];
+
+		$this-&gt;exts = [&#039;php&#039;, &#039;js&#039;, &#039;css&#039;, &#039;less&#039;, &#039;sccs&#039;];
+
+		$this-&gt;view = function () { return new View(__DIR__.&#039;/Views&#039;); };
+
+		$this-&gt;parsedown = function () { return new Parsedown(); };
+
+		$this-&gt;filesystem = function () { return new Filesystem(); };
+
+		$this-&gt;finder = $this-&gt;factory(function () { return new Finder(); });
+	}
+
+	/**
+	 * Method: run
+	 * =========================================================================
+	 * Once the container is configured, simply run this method
+	 * and we will generate the documenation.
+	 * 
+	 * &gt; WARNING: All content in the output path will be deleted!
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * n/a
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * void
+	 * 
+	 * Throws:
+	 * -------------------------------------------------------------------------
+	 * - RuntimeException: When the output path is not writeable.
+	 */
+	public function run()
+	{
+		// Make sure the paths don&#039;t have trailing slashes
+		$this-&gt;normalisePaths();
+
+		// Make sure the output folder exists and is writeable
+		if (!is_dir($this-&gt;outputPath) || !is_writeable($this-&gt;outputPath))
+		{
+			// It is on the user to create the root output folder
+			throw new RuntimeException
+			(
+				&#039;Please create the output folder with appropriate permissions!&#039;
+			);
+		}
+
+		// Remove all contents of output folder
+		$this-&gt;filesystem-&gt;remove($this-&gt;finder-&gt;in($this-&gt;outputPath));
+
+		// Create the data needed to make all our views
+		$output_files = []; $nav = [];
+
+		// Loop through each source file
+		foreach ($this-&gt;getInputFiles() as $file)
+		{
+			// Extract the docblocks from the source file
+			$blocks = $this-&gt;extractDocBlocks($file);
+
+			// Skip to next file if no blocks found
+			if (empty($blocks)) continue;
+
+			// The following sets up our nav array
+			$segments = Str::split($file-&gt;getRelativePath(), &#039;/&#039;);
+			if ($segments == [&#039;&#039;])
+			{
+				$nav[] = $file;
+			}
+			else
+			{
+				$existing = Arr::get($nav, $segments, []);
+				$existing[] = $file;
+				Arr::set($nav, $segments, $existing);
+			}
+
+			// Create the output filename
+			$output_file_name = $this-&gt;outputPath.&#039;/&#039;.Str::replace
+			(
+				$file-&gt;getRelativePathname(),
+				$file-&gt;getExtension(),
+				&#039;html&#039;
+			);
+
+			// Add the file and blocks to our list of views to create
+			$output_files[$output_file_name] =
+			[
+				&#039;src_file&#039; =&gt; $file,
+				&#039;blocks&#039; =&gt; $blocks
+			];
+		}
+
+		// Now finally write each static file
+		foreach ($output_files as $output_file =&gt; $data)
+		{
+			// Create our blade view
+			$html = $this-&gt;view
+				-&gt;make(&#039;master&#039;)
+				-&gt;withNav($this-&gt;generateJsonTree($nav, $data[&#039;src_file&#039;]))
+				-&gt;withFileInfo($data[&#039;src_file&#039;])
+				-&gt;withBlocks($data[&#039;blocks&#039;])
+			;
+
+			// Save the generated html
+			$this-&gt;writeHtmlDocument($output_file, $html);
+		}
+	}
+
+	private function generateJsonTree($nav, $file)
+	{
+		$tree = [];
+
+		foreach ($nav as $key =&gt; $link)
+		{
+			$active = false;
+
+			if (is_array($link))
+			{
+				if (in_array($key, Str::split($file-&gt;getRelativePath(), &#039;/&#039;)))
+				{
+					$expanded = true;
+				}
+				else
+				{
+					$expanded = false;
+				}
+
+				$tree[] =
+				[
+					&#039;title&#039; =&gt; $key,
+					&#039;folder&#039; =&gt; true,
+					&#039;expanded&#039; =&gt; $expanded,
+					&#039;children&#039; =&gt; $this-&gt;generateJsonTree($link, $file)
+				];
+			}
+			else
+			{
+				// This is our own link
+				if ($link-&gt;getRelativePathname() == $file-&gt;getRelativePathname())
+				{
+					$active = true;
+					$uri = &#039;#&#039;;
+				}
+
+				// We are in root, thus the full relative path will do.
+				elseif ($file-&gt;getRelativePath() == &#039;&#039;)
+				{
+					$uri = $link-&gt;getRelativePathname();
+				}
+
+				// The link is below us in the tree.
+				elseif (Str::contains($link-&gt;getRelativePathname(), $file-&gt;getRelativePath()))
+				{
+					$uri = Str::replace
+					(
+						$link-&gt;getRelativePathname(),
+						$file-&gt;getRelativePath().&#039;/&#039;,
+						&#039;&#039;
+					);
+				}
+
+				// The link must be above us in the tree
+				else
+				{
+					// Start our uri string
+					$uri = &#039;&#039;;
+
+					// Split the relative paths
+					$segments_file = Str::split($file-&gt;getRelativePath(), &#039;/&#039;);
+					$segments_link = Str::split($link-&gt;getRelativePath(), &#039;/&#039;);
+
+					// Remove similar segments
+					foreach ($segments_file as $segkey =&gt; $segment)
+					{
+						if (isset($segments_link[$segkey]))
+						{
+							if ($segment == $segments_link[$segkey])
+							{
+								array_shift($segments_file);
+								array_shift($segments_link);
+							}
+						}
+						else
+						{
+							break;
+						}
+					}
+
+					// Add parent directory paths
+					for ($i = 1; $i &lt;= count($segments_file); $i++)
+					{
+						$uri .= &#039;../&#039;;
+					}
+
+					// Join the link segments again
+					$segments_link = implode(&#039;/&#039;, $segments_link);
+
+					// Create the final uri
+					$uri = Str::replace
+					(
+						$uri.$segments_link.&#039;/&#039;.$link-&gt;getFileName(),
+						&#039;//&#039;,
+						&#039;/&#039;
+					);
+				}
+
+				// Add the new tree element
+				$tree[] =
+				[
+					&#039;title&#039; =&gt; $link-&gt;getFileName(),
+					&#039;active&#039; =&gt; $active,
+					&#039;focus&#039; =&gt; $active,
+					&#039;href&#039; =&gt; Str::replace
+					(
+						$uri,
+						&#039;.&#039;.$link-&gt;getExtension(),
+						&#039;.html&#039;
+					)
+				];
+			}
+		}
+
+		// Ensure folders are on top
+		$temp = [];
+
+		foreach ($tree as $key =&gt; $value)
+		{
+			if (isset($value[&#039;folder&#039;]))
+			{
+				$temp[] = $value;
+			}
+		}
+
+		foreach ($tree as $key =&gt; $value)
+		{
+			if (!isset($value[&#039;folder&#039;]))
+			{
+				$temp[] = $value;
+			}
+		}
+
+		$tree = $temp;
+
+		// Return our tree
+		return $tree;
+	}
+
+	/**
+	 * Method: normalisePaths
+	 * =========================================================================
+	 * Ensure the paths don&#039;t have trailing slashes.
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * n/a
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * void
+	 */
+	private function normalisePaths()
+	{
+		if (Str::endsWith($this-&gt;inputPath, DIRECTORY_SEPARATOR))
+		{
+			$this-&gt;inputPath = substr($this-&gt;inputPath, 0, -1);
+		}
+
+		if (Str::endsWith($this-&gt;outputPath, DIRECTORY_SEPARATOR))
+		{
+			$this-&gt;outputPath = substr($this-&gt;outputPath, 0, -1);
+		}
+	}
+
+	/**
+	 * Method: getInputFiles
+	 * =========================================================================
+	 * Sets up a finder object to list all our input source files.
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * n/a
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * Symfony\Component\Finder\Finder
+	 */
+	private function getInputFiles()
+	{
+		// Create our finder
+		$finder = $this-&gt;finder;
+
+		// Look for files in the input dir
+		$finder-&gt;files()-&gt;in($this-&gt;inputPath);
+
+		// Exclude any dirs
+		foreach ($this-&gt;ignorePaths as $dir)
+		{
+			$finder-&gt;exclude($dir);
+		}
+
+		// Only look for registered extensions
+		foreach ($this-&gt;exts as $ext)
+		{
+			$finder-&gt;name(&#039;*.&#039;.$ext);	
+		}
+
+		// Return the finder
+		return $finder;
+	}
+
+	/**
+	 * Method: writeHtmlDocument
+	 * =========================================================================
+	 * Writes the given html to the given filename
+	 * and creates folders as needed.
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * - $filepath: The filepath to the new document.
+	 * - $html: The html to write into the new document.
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * void
+	 * 
+	 * Throws:
+	 * -------------------------------------------------------------------------
+	 * - RuntimeException: When we failed to write the new file.
+	 */
+	private function writeHtmlDocument($filepath, $html)
+	{
+		// Create any needed folders
+		$folder = pathinfo($filepath, PATHINFO_DIRNAME);
+		if (!$this-&gt;filesystem-&gt;exists($folder))
+		{
+			$this-&gt;filesystem-&gt;mkdir($folder);
+		}
+
+		// Save the new html document
+		if (file_put_contents($filepath, $html) === false)
+		{
+			throw new RuntimeException(&#039;Failed to write file: &#039;.$filepath);
+		}
+	}
+
+	/**
+	 * Method: extractDocBlocks
+	 * =========================================================================
+	 * Extracts each docblock using regular expression in the given file.
+	 * We do not use any form of Reflection, we do not include the file.
+	 * We only read it as a string.
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * - $file: A SplFileInfo object for the file.
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * array
+	 */
+	private function extractDocBlocks(SplFileInfo $file)
+	{
+		// Create our docblocks array
+		$blocks = [];
+
+		// Read in the file contents
+		$lines = file($file-&gt;getPathname());
+
+		// Get a list of lines that contain docblocks
+		$linesFound = preg_grep(&#039;/^\s*(\/\*\*|\*\/?)/&#039;, $lines);
+
+		// Setup some vars for the following loop
+		$start = false; $current_block = &#039;&#039;;
+
+		// Loop through each line that we found
+		foreach ($linesFound as $line_no =&gt; $line)
+		{
+			if (!$start)
+			{
+				// We are looking for the start of a docblock
+				if (trim($line) == &#039;/**&#039;) $start = $line_no;
+			}
+			else
+			{
+				// We are now looking for the end of a docblock
+				if (trim($line) == &#039;*/&#039;)
+				{
+					// Create a new block
+					$block = [];
+					$block[&#039;lines&#039;] = [$start+1, $line_no+1];
+					$block[&#039;md&#039;] = rtrim($current_block);
+					$block[&#039;html&#039;] = $this-&gt;parsedown-&gt;text($block[&#039;md&#039;]);
+
+					// The first &lt;h1&gt; element we consider the block title
+					if (Str::contains($block[&#039;html&#039;], &#039;&lt;h1&gt;&#039;))
+					{
+						$block[&#039;title&#039;] = Str::between
+						(
+							$block[&#039;html&#039;],
+							&#039;&lt;h1&gt;&#039;,
+							&#039;&lt;/h1&gt;&#039;
+						);
+
+						$block[&#039;html&#039;] = Str::replace
+						(
+							$block[&#039;html&#039;],
+							&#039;&lt;h1&gt;&#039;.$block[&#039;title&#039;].&#039;&lt;/h1&gt;&#039;,
+							&#039;&#039;
+						);
+
+						// Create the block context
+						$title = Str::s($block[&#039;title&#039;])-&gt;to(&#039;lower&#039;);
+
+						if ($title-&gt;startsWith(&#039;class:&#039;))
+						{
+							$block[&#039;context&#039;] = &#039;panel-primary&#039;;
+						}
+						elseif ($title-&gt;startsWith(&#039;property:&#039;))
+						{
+							$block[&#039;context&#039;] = &#039;panel-success&#039;;
+						}
+						elseif ($title-&gt;startsWith(&#039;method:&#039;))
+						{
+							$block[&#039;context&#039;] = &#039;panel-info&#039;;
+						}
+						elseif ($title-&gt;startsWith(&#039;function:&#039;))
+						{
+							$block[&#039;context&#039;] = &#039;panel-warning&#039;;
+						}
+						else
+						{
+							$block[&#039;context&#039;] = &#039;&#039;;
+						}
+					}
+					else
+					{
+						$block[&#039;context&#039;] = &#039;&#039;;
+					}
+					
+					// The very next line after a docblock
+					// we consider the method signature.
+					if (isset($lines[$line_no+1]))
+					{
+						$sig = trim($lines[$line_no+1]);
+						if ($sig != &#039;&#039;) $block[&#039;signature&#039;] = $sig;
+					}
+					
+					// Add a new block to our array
+					$blocks[] = $block;
+
+					// Reset the loop
+					$start = false; $current_block = &#039;&#039;;
+				}
+				else
+				{
+					// Remove leading whitespace
+					$line = ltrim($line);
+
+					// Remove the leading asterisk
+					$line = ltrim($line, &quot;* &quot;);
+
+					// Add the line to our current block
+					$current_block .= $line;
+				}
+			}
+		}
+
+		// Return the blocks we found, if any
+		return $blocks;
+	}
+}</code></pre>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+								<div class="col-sm-3 col-md-2 toc">
+					<div class="list-group">
+																					<a class="list-group-item active" data-block-target="#block_0">
+									Class: Generator
+								</a>
+																												<a class="list-group-item" data-block-target="#block_1">
+									Property: inputPath
+								</a>
+																												<a class="list-group-item" data-block-target="#block_2">
+									Property: outputPath
+								</a>
+																												<a class="list-group-item" data-block-target="#block_3">
+									Property: ignorePaths
+								</a>
+																												<a class="list-group-item" data-block-target="#block_4">
+									Property: exts
+								</a>
+																												<a class="list-group-item" data-block-target="#block_5">
+									Property: view
+								</a>
+																												<a class="list-group-item" data-block-target="#block_6">
+									Property: parsedown
+								</a>
+																												<a class="list-group-item" data-block-target="#block_7">
+									Property: filesystem
+								</a>
+																												<a class="list-group-item" data-block-target="#block_8">
+									Property: finder
+								</a>
+																												<a class="list-group-item" data-block-target="#block_9">
+									Method: setDefaults
+								</a>
+																												<a class="list-group-item" data-block-target="#block_10">
+									Method: run
+								</a>
+																												<a class="list-group-item" data-block-target="#block_11">
+									Method: normalisePaths
+								</a>
+																												<a class="list-group-item" data-block-target="#block_12">
+									Method: getInputFiles
+								</a>
+																												<a class="list-group-item" data-block-target="#block_13">
+									Method: writeHtmlDocument
+								</a>
+																												<a class="list-group-item" data-block-target="#block_14">
+									Method: extractDocBlocks
+								</a>
+																		</div>
+				</div>
+
+			</div>
+		</div>
+
+		<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+		<script src="//code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+		<script src="//cdn.jsdelivr.net/jquery.fancytree/2.3.0/jquery.fancytree-all.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+		<script>
+	$(document).ready(function()
+	{
+		$(".fancytree").fancytree
+		({
+			source: [{"title":"Console","folder":true,"expanded":false,"children":[{"title":"test","folder":true,"expanded":false,"children":[{"title":"test2","folder":true,"expanded":false,"children":[{"title":"a.php","active":false,"focus":false,"href":"Console\/test\/test2\/a.html"},{"title":"b.php","active":false,"focus":false,"href":"Console\/test\/test2\/b.html"},{"title":"testing.php","active":false,"focus":false,"href":"Console\/test\/test2\/testing.html"}]}]},{"title":"Commands","folder":true,"expanded":false,"children":[{"title":"Generate.php","active":false,"focus":false,"href":"Console\/Commands\/Generate.html"}]},{"title":"Application.php","active":false,"focus":false,"href":"Console\/Application.html"}]},{"title":"Views","folder":true,"expanded":false,"children":[{"title":"style.blade.php","active":false,"focus":false,"href":"Views\/style.blade.html"}]},{"title":"Generator.php","active":true,"focus":true,"href":"#"}],
+
+			activate: function(event, data)
+			{
+				if (typeof data.node.data.href != 'undefined')
+				{
+					window.location = data.node.data.href;
+				}
+			}
+		});
+
+		$('.toc .list-group-item').click(function()
+		{
+			var top = $($(this).attr('data-block-target')).offset().top - 55;
+			$('html, body').animate({scrollTop: top}, 500);
+		});
+
+		$(window).scroll(function()
+		{
+			var top = $(window).scrollTop();
+
+			var current_toc = null;
+
+			$('.panel').each(function(index, el)
+			{
+				var panel_top = $(el).offset().top - 56;
+
+				if (top >= panel_top)
+				{
+					current_toc = $('[data-block-target="#'+$(el).attr('id')+'"]');
+				}
+			});
+
+			if (current_toc == null)
+			{
+				current_toc = $('[data-block-target="#block_0"]');
+			}
+
+			$('.toc .list-group-item').removeClass('active');
+			current_toc.addClass('active');
+		});
+
+		$('.panel .view-source').click(function()
+		{
+			var start = parseInt($(this).attr('data-start-line'));
+			var end = parseInt($(this).attr('data-end-line'));
+
+			var lines = [];
+
+			$('#sourceModal .line-number').each(function(index, el)
+			{
+				var lineno = parseInt($(el).attr('data-num'));
+
+				if (lineno >= start && lineno <= end)
+				{
+					lines[lines.length] = el;
+				}
+			});
+
+			$('#sourceModal').modal();
+
+			setTimeout(function()
+			{
+				$('#sourceModal').animate({scrollTop: $(lines[0]).position().top}, 500, function()
+				{
+					$.each(lines, function(index, el)
+					{
+						$(el).animate({backgroundColor: 'yellow'}, 1000, function()
+						{
+							$(this).animate({backgroundColor: 'transparent'}, 1000);
+						});
+					});
+				});
+			}, 500);
+		});
+
+		// Highlight all our code blocks
+		hljs.initHighlighting();
+
+		// For the main source modal lets add some line numbers
+		// highlight.js does not support line numbers.
+		// see: http://highlightjs.readthedocs.org/en/latest/line-numbers.html
+		var code = '';
+
+		$.each($('#sourceModal code').html().split(/\n/), function(index, value)
+		{
+			code += '<span class="line-number" data-num="'+(index+1)+'">'+value+'</span>'+"\n";
+		});
+
+		$('#sourceModal code').html(code);
+	});
+</script>
 	</body>
 </html>

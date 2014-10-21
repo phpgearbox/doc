@@ -21,6 +21,48 @@ use Gears\Arrays as Arr;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * Class: Generator
+ * =============================================================================
+ * Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
+ * ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis
+ * parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec,
+ * pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.
+ * 
+ * How To Use:
+ * -----------------------------------------------------------------------------
+ * Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu.
+ * In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.
+ * Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus.
+ * Vivamus elementum semper nisi. Aenean vulputate eleifend tellus.
+ * 
+ * ```php
+ * // Make sure the paths don't have trailing slashes
+ * $this->normalisePaths();
+ * 
+ * // Make sure the output folder exists and is writeable
+ * if (!is_dir($this->outputPath) || !is_writeable($this->outputPath))
+ * {
+ * 	// It is on the user to create the root output folder
+ * 	throw new RuntimeException
+ * 	(
+ * 		'Please create the output folder with appropriate permissions!'
+ * 	);
+ * }
+ * 
+ * // Remove all contents of output folder
+ * $this->filesystem->remove($this->finder->in($this->outputPath));
+ * 
+ * // Create the data needed to make all our views
+ * $output_files = []; $nav = [];
+ * ```
+ * 
+ * Other Info:
+ * -----------------------------------------------------------------------------
+ * - 123
+ * - abc
+ * - xyz
+ */
 class Generator extends Container
 {
 	/**
@@ -311,8 +353,7 @@ class Generator extends Container
 					);
 				}
 
-				// Add in the title for the link
-				// And make sure the extension is always ".html"
+				// Add the new tree element
 				$tree[] =
 				[
 					'title' => $link->getFileName(),
@@ -493,17 +534,67 @@ class Generator extends Container
 				// We are now looking for the end of a docblock
 				if (trim($line) == '*/')
 				{
-					// Add a new block to our array
+					// Create a new block
 					$block = [];
 					$block['lines'] = [$start+1, $line_no+1];
 					$block['md'] = rtrim($current_block);
 					$block['html'] = $this->parsedown->text($block['md']);
-					
-					if (isset($lines[$line_no+1]))
+
+					// The first <h1> element we consider the block title
+					if (Str::contains($block['html'], '<h1>'))
 					{
-						$block['signature'] = trim($lines[$line_no+1]);
+						$block['title'] = Str::between
+						(
+							$block['html'],
+							'<h1>',
+							'</h1>'
+						);
+
+						$block['html'] = Str::replace
+						(
+							$block['html'],
+							'<h1>'.$block['title'].'</h1>',
+							''
+						);
+
+						// Create the block context
+						$title = Str::s($block['title'])->to('lower');
+
+						if ($title->startsWith('class:'))
+						{
+							$block['context'] = 'panel-primary';
+						}
+						elseif ($title->startsWith('property:'))
+						{
+							$block['context'] = 'panel-success';
+						}
+						elseif ($title->startsWith('method:'))
+						{
+							$block['context'] = 'panel-info';
+						}
+						elseif ($title->startsWith('function:'))
+						{
+							$block['context'] = 'panel-warning';
+						}
+						else
+						{
+							$block['context'] = '';
+						}
+					}
+					else
+					{
+						$block['context'] = '';
 					}
 					
+					// The very next line after a docblock
+					// we consider the method signature.
+					if (isset($lines[$line_no+1]))
+					{
+						$sig = trim($lines[$line_no+1]);
+						if ($sig != '') $block['signature'] = $sig;
+					}
+					
+					// Add a new block to our array
 					$blocks[] = $block;
 
 					// Reset the loop

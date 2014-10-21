@@ -3,328 +3,362 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Brads Local Dev Server</title>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/jquery.fancytree/2.3.0/skin-win8/ui.fancytree.min.css">
-
-		
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+		<link rel="stylesheet" href="//cdn.jsdelivr.net/jquery.fancytree/2.3.0/skin-win8/ui.fancytree.min.css">
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
 		<style type="text/css">
-		/*
- * Base structure
- */
+	/**
+	 * Base structure
+	 */
 
-/* Move down content because we have a fixed navbar that is 50px tall */
-body {
-  padding-top: 50px;
-}
-
-
-/*
- * Global add-ons
- */
-
-.sub-header {
-  padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
-}
-
-/*
- * Top navigation
- * Hide default border to remove 1px line.
- */
-.navbar-fixed-top {
-  border: 0;
-}
-
-/*
- * Sidebar
- */
-
-/* Hide for mobile, show later */
-.sidebar {
-  display: none;
-}
-@media (min-width: 768px) {
-  .sidebar {
-    position: fixed;
-    top: 51px;
-    bottom: 0;
-    left: 0;
-    z-index: 1000;
-    display: block;
-    padding: 20px;
-    overflow-x: hidden;
-    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-    background-color: #f5f5f5;
-    border-right: 1px solid #eee;
-  }
-}
-
-/* Sidebar navigation */
-.nav-sidebar {
-  margin-right: -21px; /* 20px padding + 1px border */
-  margin-bottom: 20px;
-  margin-left: -20px;
-}
-.nav-sidebar > li > a {
-  padding-right: 20px;
-  padding-left: 20px;
-}
-.nav-sidebar > .active > a,
-.nav-sidebar > .active > a:hover,
-.nav-sidebar > .active > a:focus {
-  color: #fff;
-  background-color: #428bca;
-}
+	/* Move down content because we have a fixed navbar that is 50px tall */
+	body {
+	  padding-top: 50px;
+	}
 
 
-/*
- * Main content
- */
+	/**
+	 * Global add-ons
+	 */
 
-.main {
-  padding: 20px;
-}
-@media (min-width: 768px) {
-  .main {
-    padding-right: 40px;
-    padding-left: 40px;
-  }
-}
-.main .page-header {
-  margin-top: 0;
-}
+	.sub-header {
+	  padding-bottom: 10px;
+	  border-bottom: 1px solid #eee;
+	}
+
+	/**
+	 * Top navigation
+	 * Hide default border to remove 1px line.
+	 */
+	.navbar-fixed-top {
+	  border: 0;
+	}
+
+	/**
+	 * Sidebar
+	 */
+
+	/* Hide for mobile, show later */
+	.sidebar {
+	  display: none;
+	}
+	@media (min-width: 768px) {
+	  .sidebar {
+	    position: fixed;
+	    top: 51px;
+	    bottom: 0;
+	    left: 0;
+	    z-index: 1000;
+	    display: block;
+	    padding: 20px;
+	    overflow-x: hidden;
+	    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+	    background-color: #f5f5f5;
+	    border-right: 1px solid #eee;
+	  }
+
+	  .toc {
+	    position: fixed;
+	    top: 51px;
+	    bottom: 0;
+	    right: 0;
+	    z-index: 1000;
+	    display: block;
+	    padding: 20px;
+	    overflow-x: hidden;
+	    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+	    background-color: #f5f5f5;
+	    border-right: 1px solid #eee;
+	  }
+	}
 
 
-/*
- * Placeholder dashboard ideas
- */
+	/**
+	 * Main content
+	 */
 
-.placeholders {
-  margin-bottom: 30px;
-  text-align: center;
-}
-.placeholders h4 {
-  margin-bottom: 0;
-}
-.placeholder {
-  margin-bottom: 20px;
-}
-.placeholder img {
-  display: inline-block;
-  border-radius: 50%;
-}
+	.main {
+	  padding: 20px;
+	}
+	@media (min-width: 768px) {
+	  .main {
+	    padding-right: 40px;
+	    padding-left: 40px;
+	  }
+	}
+	.main .page-header {
+	  margin-top: 0;
+	}
 
-		</style>
-		<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-		<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/jquery.fancytree/2.3.0/jquery.fancytree-all.min.js"></script>
-		<script>
-			$(document).ready(function()
-			{
-				$("div.sidebar").fancytree
-				({
-					source: [{"title":"Console","folder":true,"expanded":true,"children":[{"title":"test","folder":true,"expanded":false,"children":[{"title":"test2","folder":true,"expanded":false,"children":[{"title":"a.php","active":false,"focus":false,"href":"..\/test\/test2\/a.html"},{"title":"b.php","active":false,"focus":false,"href":"..\/test\/test2\/b.html"},{"title":"testing.php","active":false,"focus":false,"href":"..\/test\/test2\/testing.html"}]}]},{"title":"Commands","folder":true,"expanded":true,"children":[{"title":"Generate.php","active":true,"focus":true,"href":"#"}]},{"title":"Application.php","active":false,"focus":false,"href":"..\/Application.html"}]},{"title":"Generator.php","active":false,"focus":false,"href":"..\/..\/Generator.html"}],
+	.search
+	{
+		padding-bottom:10px;
+		text-align: center;
+	}
 
-					activate: function(event, data)
-					{
-						if (typeof data.node.data.href != 'undefined')
-						{
-							window.location = data.node.data.href;
-						}
-					}
-				});
-			});
-		</script>
-	</head>
+	.main .panel-body h2
+	{
+		font-size:18px;
+	}
+
+	.view-source
+	{
+		cursor: pointer;
+		float: right;
+	}
+
+	#sourceModal .modal-dialog
+	{
+		width: 80%;
+	}
+
+	.toc .list-group-item
+	{
+		cursor: pointer;
+	}
+
+</style>	</head>
 	<body>
 
-		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Project name</a>
-        </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="#">Settings</a></li>
-            <li><a href="#">Profile</a></li>
-            <li><a href="#">Help</a></li>
-          </ul>
-          <form class="navbar-form navbar-right">
-            <input type="text" class="form-control" placeholder="Search...">
-          </form>
-        </div>
-      </div>
-    </div>
+				<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">Project name</a>
+				</div>
+				<div class="navbar-collapse collapse">
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="#">Dashboard</a></li>
+						<li><a href="#">Settings</a></li>
+						<li><a href="#">Profile</a></li>
+						<li><a href="#">Help</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
 
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar"></div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <h1 class="page-header">Dashboard</h1>
+		<div class="container-fluid">
+			<div class="row">
 
-          <div class="row placeholders">
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
-            </div>
-          </div>
+								<div class="col-sm-3 col-md-2 sidebar">
+					<form class="form-inline search" role="form">
+						<div class="form-group">
+							<label class="sr-only" for="search-query">Search Query</label>
+							<input type="text" name="q" class="form-control" id="search-query" placeholder="Search...">
+						</div>
+						<button type="submit" class="btn btn-default">Go</button>
+					</form>
+					<div class="fancytree"></div>
+				</div>
 
-          <h2 class="sub-header">Section title</h2>
-          <div class="table-responsive">
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Header</th>
-                  <th>Header</th>
-                  <th>Header</th>
-                  <th>Header</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>1,001</td>
-                  <td>Lorem</td>
-                  <td>ipsum</td>
-                  <td>dolor</td>
-                  <td>sit</td>
-                </tr>
-                <tr>
-                  <td>1,002</td>
-                  <td>amet</td>
-                  <td>consectetur</td>
-                  <td>adipiscing</td>
-                  <td>elit</td>
-                </tr>
-                <tr>
-                  <td>1,003</td>
-                  <td>Integer</td>
-                  <td>nec</td>
-                  <td>odio</td>
-                  <td>Praesent</td>
-                </tr>
-                <tr>
-                  <td>1,003</td>
-                  <td>libero</td>
-                  <td>Sed</td>
-                  <td>cursus</td>
-                  <td>ante</td>
-                </tr>
-                <tr>
-                  <td>1,004</td>
-                  <td>dapibus</td>
-                  <td>diam</td>
-                  <td>Sed</td>
-                  <td>nisi</td>
-                </tr>
-                <tr>
-                  <td>1,005</td>
-                  <td>Nulla</td>
-                  <td>quis</td>
-                  <td>sem</td>
-                  <td>at</td>
-                </tr>
-                <tr>
-                  <td>1,006</td>
-                  <td>nibh</td>
-                  <td>elementum</td>
-                  <td>imperdiet</td>
-                  <td>Duis</td>
-                </tr>
-                <tr>
-                  <td>1,007</td>
-                  <td>sagittis</td>
-                  <td>ipsum</td>
-                  <td>Praesent</td>
-                  <td>mauris</td>
-                </tr>
-                <tr>
-                  <td>1,008</td>
-                  <td>Fusce</td>
-                  <td>nec</td>
-                  <td>tellus</td>
-                  <td>sed</td>
-                </tr>
-                <tr>
-                  <td>1,009</td>
-                  <td>augue</td>
-                  <td>semper</td>
-                  <td>porta</td>
-                  <td>Mauris</td>
-                </tr>
-                <tr>
-                  <td>1,010</td>
-                  <td>massa</td>
-                  <td>Vestibulum</td>
-                  <td>lacinia</td>
-                  <td>arcu</td>
-                </tr>
-                <tr>
-                  <td>1,011</td>
-                  <td>eget</td>
-                  <td>nulla</td>
-                  <td>Class</td>
-                  <td>aptent</td>
-                </tr>
-                <tr>
-                  <td>1,012</td>
-                  <td>taciti</td>
-                  <td>sociosqu</td>
-                  <td>ad</td>
-                  <td>litora</td>
-                </tr>
-                <tr>
-                  <td>1,013</td>
-                  <td>torquent</td>
-                  <td>per</td>
-                  <td>conubia</td>
-                  <td>nostra</td>
-                </tr>
-                <tr>
-                  <td>1,014</td>
-                  <td>per</td>
-                  <td>inceptos</td>
-                  <td>himenaeos</td>
-                  <td>Curabitur</td>
-                </tr>
-                <tr>
-                  <td>1,015</td>
-                  <td>sodales</td>
-                  <td>ligula</td>
-                  <td>in</td>
-                  <td>libero</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
+								<div class="col-sm-9 col-sm-offset-3 col-md-8 col-md-offset-2 main">
+					
+					<h1 class="page-header">
+						Console/Commands/Generate.php
+						<a class="view-source" title="View Source" data-toggle="modal" data-target="#sourceModal">
+							<i class="fa fa-file-code-o"></i>
+						</a>
+					</h1>
+					
+											
+						<div id="block_0" class="panel panel-default ">
+														<div class="panel-body">
+																	<pre><code class="php">protected function configure()</code></pre>
+																<p>Methodhhj</p>
+							</div>
+						</div>
 
+											
+						<div id="block_1" class="panel panel-default ">
+														<div class="panel-body">
+																	<pre><code class="php">protected function execute(InputInterface $input, OutputInterface $output)</code></pre>
+																<p>dhdfghjfg</p>
+							</div>
+						</div>
+
+					
+					<div class="modal fade" id="sourceModal" tabindex="-1" role="dialog" aria-labelledby="sourceModalLabel" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">
+										<span aria-hidden="true">&times;</span>
+										<span class="sr-only">Close</span>
+									</button>
+									<h4 class="modal-title" id="sourceModalLabel}">
+										Generate.php
+									</h4>
+								</div>
+								<div class="modal-body">
+									<pre><code class="php">&lt;?php namespace Gears\Doc\Console\Commands;
+////////////////////////////////////////////////////////////////////////////////
+// __________ __             ________                   __________              
+// \______   \  |__ ______  /  _____/  ____ _____ ______\______   \ _______  ___
+//  |     ___/  |  \\____ \/   \  ____/ __ \\__  \\_  __ \    |  _//  _ \  \/  /
+//  |    |   |   Y  \  |_&gt; &gt;    \_\  \  ___/ / __ \|  | \/    |   (  &lt;_&gt; &gt;    &lt; 
+//  |____|   |___|  /   __/ \______  /\___  &gt;____  /__|  |______  /\____/__/\_ \
+//                \/|__|           \/     \/     \/             \/            \/
+// -----------------------------------------------------------------------------
+//          Designed and Developed by Brad Jones &lt;brad @=&quot;bjc.id.au&quot; /&gt;         
+// -----------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////////
+
+use Gears\Doc\Generator;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+
+class Generate extends Command
+{
+	/**
+	 * Methodhhj
+	 */
+	protected function configure()
+	{
+		$this
+			-&gt;setName(&#039;generate:generate&#039;)
+			-&gt;setDescription
+			(
+				&#039;Generates a static HTML documenation site &#039;.
+				&#039;from Markdown DocBlocks in your code.&#039;
+			)
+		;
+	}
+
+	/**
+	 * dhdfghjfg
+	 */
+	protected function execute(InputInterface $input, OutputInterface $output)
+	{
+		$generator = new Generator();
+		$generator-&gt;run();
+	}
+}</code></pre>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+								<div class="col-sm-3 col-md-2 toc">
+					<div class="list-group">
+																																					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+		<script src="//code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+		<script src="//cdn.jsdelivr.net/jquery.fancytree/2.3.0/jquery.fancytree-all.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+		<script>
+	$(document).ready(function()
+	{
+		$(".fancytree").fancytree
+		({
+			source: [{"title":"Console","folder":true,"expanded":true,"children":[{"title":"test","folder":true,"expanded":false,"children":[{"title":"test2","folder":true,"expanded":false,"children":[{"title":"a.php","active":false,"focus":false,"href":"..\/test\/test2\/a.html"},{"title":"b.php","active":false,"focus":false,"href":"..\/test\/test2\/b.html"},{"title":"testing.php","active":false,"focus":false,"href":"..\/test\/test2\/testing.html"}]}]},{"title":"Commands","folder":true,"expanded":true,"children":[{"title":"Generate.php","active":true,"focus":true,"href":"#"}]},{"title":"Application.php","active":false,"focus":false,"href":"..\/Application.html"}]},{"title":"Views","folder":true,"expanded":false,"children":[{"title":"style.blade.php","active":false,"focus":false,"href":"..\/..\/Views\/style.blade.html"}]},{"title":"Generator.php","active":false,"focus":false,"href":"..\/..\/Generator.html"}],
+
+			activate: function(event, data)
+			{
+				if (typeof data.node.data.href != 'undefined')
+				{
+					window.location = data.node.data.href;
+				}
+			}
+		});
+
+		$('.toc .list-group-item').click(function()
+		{
+			var top = $($(this).attr('data-block-target')).offset().top - 55;
+			$('html, body').animate({scrollTop: top}, 500);
+		});
+
+		$(window).scroll(function()
+		{
+			var top = $(window).scrollTop();
+
+			var current_toc = null;
+
+			$('.panel').each(function(index, el)
+			{
+				var panel_top = $(el).offset().top - 56;
+
+				if (top >= panel_top)
+				{
+					current_toc = $('[data-block-target="#'+$(el).attr('id')+'"]');
+				}
+			});
+
+			if (current_toc == null)
+			{
+				current_toc = $('[data-block-target="#block_0"]');
+			}
+
+			$('.toc .list-group-item').removeClass('active');
+			current_toc.addClass('active');
+		});
+
+		$('.panel .view-source').click(function()
+		{
+			var start = parseInt($(this).attr('data-start-line'));
+			var end = parseInt($(this).attr('data-end-line'));
+
+			var lines = [];
+
+			$('#sourceModal .line-number').each(function(index, el)
+			{
+				var lineno = parseInt($(el).attr('data-num'));
+
+				if (lineno >= start && lineno <= end)
+				{
+					lines[lines.length] = el;
+				}
+			});
+
+			$('#sourceModal').modal();
+
+			setTimeout(function()
+			{
+				$('#sourceModal').animate({scrollTop: $(lines[0]).position().top}, 500, function()
+				{
+					$.each(lines, function(index, el)
+					{
+						$(el).animate({backgroundColor: 'yellow'}, 1000, function()
+						{
+							$(this).animate({backgroundColor: 'transparent'}, 1000);
+						});
+					});
+				});
+			}, 500);
+		});
+
+		// Highlight all our code blocks
+		hljs.initHighlighting();
+
+		// For the main source modal lets add some line numbers
+		// highlight.js does not support line numbers.
+		// see: http://highlightjs.readthedocs.org/en/latest/line-numbers.html
+		var code = '';
+
+		$.each($('#sourceModal code').html().split(/\n/), function(index, value)
+		{
+			code += '<span class="line-number" data-num="'+(index+1)+'">'+value+'</span>'+"\n";
+		});
+
+		$('#sourceModal code').html(code);
+	});
+</script>
 	</body>
 </html>
