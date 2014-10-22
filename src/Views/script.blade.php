@@ -1,6 +1,95 @@
 <script>
+	{{ $relative_urls }}
+
+	{{ $lunr_index }}
+
+	var lunrIndex = lunr(function()
+	{
+		this.ref("id")
+		this.field("title", {boost: 10})
+		this.field("signature")
+		this.field("body")
+	});
+
+	$.each(lunr_index, function(key, value)
+	{
+		lunrIndex.add(value);
+	});
+
 	$(document).ready(function()
 	{
+		if (window.location.hash != '')
+		{
+			var target = '#block_'+window.location.hash.split('#')[1];
+			var top = $(target).offset().top - 55;
+			$('html, body').animate({scrollTop: top}, 500);
+		}
+
+		$('form.search').submit(function(event)
+		{
+			event.preventDefault();
+		});
+
+		$('form.search button').click(function()
+		{
+			var query = $('form.search input').val();
+
+			var results = lunrIndex.search(query);
+
+			var html = '';
+
+			$.each(results, function(index, result)
+			{
+				var doc = lunr_index[lunr_index_lookup[result.ref]];
+				var ref = result.ref.split('--gearsdoc--');
+				var file = ref[0];
+				var block = ref[1];
+				var relative_url = relative_urls[file];
+
+				if (relative_url == '#')
+				{
+					var link = relative_url+block;
+				}
+				else
+				{
+					var link = relative_url+'#'+block;
+				}
+
+				html += '<h4>File: <a class="search-result-link" href="'+link+'">'+file+'</a></h4><ul>';
+
+				if (typeof doc.title != 'undefined')
+				{
+					html += '<li><b>'+doc.title+'</b></li>';
+				}
+
+				if (typeof doc.signature != 'undefined')
+				{
+					html += '<li><code>'+doc.signature+'</code></li>';
+				}
+
+				html += '<li>'+doc.body.substr(1, 140)+'</li>';
+
+				html += '</ul><hr>';
+			});
+
+			$('#searchModalLabel').html('Search Results for: '+query);
+
+			$('#searchModal .modal-body').html(html);
+
+			$('#searchModal').modal('show');
+		});
+
+		$(document).on('click', 'a.search-result-link', function()
+		{
+			if ($(this).attr('href').indexOf('#') == 0)
+			{
+				$('#searchModal').modal('hide');
+				var target = '#block_'+$(this).attr('href').split('#')[1];
+				var top = $(target).offset().top - 55;
+				$('html, body').animate({scrollTop: top}, 500);
+			}
+		});
+
 		$(".fancytree").fancytree
 		({
 			source: {{ json_encode($nav) }},

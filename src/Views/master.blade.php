@@ -88,25 +88,6 @@
 
 					@endforeach
 
-					<div class="modal fade" id="sourceModal" tabindex="-1" role="dialog" aria-labelledby="sourceModalLabel" aria-hidden="true">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal">
-										<span aria-hidden="true">&times;</span>
-										<span class="sr-only">Close</span>
-									</button>
-									<h4 class="modal-title" id="sourceModalLabel}">
-										{{ $file_info->getFileName() }}
-									</h4>
-								</div>
-								<div class="modal-body">
-									<pre><code class="{{ $file_info->getExtension() }}">{{{ $file_info->getContents() }}}</code></pre>
-								</div>
-							</div>
-						</div>
-					</div>
-
 				</div>
 
 				{{-- TABLE OF CONTENTS NAV --}}
@@ -125,11 +106,50 @@
 			</div>
 		</div>
 
+		<div class="modal fade" id="sourceModal" tabindex="-1" role="dialog" aria-labelledby="sourceModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">
+							<span aria-hidden="true">&times;</span>
+							<span class="sr-only">Close</span>
+						</button>
+						<h4 class="modal-title" id="sourceModalLabel">
+							{{ $file_info->getFileName() }}
+						</h4>
+					</div>
+					<div class="modal-body">
+						<pre><code class="{{ $file_info->getExtension() }}">{{{ $file_info->getContents() }}}</code></pre>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">
+							<span aria-hidden="true">&times;</span>
+							<span class="sr-only">Close</span>
+						</button>
+						<h3 class="modal-title" id="searchModalLabel">
+							Search Results for: ...
+						</h3>
+					</div>
+					<div class="modal-body">
+						...
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 		<script src="//code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 		<script src="//cdn.jsdelivr.net/jquery.fancytree/2.3.0/jquery.fancytree-all.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+		<script src="https://raw.github.com/olivernn/lunr.js/master/lunr.min.js"></script>
 		@include('script')
 
 	</body>

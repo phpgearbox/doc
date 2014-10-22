@@ -126,6 +126,12 @@ class Generator extends Container
 	 */
 	protected $injectFinder;
 
+	private $relativeUrls;
+
+	private $lunrIndex;
+
+	private $lunrIndexLookup;
+
 	/**
 	 * Method: setDefaults
 	 * =========================================================================
@@ -158,6 +164,12 @@ class Generator extends Container
 		$this->filesystem = function () { return new Filesystem(); };
 
 		$this->finder = $this->factory(function () { return new Finder(); });
+
+		$this->relativeUrls = [];
+
+		$this->lunrIndex = [];
+
+		$this->lunrIndexLookup = [];
 	}
 
 	/**
@@ -231,6 +243,8 @@ class Generator extends Container
 				'html'
 			);
 
+			$this->generateLunrIndex($blocks, $file);
+
 			// Add the file and blocks to our list of views to create
 			$output_files[$output_file_name] =
 			[
@@ -242,16 +256,36 @@ class Generator extends Container
 		// Now finally write each static file
 		foreach ($output_files as $output_file => $data)
 		{
+			$this->relativeUrls = [];
+
+			$tree = $this->generateJsonTree($nav, $data['src_file']);
+
 			// Create our blade view
 			$html = $this->view
 				->make('master')
-				->withNav($this->generateJsonTree($nav, $data['src_file']))
+				->withNav($tree)
+				->withRelativeUrls('var relative_urls = '.json_encode($this->relativeUrls).';')
+				->withLunrIndex('var lunr_index = '.json_encode($this->lunrIndex).';'."\n".'var lunr_index_lookup = '.json_encode($this->lunrIndexLookup).';')
 				->withFileInfo($data['src_file'])
 				->withBlocks($data['blocks'])
 			;
 
 			// Save the generated html
 			$this->writeHtmlDocument($output_file, $html);
+		}
+	}
+
+	private function generateLunrIndex($blocks, $file)
+	{
+		foreach ($blocks as $key => $block)
+		{
+			$index = [];
+			$index['id'] = $file->getRelativePathname().'--gearsdoc--'.$key;
+			$index['body'] = strip_tags($block['html']);
+			if (isset($block['title'])) $index['title'] = $block['title'];
+			if (isset($block['signature'])) $index['signature'] = $block['signature'];
+			$this->lunrIndex[] = $index;
+			$this->lunrIndexLookup[$index['id']] = count($this->lunrIndex)-1;
 		}
 	}
 
@@ -353,18 +387,22 @@ class Generator extends Container
 					);
 				}
 
+				$uri = Str::replace
+				(
+					$uri,
+					'.'.$link->getExtension(),
+					'.html'
+				);
+
+				$this->relativeUrls[$link->getRelativePathname()] = $uri;
+
 				// Add the new tree element
 				$tree[] =
 				[
 					'title' => $link->getFileName(),
 					'active' => $active,
 					'focus' => $active,
-					'href' => Str::replace
-					(
-						$uri,
-						'.'.$link->getExtension(),
-						'.html'
-					)
+					'href' => $uri
 				];
 			}
 		}
