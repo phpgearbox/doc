@@ -1,8 +1,10 @@
 <script>
-	{{ $relative_urls }}
+	var relative_urls = {{ $relative_urls }};
 
-	{{ $lunr_index }}
+	var lunr_index = {{ $lunr_index }};
 
+	var lunr_index_lookup = {{ $lunr_index_lookup }};
+	
 	var lunrIndex = lunr(function()
 	{
 		this.ref("id")
@@ -67,7 +69,14 @@
 					html += '<li><code>'+doc.signature+'</code></li>';
 				}
 
-				html += '<li>'+doc.body.substr(1, 140)+'</li>';
+				if (doc.body.length > 140)
+				{
+					html += '<li>'+doc.body.substr(0, 140)+'&hellip;</li>';
+				}
+				else
+				{
+					html += '<li>'+doc.body+'</li>';
+				}
 
 				html += '</ul><hr>';
 			});

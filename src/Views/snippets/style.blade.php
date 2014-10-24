@@ -107,6 +107,8 @@
 	.toc .list-group-item
 	{
 		cursor: pointer;
+		padding-top:5px !important;
+		padding-bottom:5px !important;
 	}
 
 </style>

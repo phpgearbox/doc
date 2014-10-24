@@ -11,7 +11,6 @@
 // -----------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////
 
-use SplFileInfo;
 use RuntimeException;
 use Parsedown;
 use Gears\View;
@@ -19,49 +18,14 @@ use Gears\Di\Container;
 use Gears\String as Str;
 use Gears\Arrays as Arr;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class: Generator
  * =============================================================================
- * Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
- * ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis
- * parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec,
- * pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.
- * 
- * How To Use:
- * -----------------------------------------------------------------------------
- * Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu.
- * In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.
- * Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus.
- * Vivamus elementum semper nisi. Aenean vulputate eleifend tellus.
- * 
- * ```php
- * // Make sure the paths don't have trailing slashes
- * $this->normalisePaths();
- * 
- * // Make sure the output folder exists and is writeable
- * if (!is_dir($this->outputPath) || !is_writeable($this->outputPath))
- * {
- * 	// It is on the user to create the root output folder
- * 	throw new RuntimeException
- * 	(
- * 		'Please create the output folder with appropriate permissions!'
- * 	);
- * }
- * 
- * // Remove all contents of output folder
- * $this->filesystem->remove($this->finder->in($this->outputPath));
- * 
- * // Create the data needed to make all our views
- * $output_files = []; $nav = [];
- * ```
- * 
- * Other Info:
- * -----------------------------------------------------------------------------
- * - 123
- * - abc
- * - xyz
+ * TODO: When this class is actually finalised
+ * I will write some nice documentation here.
  */
 class Generator extends Container
 {
@@ -88,6 +52,49 @@ class Generator extends Container
 	 * Each path would be relative to the inputPath.
 	 */
 	protected $injectIgnorePaths;
+
+	/**
+	 * Property: indexPage
+	 * =========================================================================
+	 * This is a path to a document that we will use for the main
+	 * index or home page of the documentation website.
+	 * 
+	 * If the document has a ```.html``` extension we will use the HTML as is
+	 * without any modification, giving you ultimate control.
+	 * 
+	 * If the document ends in ```.md``` we of course will convert the markdown
+	 * into HTML for you. But unlike the markdown *docblocks* we do no further
+	 * processing.
+	 * 
+	 * Defaults to: ```$this->inputPath.'/../README.md'```
+	 */
+	protected $injectIndexPage;
+
+	/**
+	 * Property: projectName
+	 * =========================================================================
+	 * You don't have to set this but I would recommend that you do.
+	 * It is used in the header on the top left.
+	 * We default to: *The Doctor*
+	 */
+	protected $injectProjectName;
+
+	/**
+	 * Property: headerLinks
+	 * =========================================================================
+	 * This completely optional. We use this in the header at the top right.
+	 * If you do decide you would like some links in your header please supply
+	 * an array that looks like this:
+	 * 
+	 * ```php
+	 * [
+	 * 		'https://github.com/phpgearbox/doc' => 'GitHub',
+	 * 		'https://travis-ci.org/phpgearbox/doc' => 'Travis CI'
+	 * 		'http://www.bjc.id.au/' => 'Brad Jones Computing'
+	 * ]
+	 * ```
+	 */
+	protected $injectHeaderLinks;
 
 	/**
 	 * Property: exts
@@ -126,10 +133,52 @@ class Generator extends Container
 	 */
 	protected $injectFinder;
 
+	/**
+	 * Property: nav
+	 * =========================================================================
+	 * We use this to store a hierarchal array of all the files we are
+	 * generating documentation for. It is then used later on by
+	 * ```generateJsonTree()``` to create the fancy tree and ```$relativeUrls```
+	 * property.
+	 */
+	private $nav;
+
+	/**
+	 * Property: relativeUrls
+	 * =========================================================================
+	 * This helps with the lunr search index. It was a bit of an after thought
+	 * that I added into the ```generateJsonTree()``` method. Ideally I could
+	 * refactor the FancyTree to also use this to lookup the correct URL.
+	 */
 	private $relativeUrls;
 
+	/**
+	 * Property: lunrIndex
+	 * =========================================================================
+	 * This is the main lunr index array that gets converted to JSON just before
+	 * sending to the view. The browser will then loop over this to create the
+	 * final index. Ideally I would like to generate the index at generation
+	 * time using node perhaps.
+	 * 
+	 * See: http://lunrjs.com/docs/#Index
+	 * 
+	 *   - lunr.Index.prototype.toJSON()
+	 *   - lunr.Index.load()
+	 */
 	private $lunrIndex;
 
+	/**
+	 * Property: lunrIndexLookup
+	 * =========================================================================
+	 * This is an index of the index haha... Actually thats not too far from the
+	 * truth. Unfortunately lunr does not return the full document when you
+	 * perform a search query, only the document id. So we use this to tell us
+	 * which document it is in our original lunrIndex json.
+	 * 
+	 * @see: Views/script.blade.php
+	 * 
+	 * ```var doc = lunr_index[lunr_index_lookup[result.ref]];```
+	 */
 	private $lunrIndexLookup;
 
 	/**
@@ -155,6 +204,12 @@ class Generator extends Container
 
 		$this->ignorePaths = [];
 
+		$this->indexPage = $this->inputPath.'/../README.md';
+
+		$this->projectName = 'The Doctor';
+
+		$this->headerLinks = ['https://github.com/phpgearbox/doc' => 'GitHub'];
+
 		$this->exts = ['php', 'js', 'css', 'less', 'sccs'];
 
 		$this->view = function () { return new View(__DIR__.'/Views'); };
@@ -176,7 +231,7 @@ class Generator extends Container
 	 * Method: run
 	 * =========================================================================
 	 * Once the container is configured, simply run this method
-	 * and we will generate the documenation.
+	 * and we will generate the documentation.
 	 * 
 	 * > WARNING: All content in the output path will be deleted!
 	 * 
@@ -190,7 +245,7 @@ class Generator extends Container
 	 * 
 	 * Throws:
 	 * -------------------------------------------------------------------------
-	 * - RuntimeException: When the output path is not writeable.
+	 * - RuntimeException: When the output path is not writable.
 	 */
 	public function run()
 	{
@@ -210,8 +265,8 @@ class Generator extends Container
 		// Remove all contents of output folder
 		$this->filesystem->remove($this->finder->in($this->outputPath));
 
-		// Create the data needed to make all our views
-		$output_files = []; $nav = [];
+		// The below loop will fill this array
+		$output_files = [];
 
 		// Loop through each source file
 		foreach ($this->getInputFiles() as $file)
@@ -222,17 +277,20 @@ class Generator extends Container
 			// Skip to next file if no blocks found
 			if (empty($blocks)) continue;
 
+			// Create the lunr index
+			$this->generateLunrIndex($blocks, $file);
+
 			// The following sets up our nav array
 			$segments = Str::split($file->getRelativePath(), '/');
 			if ($segments == [''])
 			{
-				$nav[] = $file;
+				$this->nav[] = $file;
 			}
 			else
 			{
-				$existing = Arr::get($nav, $segments, []);
+				$existing = Arr::get($this->nav, $segments, []);
 				$existing[] = $file;
-				Arr::set($nav, $segments, $existing);
+				Arr::set($this->nav, $segments, $existing);
 			}
 
 			// Create the output filename
@@ -243,8 +301,6 @@ class Generator extends Container
 				'html'
 			);
 
-			$this->generateLunrIndex($blocks, $file);
-
 			// Add the file and blocks to our list of views to create
 			$output_files[$output_file_name] =
 			[
@@ -254,28 +310,129 @@ class Generator extends Container
 		}
 
 		// Now finally write each static file
+		// NOTE: We need to do this in 2 loops because we need to
+		// know about all files to generate the fancy tree navigation.
 		foreach ($output_files as $output_file => $data)
 		{
+			// Reset our relative urls, these change per file obviously.
 			$this->relativeUrls = [];
 
-			$tree = $this->generateJsonTree($nav, $data['src_file']);
+			// Create the fancy tree json
+			$tree = $this->generateJsonTree($data['src_file']);
+
+			// Create the home page link
+			$homeLink = 'index.html';
+			$parts = Str::split($data['src_file']->getRelativePathname(), '/');
+			for ($i = 2; $i <= count($parts); $i++)
+			{
+				$homeLink = '../'.$homeLink;
+			}
 
 			// Create our blade view
 			$html = $this->view
-				->make('master')
+				->make('layouts.doc')
 				->withNav($tree)
-				->withRelativeUrls('var relative_urls = '.json_encode($this->relativeUrls).';')
-				->withLunrIndex('var lunr_index = '.json_encode($this->lunrIndex).';'."\n".'var lunr_index_lookup = '.json_encode($this->lunrIndexLookup).';')
+				->withRelativeUrls(json_encode($this->relativeUrls))
+				->withLunrIndex(json_encode($this->lunrIndex))
+				->withLunrIndexLookup(json_encode($this->lunrIndexLookup))
 				->withFileInfo($data['src_file'])
 				->withBlocks($data['blocks'])
+				->withHomeLink($homeLink)
+				->withProjectName($this->projectName)
+				->withHeaderLinks($this->headerLinks)
 			;
 
 			// Save the generated html
 			$this->writeHtmlDocument($output_file, $html);
 		}
+
+		// Create the index / home page for our documentation site.
+		$this->generateHomePage();
 	}
 
-	private function generateLunrIndex($blocks, $file)
+	/**
+	 * Method: generateHomePage
+	 * =========================================================================
+	 * Every website needs a home page. This will generate one.
+	 * The basic idea is that every project will have a README.md so
+	 * why not just use that as the contents for the home page.
+	 * 
+	 * @see: ```Property: indexPage```
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * n/a
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * void
+	 */
+	private function generateHomePage()
+	{
+		// Reset our relative urls, these change per file obviously.
+		$this->relativeUrls = [];
+
+		// Create a dummy file object so we can generate the tree
+		$file = new SplFileInfo('index.html', '', 'index.html');
+
+		// Create the fancy tree json
+		$tree = $this->generateJsonTree($file);
+
+		// Now lets read in the source index file
+		$html = file_get_contents($this->indexPage);
+
+		// If its markdown lets convert it
+		if (Str::endsWith($this->indexPage, '.md'))
+		{
+			$html = $this->parsedown->text($html);
+		}
+
+		// Create our blade view
+		// NOTE: We use a slightly different blade template for the home page
+		$html = $this->view
+			->make('layouts.home')
+			->withNav($tree)
+			->withRelativeUrls(json_encode($this->relativeUrls))
+			->withLunrIndex(json_encode($this->lunrIndex))
+			->withLunrIndexLookup(json_encode($this->lunrIndexLookup))
+			->withContent($html)
+			->withHomeLink('#')
+			->withProjectName($this->projectName)
+			->withHeaderLinks($this->headerLinks)
+		;
+
+		// Save the generated html
+		$this->writeHtmlDocument($this->outputPath.'/index.html', $html);
+	}
+
+	/**
+	 * Method: generateLunrIndex
+	 * =========================================================================
+	 * We are using a jquery plugin that implements the *Lucene* search.
+	 * @see: http://lunrjs.com/
+	 * 
+	 * This generates an array which then gets converted to JSON. The browser
+	 * then loops over the JSON to create the final index. I almost could have
+	 * passed the "blocks" array directly but needed to remove HTML tags, etc.
+	 * 
+	 * > NOTE: That currently every single document that we write gets a copy
+	 * > of the index. From a space perspective this isn't very efficient.
+	 * > And for very large projects this may need to be refactored to use 
+	 * > some AJAX. But for now the searches are indeed *very fast* :)
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * - $blocks: An array of *docblocks* returned by the method
+	 *   ```extractDocBlocks()```
+	 * 
+	 * - $file: This refers to the file that the *docblock* belongs to.
+	 *   It must be an instance of ```Symfony\Component\Finder\SplFileInfo```
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * array
+	 */
+	private function generateLunrIndex($blocks, SplFileInfo $file)
 	{
 		foreach ($blocks as $key => $block)
 		{
@@ -289,11 +446,43 @@ class Generator extends Container
 		}
 	}
 
-	private function generateJsonTree($nav, $file)
+	/**
+	 * Method: generateJsonTree
+	 * =========================================================================
+	 * We are using a jquery plugin to create our sidebar tree menu.
+	 * @see: https://github.com/mar10/fancytree
+	 * 
+	 * The plugin uses a JSON object to build the tree. This method generates
+	 * the JSON object for each static file we output. The reason we can't share
+	 * the same JSON is because the links change for each file as they are
+	 * relative to one another.
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * - $file: This refers to the current file we are generating the
+	 *   documentation for. It must be an instance of
+	 *   ```Symfony\Component\Finder\SplFileInfo```
+	 * 
+	 * - $recurse: This is only used recursively. If this is not set we start
+	 *   looping over the ```$this->nav``` property.
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * array
+	 */
+	private function generateJsonTree(SplFileInfo $file, $recurse = null)
 	{
+		// This is what gets returned
 		$tree = [];
 
-		foreach ($nav as $key => $link)
+		// Have we been called recursively or not?
+		if (is_null($recurse))
+		{
+			// Grab the root nav array
+			$recurse = $this->nav;
+		}
+
+		foreach ($recurse as $key => $link)
 		{
 			$active = false;
 
@@ -313,7 +502,7 @@ class Generator extends Container
 					'title' => $key,
 					'folder' => true,
 					'expanded' => $expanded,
-					'children' => $this->generateJsonTree($link, $file)
+					'children' => $this->generateJsonTree($file, $link)
 				];
 			}
 			else
@@ -535,7 +724,8 @@ class Generator extends Container
 	 * =========================================================================
 	 * Extracts each docblock using regular expression in the given file.
 	 * We do not use any form of Reflection, we do not include the file.
-	 * We only read it as a string.
+	 * We only read it as a string. This means we work the same regardless of
+	 * language. This will work with LESS just as it does for PHP or JS.
 	 * 
 	 * Parameters:
 	 * -------------------------------------------------------------------------

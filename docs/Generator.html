@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>Brads Local Dev Server</title>
+		<title>The Doctor</title>
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
 		<link rel="stylesheet" href="//cdn.jsdelivr.net/jquery.fancytree/2.3.0/skin-win8/ui.fancytree.min.css">
@@ -117,309 +117,464 @@
 	.toc .list-group-item
 	{
 		cursor: pointer;
+		padding-top:5px !important;
+		padding-bottom:5px !important;
 	}
 
 </style>	</head>
 	<body>
 
-				<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-			<div class="container-fluid">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="#">Project name</a>
-				</div>
-				<div class="navbar-collapse collapse">
-					<ul class="nav navbar-nav navbar-right">
-						<li><a href="#">Dashboard</a></li>
-						<li><a href="#">Settings</a></li>
-						<li><a href="#">Profile</a></li>
-						<li><a href="#">Help</a></li>
-					</ul>
-				</div>
-			</div>
+		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="index.html">The Doctor</a>
 		</div>
-
+		<div class="navbar-collapse collapse">
+			<ul class="nav navbar-nav navbar-right">
+									<li><a href="https://github.com/phpgearbox/doc">GitHub</a></li>
+							</ul>
+		</div>
+	</div>
+</div>
 		<div class="container-fluid">
 			<div class="row">
 
-								<div class="col-sm-3 col-md-2 sidebar">
-					<form class="form-inline search" role="form">
-						<div class="form-group">
-							<label class="sr-only" for="search-query">Search Query</label>
-							<input type="text" name="q" class="form-control" id="search-query" placeholder="Search...">
-						</div>
-						<button type="submit" class="btn btn-default">Go</button>
-					</form>
-					<div class="fancytree"></div>
+				<div class="col-sm-3 col-md-2 sidebar">
+	<form class="form-inline search" role="form">
+		<div class="form-group">
+			<label class="sr-only" for="search-query">Search Query</label>
+			<input type="text" name="q" class="form-control" id="search-query" placeholder="Search...">
+		</div>
+		<button type="submit" class="btn btn-default">Go</button>
+	</form>
+	<div class="fancytree"></div>
+</div>
+				
+	<div class="col-sm-9 col-sm-offset-3 col-md-8 col-md-offset-2 main">
+		
+		<h1 class="page-header">
+			Generator.php
+			<a class="view-source" title="View Source" data-toggle="modal" data-target="#sourceModal">
+				<i class="fa fa-file-code-o"></i>
+			</a>
+		</h1>
+		
+					
+			<div id="block_0" class="panel panel-default panel-primary">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Class: Generator
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="24"
+								data-end-line="29"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">class Generator extends Container</code></pre>
+										
+<p>TODO: When this class is actually finalised
+I will write some nice documentation here.</p>
 				</div>
+			</div>
 
-								<div class="col-sm-9 col-sm-offset-3 col-md-8 col-md-offset-2 main">
 					
-					<h1 class="page-header">
-						Generator.php
-						<a class="view-source" title="View Source" data-toggle="modal" data-target="#sourceModal">
-							<i class="fa fa-file-code-o"></i>
-						</a>
-					</h1>
-					
-											
-						<div id="block_0" class="panel panel-default panel-primary">
-															<div class="panel-heading">
-									<h3 class="panel-title">
-										Class: Generator
-										<a
-											class="view-source"
-											title="Take me to the code..."
-											data-start-line="24"
-											data-end-line="65"
-										>
-											<i class="fa fa-file-code-o"></i>
-										</a>
-									</h3>
-								</div>
-														<div class="panel-body">
-																	<pre><code class="php">class Generator extends Container</code></pre>
-																
-<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
-ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis
-parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec,
-pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.</p>
-<h2>How To Use:</h2>
-<p>Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu.
-In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.
-Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus.
-Vivamus elementum semper nisi. Aenean vulputate eleifend tellus.</p>
-<pre><code class="language-php">// Make sure the paths don't have trailing slashes
-$this-&gt;normalisePaths();
-
-// Make sure the output folder exists and is writeable
-if (!is_dir($this-&gt;outputPath) || !is_writeable($this-&gt;outputPath))
-{
-    // It is on the user to create the root output folder
-    throw new RuntimeException
-    (
-        'Please create the output folder with appropriate permissions!'
-    );
-}
-
-// Remove all contents of output folder
-$this-&gt;filesystem-&gt;remove($this-&gt;finder-&gt;in($this-&gt;outputPath));
-
-// Create the data needed to make all our views
-$output_files = []; $nav = [];</code></pre>
-<h2>Other Info:</h2>
-<ul>
-<li>123</li>
-<li>abc</li>
-<li>xyz</li>
-</ul>
-							</div>
-						</div>
-
-											
-						<div id="block_1" class="panel panel-default panel-success">
-															<div class="panel-heading">
-									<h3 class="panel-title">
-										Property: inputPath
-										<a
-											class="view-source"
-											title="Take me to the code..."
-											data-start-line="68"
-											data-end-line="73"
-										>
-											<i class="fa fa-file-code-o"></i>
-										</a>
-									</h3>
-								</div>
-														<div class="panel-body">
-																	<pre><code class="php">protected $injectInputPath;</code></pre>
-																
+			<div id="block_1" class="panel panel-default panel-success">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Property: inputPath
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="32"
+								data-end-line="37"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">protected $injectInputPath;</code></pre>
+										
 <p>The path of where your src files are located.
 Defaults to: <code>./src</code></p>
-							</div>
-						</div>
+				</div>
+			</div>
 
-											
-						<div id="block_2" class="panel panel-default panel-success">
-															<div class="panel-heading">
-									<h3 class="panel-title">
-										Property: outputPath
-										<a
-											class="view-source"
-											title="Take me to the code..."
-											data-start-line="76"
-											data-end-line="81"
-										>
-											<i class="fa fa-file-code-o"></i>
-										</a>
-									</h3>
-								</div>
-														<div class="panel-body">
-																	<pre><code class="php">protected $injectOutputPath;</code></pre>
-																
+					
+			<div id="block_2" class="panel panel-default panel-success">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Property: outputPath
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="40"
+								data-end-line="45"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">protected $injectOutputPath;</code></pre>
+										
 <p>The path of where we will output the generated documentation.
 Defaults to: <code>./docs</code></p>
-							</div>
-						</div>
+				</div>
+			</div>
 
-											
-						<div id="block_3" class="panel panel-default panel-success">
-															<div class="panel-heading">
-									<h3 class="panel-title">
-										Property: ignorePaths
-										<a
-											class="view-source"
-											title="Take me to the code..."
-											data-start-line="84"
-											data-end-line="89"
-										>
-											<i class="fa fa-file-code-o"></i>
-										</a>
-									</h3>
-								</div>
-														<div class="panel-body">
-																	<pre><code class="php">protected $injectIgnorePaths;</code></pre>
-																
+					
+			<div id="block_3" class="panel panel-default panel-success">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Property: ignorePaths
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="48"
+								data-end-line="53"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">protected $injectIgnorePaths;</code></pre>
+										
 <p>Optional array that can be supplied of paths to ignore.
 Each path would be relative to the inputPath.</p>
-							</div>
-						</div>
+				</div>
+			</div>
 
-											
-						<div id="block_4" class="panel panel-default panel-success">
-															<div class="panel-heading">
-									<h3 class="panel-title">
-										Property: exts
-										<a
-											class="view-source"
-											title="Take me to the code..."
-											data-start-line="92"
-											data-end-line="98"
-										>
-											<i class="fa fa-file-code-o"></i>
-										</a>
-									</h3>
-								</div>
-														<div class="panel-body">
-																	<pre><code class="php">protected $injectExts;</code></pre>
-																
+					
+			<div id="block_4" class="panel panel-default panel-success">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Property: indexPage
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="56"
+								data-end-line="70"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">protected $injectIndexPage;</code></pre>
+										
+<p>This is a path to a document that we will use for the main
+index or home page of the documentation website.</p>
+<p>If the document has a <code>.html</code> extension we will use the HTML as is
+without any modification, giving you ultimate control.</p>
+<p>If the document ends in <code>.md</code> we of course will convert the markdown
+into HTML for you. But unlike the markdown <em>docblocks</em> we do no further
+processing.</p>
+<p>Defaults to: <code>$this-&gt;inputPath.'/../README.md'</code></p>
+				</div>
+			</div>
+
+					
+			<div id="block_5" class="panel panel-default panel-success">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Property: projectName
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="73"
+								data-end-line="79"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">protected $injectProjectName;</code></pre>
+										
+<p>You don't have to set this but I would recommend that you do.
+It is used in the header on the top left.
+We default to: <em>The Doctor</em></p>
+				</div>
+			</div>
+
+					
+			<div id="block_6" class="panel panel-default panel-success">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Property: headerLinks
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="82"
+								data-end-line="96"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">protected $injectHeaderLinks;</code></pre>
+										
+<p>This completely optional. We use this in the header at the top right.
+If you do decide you would like some links in your header please supply
+an array that looks like this:</p>
+<pre><code class="language-php">[
+        'https://github.com/phpgearbox/doc' =&gt; 'GitHub',
+        'https://travis-ci.org/phpgearbox/doc' =&gt; 'Travis CI'
+        'http://www.bjc.id.au/' =&gt; 'Brad Jones Computing'
+]</code></pre>
+				</div>
+			</div>
+
+					
+			<div id="block_7" class="panel panel-default panel-success">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Property: exts
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="99"
+								data-end-line="105"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">protected $injectExts;</code></pre>
+										
 <p>An array of file extensions to parse.
 Only extensions listed here will be checked for docblocks.
 It defaults to: <code>php, js, css, less, sccs</code></p>
-							</div>
-						</div>
+				</div>
+			</div>
 
-											
-						<div id="block_5" class="panel panel-default panel-success">
-															<div class="panel-heading">
-									<h3 class="panel-title">
-										Property: view
-										<a
-											class="view-source"
-											title="Take me to the code..."
-											data-start-line="101"
-											data-end-line="105"
-										>
-											<i class="fa fa-file-code-o"></i>
-										</a>
-									</h3>
-								</div>
-														<div class="panel-body">
-																	<pre><code class="php">protected $injectView;</code></pre>
-																
+					
+			<div id="block_8" class="panel panel-default panel-success">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Property: view
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="108"
+								data-end-line="112"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">protected $injectView;</code></pre>
+										
 <p>An instance of: <code>Gears\View</code> or <code>Illuminate\View\Factory</code></p>
-							</div>
-						</div>
+				</div>
+			</div>
 
-											
-						<div id="block_6" class="panel panel-default panel-success">
-															<div class="panel-heading">
-									<h3 class="panel-title">
-										Property: parsedown
-										<a
-											class="view-source"
-											title="Take me to the code..."
-											data-start-line="108"
-											data-end-line="112"
-										>
-											<i class="fa fa-file-code-o"></i>
-										</a>
-									</h3>
-								</div>
-														<div class="panel-body">
-																	<pre><code class="php">protected $injectParsedown;</code></pre>
-																
+					
+			<div id="block_9" class="panel panel-default panel-success">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Property: parsedown
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="115"
+								data-end-line="119"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">protected $injectParsedown;</code></pre>
+										
 <p>An instance of: <code>Parsedown</code></p>
-							</div>
-						</div>
+				</div>
+			</div>
 
-											
-						<div id="block_7" class="panel panel-default panel-success">
-															<div class="panel-heading">
-									<h3 class="panel-title">
-										Property: filesystem
-										<a
-											class="view-source"
-											title="Take me to the code..."
-											data-start-line="115"
-											data-end-line="119"
-										>
-											<i class="fa fa-file-code-o"></i>
-										</a>
-									</h3>
-								</div>
-														<div class="panel-body">
-																	<pre><code class="php">protected $injectFilesystem;</code></pre>
-																
+					
+			<div id="block_10" class="panel panel-default panel-success">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Property: filesystem
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="122"
+								data-end-line="126"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">protected $injectFilesystem;</code></pre>
+										
 <p>An instance of: <code>Symfony\Component\Filesystem\Filesystem</code></p>
-							</div>
-						</div>
+				</div>
+			</div>
 
-											
-						<div id="block_8" class="panel panel-default panel-success">
-															<div class="panel-heading">
-									<h3 class="panel-title">
-										Property: finder
-										<a
-											class="view-source"
-											title="Take me to the code..."
-											data-start-line="122"
-											data-end-line="126"
-										>
-											<i class="fa fa-file-code-o"></i>
-										</a>
-									</h3>
-								</div>
-														<div class="panel-body">
-																	<pre><code class="php">protected $injectFinder;</code></pre>
-																
+					
+			<div id="block_11" class="panel panel-default panel-success">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Property: finder
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="129"
+								data-end-line="133"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">protected $injectFinder;</code></pre>
+										
 <p>An factory for: <code>Symfony\Component\Finder\Finder</code></p>
-							</div>
-						</div>
+				</div>
+			</div>
 
-											
-						<div id="block_9" class="panel panel-default panel-info">
-															<div class="panel-heading">
-									<h3 class="panel-title">
-										Method: setDefaults
-										<a
-											class="view-source"
-											title="Take me to the code..."
-											data-start-line="135"
-											data-end-line="149"
-										>
-											<i class="fa fa-file-code-o"></i>
-										</a>
-									</h3>
-								</div>
-														<div class="panel-body">
-																	<pre><code class="php">protected function setDefaults()</code></pre>
-																
+					
+			<div id="block_12" class="panel panel-default panel-success">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Property: nav
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="136"
+								data-end-line="143"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">private $nav;</code></pre>
+										
+<p>We use this to store a hierarchal array of all the files we are
+generating documentation for. It is then used later on by
+<code>generateJsonTree()</code> to create the fancy tree and <code>$relativeUrls</code>
+property.</p>
+				</div>
+			</div>
+
+					
+			<div id="block_13" class="panel panel-default panel-success">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Property: relativeUrls
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="146"
+								data-end-line="152"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">private $relativeUrls;</code></pre>
+										
+<p>This helps with the lunr search index. It was a bit of an after thought
+that I added into the <code>generateJsonTree()</code> method. Ideally I could
+refactor the FancyTree to also use this to lookup the correct URL.</p>
+				</div>
+			</div>
+
+					
+			<div id="block_14" class="panel panel-default panel-success">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Property: lunrIndex
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="155"
+								data-end-line="167"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">private $lunrIndex;</code></pre>
+										
+<p>This is the main lunr index array that gets converted to JSON just before
+sending to the view. The browser will then loop over this to create the
+final index. Ideally I would like to generate the index at generation
+time using node perhaps.</p>
+<p>See: <a href="http://lunrjs.com/docs/#Index">http://lunrjs.com/docs/#Index</a></p>
+<ul>
+<li>lunr.Index.prototype.toJSON()</li>
+<li>lunr.Index.load()</li>
+</ul>
+				</div>
+			</div>
+
+					
+			<div id="block_15" class="panel panel-default panel-success">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Property: lunrIndexLookup
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="170"
+								data-end-line="181"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">private $lunrIndexLookup;</code></pre>
+										
+<p>This is an index of the index haha... Actually thats not too far from the
+truth. Unfortunately lunr does not return the full document when you
+perform a search query, only the document id. So we use this to tell us
+which document it is in our original lunrIndex json.</p>
+<p>@see: Views/script.blade.php</p>
+<p><code>var doc = lunr_index[lunr_index_lookup[result.ref]];</code></p>
+				</div>
+			</div>
+
+					
+			<div id="block_16" class="panel panel-default panel-info">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Method: setDefaults
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="184"
+								data-end-line="198"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">protected function setDefaults()</code></pre>
+										
 <p>This is where we set all our defaults. If you need to customise this
 container this is a good place to look to see what can be configured
 and how to configure it.</p>
@@ -427,29 +582,29 @@ and how to configure it.</p>
 <p>n/a</p>
 <h2>Returns:</h2>
 <p>void</p>
-							</div>
-						</div>
+				</div>
+			</div>
 
-											
-						<div id="block_10" class="panel panel-default panel-info">
-															<div class="panel-heading">
-									<h3 class="panel-title">
-										Method: run
-										<a
-											class="view-source"
-											title="Take me to the code..."
-											data-start-line="175"
-											data-end-line="194"
-										>
-											<i class="fa fa-file-code-o"></i>
-										</a>
-									</h3>
-								</div>
-														<div class="panel-body">
-																	<pre><code class="php">public function run()</code></pre>
-																
+					
+			<div id="block_17" class="panel panel-default panel-info">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Method: run
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="230"
+								data-end-line="249"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">public function run()</code></pre>
+										
 <p>Once the container is configured, simply run this method
-and we will generate the documenation.</p>
+and we will generate the documentation.</p>
 <blockquote>
 <p>WARNING: All content in the output path will be deleted!</p>
 </blockquote>
@@ -459,81 +614,192 @@ and we will generate the documenation.</p>
 <p>void</p>
 <h2>Throws:</h2>
 <ul>
-<li>RuntimeException: When the output path is not writeable.</li>
+<li>RuntimeException: When the output path is not writable.</li>
 </ul>
-							</div>
-						</div>
+				</div>
+			</div>
 
-											
-						<div id="block_11" class="panel panel-default panel-info">
-															<div class="panel-heading">
-									<h3 class="panel-title">
-										Method: normalisePaths
-										<a
-											class="view-source"
-											title="Take me to the code..."
-											data-start-line="435"
-											data-end-line="447"
-										>
-											<i class="fa fa-file-code-o"></i>
-										</a>
-									</h3>
-								</div>
-														<div class="panel-body">
-																	<pre><code class="php">private function normalisePaths()</code></pre>
-																
+					
+			<div id="block_18" class="panel panel-default panel-info">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Method: generateHomePage
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="353"
+								data-end-line="369"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">private function generateHomePage()</code></pre>
+										
+<p>Every website needs a home page. This will generate one.
+The basic idea is that every project will have a README.md so
+why not just use that as the contents for the home page.</p>
+<p>@see: <code>Property: indexPage</code></p>
+<h2>Parameters:</h2>
+<p>n/a</p>
+<h2>Returns:</h2>
+<p>void</p>
+				</div>
+			</div>
+
+					
+			<div id="block_19" class="panel panel-default panel-info">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Method: generateLunrIndex
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="408"
+								data-end-line="434"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">private function generateLunrIndex($blocks, SplFileInfo $file)</code></pre>
+										
+<p>We are using a jquery plugin that implements the <em>Lucene</em> search.
+@see: <a href="http://lunrjs.com/">http://lunrjs.com/</a></p>
+<p>This generates an array which then gets converted to JSON. The browser
+then loops over the JSON to create the final index. I almost could have
+passed the "blocks" array directly but needed to remove HTML tags, etc.</p>
+<blockquote>
+<p>NOTE: That currently every single document that we write gets a copy
+of the index. From a space perspective this isn't very efficient.
+And for very large projects this may need to be refactored to use 
+some AJAX. But for now the searches are indeed <em>very fast</em> :)</p>
+</blockquote>
+<h2>Parameters:</h2>
+<ul>
+<li>
+<p>$blocks: An array of <em>docblocks</em> returned by the method
+<code>extractDocBlocks()</code></p>
+</li>
+<li>$file: This refers to the file that the <em>docblock</em> belongs to.
+It must be an instance of <code>Symfony\Component\Finder\SplFileInfo</code></li>
+</ul>
+<h2>Returns:</h2>
+<p>array</p>
+				</div>
+			</div>
+
+					
+			<div id="block_20" class="panel panel-default panel-info">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Method: generateJsonTree
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="449"
+								data-end-line="472"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">private function generateJsonTree(SplFileInfo $file, $recurse = null)</code></pre>
+										
+<p>We are using a jquery plugin to create our sidebar tree menu.
+@see: <a href="https://github.com/mar10/fancytree">https://github.com/mar10/fancytree</a></p>
+<p>The plugin uses a JSON object to build the tree. This method generates
+the JSON object for each static file we output. The reason we can't share
+the same JSON is because the links change for each file as they are
+relative to one another.</p>
+<h2>Parameters:</h2>
+<ul>
+<li>
+<p>$file: This refers to the current file we are generating the
+documentation for. It must be an instance of
+<code>Symfony\Component\Finder\SplFileInfo</code></p>
+</li>
+<li>$recurse: This is only used recursively. If this is not set we start
+looping over the <code>$this-&gt;nav</code> property.</li>
+</ul>
+<h2>Returns:</h2>
+<p>array</p>
+				</div>
+			</div>
+
+					
+			<div id="block_21" class="panel panel-default panel-info">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Method: normalisePaths
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="624"
+								data-end-line="636"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">private function normalisePaths()</code></pre>
+										
 <p>Ensure the paths don't have trailing slashes.</p>
 <h2>Parameters:</h2>
 <p>n/a</p>
 <h2>Returns:</h2>
 <p>void</p>
-							</div>
-						</div>
+				</div>
+			</div>
 
-											
-						<div id="block_12" class="panel panel-default panel-info">
-															<div class="panel-heading">
-									<h3 class="panel-title">
-										Method: getInputFiles
-										<a
-											class="view-source"
-											title="Take me to the code..."
-											data-start-line="461"
-											data-end-line="473"
-										>
-											<i class="fa fa-file-code-o"></i>
-										</a>
-									</h3>
-								</div>
-														<div class="panel-body">
-																	<pre><code class="php">private function getInputFiles()</code></pre>
-																
+					
+			<div id="block_22" class="panel panel-default panel-info">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Method: getInputFiles
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="650"
+								data-end-line="662"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">private function getInputFiles()</code></pre>
+										
 <p>Sets up a finder object to list all our input source files.</p>
 <h2>Parameters:</h2>
 <p>n/a</p>
 <h2>Returns:</h2>
 <p>Symfony\Component\Finder\Finder</p>
-							</div>
-						</div>
+				</div>
+			</div>
 
-											
-						<div id="block_13" class="panel panel-default panel-info">
-															<div class="panel-heading">
-									<h3 class="panel-title">
-										Method: writeHtmlDocument
-										<a
-											class="view-source"
-											title="Take me to the code..."
-											data-start-line="498"
-											data-end-line="516"
-										>
-											<i class="fa fa-file-code-o"></i>
-										</a>
-									</h3>
-								</div>
-														<div class="panel-body">
-																	<pre><code class="php">private function writeHtmlDocument($filepath, $html)</code></pre>
-																
+					
+			<div id="block_23" class="panel panel-default panel-info">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Method: writeHtmlDocument
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="687"
+								data-end-line="705"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">private function writeHtmlDocument($filepath, $html)</code></pre>
+										
 <p>Writes the given html to the given filename
 and creates folders as needed.</p>
 <h2>Parameters:</h2>
@@ -547,109 +813,142 @@ and creates folders as needed.</p>
 <ul>
 <li>RuntimeException: When we failed to write the new file.</li>
 </ul>
-							</div>
-						</div>
+				</div>
+			</div>
 
-											
-						<div id="block_14" class="panel panel-default panel-info">
-															<div class="panel-heading">
-									<h3 class="panel-title">
-										Method: extractDocBlocks
-										<a
-											class="view-source"
-											title="Take me to the code..."
-											data-start-line="533"
-											data-end-line="547"
-										>
-											<i class="fa fa-file-code-o"></i>
-										</a>
-									</h3>
-								</div>
-														<div class="panel-body">
-																	<pre><code class="php">private function extractDocBlocks(SplFileInfo $file)</code></pre>
-																
+					
+			<div id="block_24" class="panel panel-default panel-info">
+									<div class="panel-heading">
+						<h3 class="panel-title">
+							Method: extractDocBlocks
+							<a
+								class="view-source"
+								title="Take me to the code..."
+								data-start-line="722"
+								data-end-line="737"
+							>
+								<i class="fa fa-file-code-o"></i>
+							</a>
+						</h3>
+					</div>
+								<div class="panel-body">
+											<pre><code class="php">private function extractDocBlocks(SplFileInfo $file)</code></pre>
+										
 <p>Extracts each docblock using regular expression in the given file.
 We do not use any form of Reflection, we do not include the file.
-We only read it as a string.</p>
+We only read it as a string. This means we work the same regardless of
+language. This will work with LESS just as it does for PHP or JS.</p>
 <h2>Parameters:</h2>
 <ul>
 <li>$file: A SplFileInfo object for the file.</li>
 </ul>
 <h2>Returns:</h2>
 <p>array</p>
-							</div>
-						</div>
-
-					
 				</div>
+			</div>
 
-								<div class="col-sm-3 col-md-2 toc">
-					<div class="list-group">
-																					<a class="list-group-item active" data-block-target="#block_0">
-									Class: Generator
-								</a>
-																												<a class="list-group-item" data-block-target="#block_1">
-									Property: inputPath
-								</a>
-																												<a class="list-group-item" data-block-target="#block_2">
-									Property: outputPath
-								</a>
-																												<a class="list-group-item" data-block-target="#block_3">
-									Property: ignorePaths
-								</a>
-																												<a class="list-group-item" data-block-target="#block_4">
-									Property: exts
-								</a>
-																												<a class="list-group-item" data-block-target="#block_5">
-									Property: view
-								</a>
-																												<a class="list-group-item" data-block-target="#block_6">
-									Property: parsedown
-								</a>
-																												<a class="list-group-item" data-block-target="#block_7">
-									Property: filesystem
-								</a>
-																												<a class="list-group-item" data-block-target="#block_8">
-									Property: finder
-								</a>
-																												<a class="list-group-item" data-block-target="#block_9">
-									Method: setDefaults
-								</a>
-																												<a class="list-group-item" data-block-target="#block_10">
-									Method: run
-								</a>
-																												<a class="list-group-item" data-block-target="#block_11">
-									Method: normalisePaths
-								</a>
-																												<a class="list-group-item" data-block-target="#block_12">
-									Method: getInputFiles
-								</a>
-																												<a class="list-group-item" data-block-target="#block_13">
-									Method: writeHtmlDocument
-								</a>
-																												<a class="list-group-item" data-block-target="#block_14">
-									Method: extractDocBlocks
-								</a>
-																		</div>
-				</div>
+		
+	</div>
+
+	<div class="col-sm-3 col-md-2 toc">
+		<div class="list-group">
+												<a class="list-group-item active" data-block-target="#block_0">
+						Class: Generator
+					</a>
+																<a class="list-group-item" data-block-target="#block_1">
+						Property: inputPath
+					</a>
+																<a class="list-group-item" data-block-target="#block_2">
+						Property: outputPath
+					</a>
+																<a class="list-group-item" data-block-target="#block_3">
+						Property: ignorePaths
+					</a>
+																<a class="list-group-item" data-block-target="#block_4">
+						Property: indexPage
+					</a>
+																<a class="list-group-item" data-block-target="#block_5">
+						Property: projectName
+					</a>
+																<a class="list-group-item" data-block-target="#block_6">
+						Property: headerLinks
+					</a>
+																<a class="list-group-item" data-block-target="#block_7">
+						Property: exts
+					</a>
+																<a class="list-group-item" data-block-target="#block_8">
+						Property: view
+					</a>
+																<a class="list-group-item" data-block-target="#block_9">
+						Property: parsedown
+					</a>
+																<a class="list-group-item" data-block-target="#block_10">
+						Property: filesystem
+					</a>
+																<a class="list-group-item" data-block-target="#block_11">
+						Property: finder
+					</a>
+																<a class="list-group-item" data-block-target="#block_12">
+						Property: nav
+					</a>
+																<a class="list-group-item" data-block-target="#block_13">
+						Property: relativeUrls
+					</a>
+																<a class="list-group-item" data-block-target="#block_14">
+						Property: lunrIndex
+					</a>
+																<a class="list-group-item" data-block-target="#block_15">
+						Property: lunrIndexLookup
+					</a>
+																<a class="list-group-item" data-block-target="#block_16">
+						Method: setDefaults
+					</a>
+																<a class="list-group-item" data-block-target="#block_17">
+						Method: run
+					</a>
+																<a class="list-group-item" data-block-target="#block_18">
+						Method: generateHomePage
+					</a>
+																<a class="list-group-item" data-block-target="#block_19">
+						Method: generateLunrIndex
+					</a>
+																<a class="list-group-item" data-block-target="#block_20">
+						Method: generateJsonTree
+					</a>
+																<a class="list-group-item" data-block-target="#block_21">
+						Method: normalisePaths
+					</a>
+																<a class="list-group-item" data-block-target="#block_22">
+						Method: getInputFiles
+					</a>
+																<a class="list-group-item" data-block-target="#block_23">
+						Method: writeHtmlDocument
+					</a>
+																<a class="list-group-item" data-block-target="#block_24">
+						Method: extractDocBlocks
+					</a>
+									</div>
+	</div>
+
 
 			</div>
 		</div>
 
-		<div class="modal fade" id="sourceModal" tabindex="-1" role="dialog" aria-labelledby="sourceModalLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">
-							<span aria-hidden="true">&times;</span>
-							<span class="sr-only">Close</span>
-						</button>
-						<h4 class="modal-title" id="sourceModalLabel">
-							Generator.php
-						</h4>
-					</div>
-					<div class="modal-body">
-						<pre><code class="php">&lt;?php namespace Gears\Doc;
+		
+	<div class="modal fade" id="sourceModal" tabindex="-1" role="dialog" aria-labelledby="sourceModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span>
+						<span class="sr-only">Close</span>
+					</button>
+					<h4 class="modal-title" id="sourceModalLabel">
+						Generator.php
+					</h4>
+				</div>
+				<div class="modal-body">
+					<pre><code class="php">&lt;?php namespace Gears\Doc;
 ////////////////////////////////////////////////////////////////////////////////
 // __________ __             ________                   __________              
 // \______   \  |__ ______  /  _____/  ____ _____ ______\______   \ _______  ___
@@ -662,7 +961,6 @@ We only read it as a string.</p>
 // -----------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////
 
-use SplFileInfo;
 use RuntimeException;
 use Parsedown;
 use Gears\View;
@@ -670,49 +968,14 @@ use Gears\Di\Container;
 use Gears\String as Str;
 use Gears\Arrays as Arr;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class: Generator
  * =============================================================================
- * Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
- * ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis
- * parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec,
- * pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.
- * 
- * How To Use:
- * -----------------------------------------------------------------------------
- * Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu.
- * In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.
- * Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus.
- * Vivamus elementum semper nisi. Aenean vulputate eleifend tellus.
- * 
- * ```php
- * // Make sure the paths don&#039;t have trailing slashes
- * $this-&gt;normalisePaths();
- * 
- * // Make sure the output folder exists and is writeable
- * if (!is_dir($this-&gt;outputPath) || !is_writeable($this-&gt;outputPath))
- * {
- * 	// It is on the user to create the root output folder
- * 	throw new RuntimeException
- * 	(
- * 		&#039;Please create the output folder with appropriate permissions!&#039;
- * 	);
- * }
- * 
- * // Remove all contents of output folder
- * $this-&gt;filesystem-&gt;remove($this-&gt;finder-&gt;in($this-&gt;outputPath));
- * 
- * // Create the data needed to make all our views
- * $output_files = []; $nav = [];
- * ```
- * 
- * Other Info:
- * -----------------------------------------------------------------------------
- * - 123
- * - abc
- * - xyz
+ * TODO: When this class is actually finalised
+ * I will write some nice documentation here.
  */
 class Generator extends Container
 {
@@ -739,6 +1002,49 @@ class Generator extends Container
 	 * Each path would be relative to the inputPath.
 	 */
 	protected $injectIgnorePaths;
+
+	/**
+	 * Property: indexPage
+	 * =========================================================================
+	 * This is a path to a document that we will use for the main
+	 * index or home page of the documentation website.
+	 * 
+	 * If the document has a ```.html``` extension we will use the HTML as is
+	 * without any modification, giving you ultimate control.
+	 * 
+	 * If the document ends in ```.md``` we of course will convert the markdown
+	 * into HTML for you. But unlike the markdown *docblocks* we do no further
+	 * processing.
+	 * 
+	 * Defaults to: ```$this-&gt;inputPath.&#039;/../README.md&#039;```
+	 */
+	protected $injectIndexPage;
+
+	/**
+	 * Property: projectName
+	 * =========================================================================
+	 * You don&#039;t have to set this but I would recommend that you do.
+	 * It is used in the header on the top left.
+	 * We default to: *The Doctor*
+	 */
+	protected $injectProjectName;
+
+	/**
+	 * Property: headerLinks
+	 * =========================================================================
+	 * This completely optional. We use this in the header at the top right.
+	 * If you do decide you would like some links in your header please supply
+	 * an array that looks like this:
+	 * 
+	 * ```php
+	 * [
+	 * 		&#039;https://github.com/phpgearbox/doc&#039; =&gt; &#039;GitHub&#039;,
+	 * 		&#039;https://travis-ci.org/phpgearbox/doc&#039; =&gt; &#039;Travis CI&#039;
+	 * 		&#039;http://www.bjc.id.au/&#039; =&gt; &#039;Brad Jones Computing&#039;
+	 * ]
+	 * ```
+	 */
+	protected $injectHeaderLinks;
 
 	/**
 	 * Property: exts
@@ -777,10 +1083,52 @@ class Generator extends Container
 	 */
 	protected $injectFinder;
 
+	/**
+	 * Property: nav
+	 * =========================================================================
+	 * We use this to store a hierarchal array of all the files we are
+	 * generating documentation for. It is then used later on by
+	 * ```generateJsonTree()``` to create the fancy tree and ```$relativeUrls```
+	 * property.
+	 */
+	private $nav;
+
+	/**
+	 * Property: relativeUrls
+	 * =========================================================================
+	 * This helps with the lunr search index. It was a bit of an after thought
+	 * that I added into the ```generateJsonTree()``` method. Ideally I could
+	 * refactor the FancyTree to also use this to lookup the correct URL.
+	 */
 	private $relativeUrls;
 
+	/**
+	 * Property: lunrIndex
+	 * =========================================================================
+	 * This is the main lunr index array that gets converted to JSON just before
+	 * sending to the view. The browser will then loop over this to create the
+	 * final index. Ideally I would like to generate the index at generation
+	 * time using node perhaps.
+	 * 
+	 * See: http://lunrjs.com/docs/#Index
+	 * 
+	 *   - lunr.Index.prototype.toJSON()
+	 *   - lunr.Index.load()
+	 */
 	private $lunrIndex;
 
+	/**
+	 * Property: lunrIndexLookup
+	 * =========================================================================
+	 * This is an index of the index haha... Actually thats not too far from the
+	 * truth. Unfortunately lunr does not return the full document when you
+	 * perform a search query, only the document id. So we use this to tell us
+	 * which document it is in our original lunrIndex json.
+	 * 
+	 * @see: Views/script.blade.php
+	 * 
+	 * ```var doc = lunr_index[lunr_index_lookup[result.ref]];```
+	 */
 	private $lunrIndexLookup;
 
 	/**
@@ -806,6 +1154,12 @@ class Generator extends Container
 
 		$this-&gt;ignorePaths = [];
 
+		$this-&gt;indexPage = $this-&gt;inputPath.&#039;/../README.md&#039;;
+
+		$this-&gt;projectName = &#039;The Doctor&#039;;
+
+		$this-&gt;headerLinks = [&#039;https://github.com/phpgearbox/doc&#039; =&gt; &#039;GitHub&#039;];
+
 		$this-&gt;exts = [&#039;php&#039;, &#039;js&#039;, &#039;css&#039;, &#039;less&#039;, &#039;sccs&#039;];
 
 		$this-&gt;view = function () { return new View(__DIR__.&#039;/Views&#039;); };
@@ -827,7 +1181,7 @@ class Generator extends Container
 	 * Method: run
 	 * =========================================================================
 	 * Once the container is configured, simply run this method
-	 * and we will generate the documenation.
+	 * and we will generate the documentation.
 	 * 
 	 * &gt; WARNING: All content in the output path will be deleted!
 	 * 
@@ -841,7 +1195,7 @@ class Generator extends Container
 	 * 
 	 * Throws:
 	 * -------------------------------------------------------------------------
-	 * - RuntimeException: When the output path is not writeable.
+	 * - RuntimeException: When the output path is not writable.
 	 */
 	public function run()
 	{
@@ -861,8 +1215,8 @@ class Generator extends Container
 		// Remove all contents of output folder
 		$this-&gt;filesystem-&gt;remove($this-&gt;finder-&gt;in($this-&gt;outputPath));
 
-		// Create the data needed to make all our views
-		$output_files = []; $nav = [];
+		// The below loop will fill this array
+		$output_files = [];
 
 		// Loop through each source file
 		foreach ($this-&gt;getInputFiles() as $file)
@@ -873,17 +1227,20 @@ class Generator extends Container
 			// Skip to next file if no blocks found
 			if (empty($blocks)) continue;
 
+			// Create the lunr index
+			$this-&gt;generateLunrIndex($blocks, $file);
+
 			// The following sets up our nav array
 			$segments = Str::split($file-&gt;getRelativePath(), &#039;/&#039;);
 			if ($segments == [&#039;&#039;])
 			{
-				$nav[] = $file;
+				$this-&gt;nav[] = $file;
 			}
 			else
 			{
-				$existing = Arr::get($nav, $segments, []);
+				$existing = Arr::get($this-&gt;nav, $segments, []);
 				$existing[] = $file;
-				Arr::set($nav, $segments, $existing);
+				Arr::set($this-&gt;nav, $segments, $existing);
 			}
 
 			// Create the output filename
@@ -894,8 +1251,6 @@ class Generator extends Container
 				&#039;html&#039;
 			);
 
-			$this-&gt;generateLunrIndex($blocks, $file);
-
 			// Add the file and blocks to our list of views to create
 			$output_files[$output_file_name] =
 			[
@@ -905,28 +1260,129 @@ class Generator extends Container
 		}
 
 		// Now finally write each static file
+		// NOTE: We need to do this in 2 loops because we need to
+		// know about all files to generate the fancy tree navigation.
 		foreach ($output_files as $output_file =&gt; $data)
 		{
+			// Reset our relative urls, these change per file obviously.
 			$this-&gt;relativeUrls = [];
 
-			$tree = $this-&gt;generateJsonTree($nav, $data[&#039;src_file&#039;]);
+			// Create the fancy tree json
+			$tree = $this-&gt;generateJsonTree($data[&#039;src_file&#039;]);
+
+			// Create the home page link
+			$homeLink = &#039;index.html&#039;;
+			$parts = Str::split($data[&#039;src_file&#039;]-&gt;getRelativePathname(), &#039;/&#039;);
+			for ($i = 2; $i &lt;= count($parts); $i++)
+			{
+				$homeLink = &#039;../&#039;.$homeLink;
+			}
 
 			// Create our blade view
 			$html = $this-&gt;view
-				-&gt;make(&#039;master&#039;)
+				-&gt;make(&#039;layouts.doc&#039;)
 				-&gt;withNav($tree)
-				-&gt;withRelativeUrls(&#039;var relative_urls = &#039;.json_encode($this-&gt;relativeUrls).&#039;;&#039;)
-				-&gt;withLunrIndex(&#039;var lunr_index = &#039;.json_encode($this-&gt;lunrIndex).&#039;;&#039;.&quot;\n&quot;.&#039;var lunr_index_lookup = &#039;.json_encode($this-&gt;lunrIndexLookup).&#039;;&#039;)
+				-&gt;withRelativeUrls(json_encode($this-&gt;relativeUrls))
+				-&gt;withLunrIndex(json_encode($this-&gt;lunrIndex))
+				-&gt;withLunrIndexLookup(json_encode($this-&gt;lunrIndexLookup))
 				-&gt;withFileInfo($data[&#039;src_file&#039;])
 				-&gt;withBlocks($data[&#039;blocks&#039;])
+				-&gt;withHomeLink($homeLink)
+				-&gt;withProjectName($this-&gt;projectName)
+				-&gt;withHeaderLinks($this-&gt;headerLinks)
 			;
 
 			// Save the generated html
 			$this-&gt;writeHtmlDocument($output_file, $html);
 		}
+
+		// Create the index / home page for our documentation site.
+		$this-&gt;generateHomePage();
 	}
 
-	private function generateLunrIndex($blocks, $file)
+	/**
+	 * Method: generateHomePage
+	 * =========================================================================
+	 * Every website needs a home page. This will generate one.
+	 * The basic idea is that every project will have a README.md so
+	 * why not just use that as the contents for the home page.
+	 * 
+	 * @see: ```Property: indexPage```
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * n/a
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * void
+	 */
+	private function generateHomePage()
+	{
+		// Reset our relative urls, these change per file obviously.
+		$this-&gt;relativeUrls = [];
+
+		// Create a dummy file object so we can generate the tree
+		$file = new SplFileInfo(&#039;index.html&#039;, &#039;&#039;, &#039;index.html&#039;);
+
+		// Create the fancy tree json
+		$tree = $this-&gt;generateJsonTree($file);
+
+		// Now lets read in the source index file
+		$html = file_get_contents($this-&gt;indexPage);
+
+		// If its markdown lets convert it
+		if (Str::endsWith($this-&gt;indexPage, &#039;.md&#039;))
+		{
+			$html = $this-&gt;parsedown-&gt;text($html);
+		}
+
+		// Create our blade view
+		// NOTE: We use a slightly different blade template for the home page
+		$html = $this-&gt;view
+			-&gt;make(&#039;layouts.home&#039;)
+			-&gt;withNav($tree)
+			-&gt;withRelativeUrls(json_encode($this-&gt;relativeUrls))
+			-&gt;withLunrIndex(json_encode($this-&gt;lunrIndex))
+			-&gt;withLunrIndexLookup(json_encode($this-&gt;lunrIndexLookup))
+			-&gt;withContent($html)
+			-&gt;withHomeLink(&#039;#&#039;)
+			-&gt;withProjectName($this-&gt;projectName)
+			-&gt;withHeaderLinks($this-&gt;headerLinks)
+		;
+
+		// Save the generated html
+		$this-&gt;writeHtmlDocument($this-&gt;outputPath.&#039;/index.html&#039;, $html);
+	}
+
+	/**
+	 * Method: generateLunrIndex
+	 * =========================================================================
+	 * We are using a jquery plugin that implements the *Lucene* search.
+	 * @see: http://lunrjs.com/
+	 * 
+	 * This generates an array which then gets converted to JSON. The browser
+	 * then loops over the JSON to create the final index. I almost could have
+	 * passed the &quot;blocks&quot; array directly but needed to remove HTML tags, etc.
+	 * 
+	 * &gt; NOTE: That currently every single document that we write gets a copy
+	 * &gt; of the index. From a space perspective this isn&#039;t very efficient.
+	 * &gt; And for very large projects this may need to be refactored to use 
+	 * &gt; some AJAX. But for now the searches are indeed *very fast* :)
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * - $blocks: An array of *docblocks* returned by the method
+	 *   ```extractDocBlocks()```
+	 * 
+	 * - $file: This refers to the file that the *docblock* belongs to.
+	 *   It must be an instance of ```Symfony\Component\Finder\SplFileInfo```
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * array
+	 */
+	private function generateLunrIndex($blocks, SplFileInfo $file)
 	{
 		foreach ($blocks as $key =&gt; $block)
 		{
@@ -940,11 +1396,43 @@ class Generator extends Container
 		}
 	}
 
-	private function generateJsonTree($nav, $file)
+	/**
+	 * Method: generateJsonTree
+	 * =========================================================================
+	 * We are using a jquery plugin to create our sidebar tree menu.
+	 * @see: https://github.com/mar10/fancytree
+	 * 
+	 * The plugin uses a JSON object to build the tree. This method generates
+	 * the JSON object for each static file we output. The reason we can&#039;t share
+	 * the same JSON is because the links change for each file as they are
+	 * relative to one another.
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * - $file: This refers to the current file we are generating the
+	 *   documentation for. It must be an instance of
+	 *   ```Symfony\Component\Finder\SplFileInfo```
+	 * 
+	 * - $recurse: This is only used recursively. If this is not set we start
+	 *   looping over the ```$this-&gt;nav``` property.
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * array
+	 */
+	private function generateJsonTree(SplFileInfo $file, $recurse = null)
 	{
+		// This is what gets returned
 		$tree = [];
 
-		foreach ($nav as $key =&gt; $link)
+		// Have we been called recursively or not?
+		if (is_null($recurse))
+		{
+			// Grab the root nav array
+			$recurse = $this-&gt;nav;
+		}
+
+		foreach ($recurse as $key =&gt; $link)
 		{
 			$active = false;
 
@@ -964,7 +1452,7 @@ class Generator extends Container
 					&#039;title&#039; =&gt; $key,
 					&#039;folder&#039; =&gt; true,
 					&#039;expanded&#039; =&gt; $expanded,
-					&#039;children&#039; =&gt; $this-&gt;generateJsonTree($link, $file)
+					&#039;children&#039; =&gt; $this-&gt;generateJsonTree($file, $link)
 				];
 			}
 			else
@@ -1186,7 +1674,8 @@ class Generator extends Container
 	 * =========================================================================
 	 * Extracts each docblock using regular expression in the given file.
 	 * We do not use any form of Reflection, we do not include the file.
-	 * We only read it as a string.
+	 * We only read it as a string. This means we work the same regardless of
+	 * language. This will work with LESS just as it does for PHP or JS.
 	 * 
 	 * Parameters:
 	 * -------------------------------------------------------------------------
@@ -1307,30 +1796,30 @@ class Generator extends Container
 		return $blocks;
 	}
 }</code></pre>
-					</div>
 				</div>
 			</div>
 		</div>
+	</div>
+
 
 		<div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">
-							<span aria-hidden="true">&times;</span>
-							<span class="sr-only">Close</span>
-						</button>
-						<h3 class="modal-title" id="searchModalLabel">
-							Search Results for: ...
-						</h3>
-					</div>
-					<div class="modal-body">
-						...
-					</div>
-				</div>
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span>
+					<span class="sr-only">Close</span>
+				</button>
+				<h3 class="modal-title" id="searchModalLabel">
+					Search Results for: ...
+				</h3>
+			</div>
+			<div class="modal-body">
+				...
 			</div>
 		</div>
-
+	</div>
+</div>
 		<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 		<script src="//code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
@@ -1338,11 +1827,12 @@ class Generator extends Container
 		<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
 		<script src="https://raw.github.com/olivernn/lunr.js/master/lunr.min.js"></script>
 		<script>
-	var relative_urls = {"Console\/Application.php":"Console\/Application.html","Console\/Commands\/Generate.php":"Console\/Commands\/Generate.html","Generator.php":"#","Views\/style.blade.php":"Views\/style.blade.html"};
+	var relative_urls = {"Console\/Application.php":"Console\/Application.html","Console\/Commands\/Generate.php":"Console\/Commands\/Generate.html","Generator.php":"#","Views\/snippets\/style.blade.php":"Views\/snippets\/style.blade.html"};
 
-	var lunr_index = [{"id":"Console\/Application.php--gearsdoc--0","body":"\nOur factory method to create our \"gearsdoc\" application.\nParameters:\nn\/a\nReturns:\nstatic","title":"Method: boot","signature":"public static function boot()"},{"id":"Console\/Application.php--gearsdoc--1","body":"\nAdd our commands to the list of default commands.\nParameters:\nn\/a\nReturns:\narray","title":"Method: getDefaultCommands","signature":"protected function getDefaultCommands()"},{"id":"Console\/Commands\/Generate.php--gearsdoc--0","body":"Methodhhj","signature":"protected function configure()"},{"id":"Console\/Commands\/Generate.php--gearsdoc--1","body":"dhdfghjfg","signature":"protected function execute(InputInterface $input, OutputInterface $output)"},{"id":"Generator.php--gearsdoc--0","body":"\nLorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo\nligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis\nparturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec,\npellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.\nHow To Use:\nDonec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu.\nIn enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.\nNullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus.\nVivamus elementum semper nisi. Aenean vulputate eleifend tellus.\n\/\/ Make sure the paths don't have trailing slashes\n$this-&gt;normalisePaths();\n\n\/\/ Make sure the output folder exists and is writeable\nif (!is_dir($this-&gt;outputPath) || !is_writeable($this-&gt;outputPath))\n{\n    \/\/ It is on the user to create the root output folder\n    throw new RuntimeException\n    (\n        'Please create the output folder with appropriate permissions!'\n    );\n}\n\n\/\/ Remove all contents of output folder\n$this-&gt;filesystem-&gt;remove($this-&gt;finder-&gt;in($this-&gt;outputPath));\n\n\/\/ Create the data needed to make all our views\n$output_files = []; $nav = [];\nOther Info:\n\n123\nabc\nxyz\n","title":"Class: Generator","signature":"class Generator extends Container"},{"id":"Generator.php--gearsdoc--1","body":"\nThe path of where your src files are located.\nDefaults to: .\/src","title":"Property: inputPath","signature":"protected $injectInputPath;"},{"id":"Generator.php--gearsdoc--2","body":"\nThe path of where we will output the generated documentation.\nDefaults to: .\/docs","title":"Property: outputPath","signature":"protected $injectOutputPath;"},{"id":"Generator.php--gearsdoc--3","body":"\nOptional array that can be supplied of paths to ignore.\nEach path would be relative to the inputPath.","title":"Property: ignorePaths","signature":"protected $injectIgnorePaths;"},{"id":"Generator.php--gearsdoc--4","body":"\nAn array of file extensions to parse.\nOnly extensions listed here will be checked for docblocks.\nIt defaults to: php, js, css, less, sccs","title":"Property: exts","signature":"protected $injectExts;"},{"id":"Generator.php--gearsdoc--5","body":"\nAn instance of: Gears\\View or Illuminate\\View\\Factory","title":"Property: view","signature":"protected $injectView;"},{"id":"Generator.php--gearsdoc--6","body":"\nAn instance of: Parsedown","title":"Property: parsedown","signature":"protected $injectParsedown;"},{"id":"Generator.php--gearsdoc--7","body":"\nAn instance of: Symfony\\Component\\Filesystem\\Filesystem","title":"Property: filesystem","signature":"protected $injectFilesystem;"},{"id":"Generator.php--gearsdoc--8","body":"\nAn factory for: Symfony\\Component\\Finder\\Finder","title":"Property: finder","signature":"protected $injectFinder;"},{"id":"Generator.php--gearsdoc--9","body":"\nThis is where we set all our defaults. If you need to customise this\ncontainer this is a good place to look to see what can be configured\nand how to configure it.\nParameters:\nn\/a\nReturns:\nvoid","title":"Method: setDefaults","signature":"protected function setDefaults()"},{"id":"Generator.php--gearsdoc--10","body":"\nOnce the container is configured, simply run this method\nand we will generate the documenation.\n\nWARNING: All content in the output path will be deleted!\n\nParameters:\nn\/a\nReturns:\nvoid\nThrows:\n\nRuntimeException: When the output path is not writeable.\n","title":"Method: run","signature":"public function run()"},{"id":"Generator.php--gearsdoc--11","body":"\nEnsure the paths don't have trailing slashes.\nParameters:\nn\/a\nReturns:\nvoid","title":"Method: normalisePaths","signature":"private function normalisePaths()"},{"id":"Generator.php--gearsdoc--12","body":"\nSets up a finder object to list all our input source files.\nParameters:\nn\/a\nReturns:\nSymfony\\Component\\Finder\\Finder","title":"Method: getInputFiles","signature":"private function getInputFiles()"},{"id":"Generator.php--gearsdoc--13","body":"\nWrites the given html to the given filename\nand creates folders as needed.\nParameters:\n\n$filepath: The filepath to the new document.\n$html: The html to write into the new document.\n\nReturns:\nvoid\nThrows:\n\nRuntimeException: When we failed to write the new file.\n","title":"Method: writeHtmlDocument","signature":"private function writeHtmlDocument($filepath, $html)"},{"id":"Generator.php--gearsdoc--14","body":"\nExtracts each docblock using regular expression in the given file.\nWe do not use any form of Reflection, we do not include the file.\nWe only read it as a string.\nParameters:\n\n$file: A SplFileInfo object for the file.\n\nReturns:\narray","title":"Method: extractDocBlocks","signature":"private function extractDocBlocks(SplFileInfo $file)"},{"id":"Views\/style.blade.php--gearsdoc--0","body":"Base structure"},{"id":"Views\/style.blade.php--gearsdoc--1","body":"Global add-ons"},{"id":"Views\/style.blade.php--gearsdoc--2","body":"Top navigation\nHide default border to remove 1px line.","signature":".navbar-fixed-top {"},{"id":"Views\/style.blade.php--gearsdoc--3","body":"Sidebar"},{"id":"Views\/style.blade.php--gearsdoc--4","body":"Main content"}];
-var lunr_index_lookup = {"Console\/Application.php--gearsdoc--0":0,"Console\/Application.php--gearsdoc--1":1,"Console\/Commands\/Generate.php--gearsdoc--0":2,"Console\/Commands\/Generate.php--gearsdoc--1":3,"Generator.php--gearsdoc--0":4,"Generator.php--gearsdoc--1":5,"Generator.php--gearsdoc--2":6,"Generator.php--gearsdoc--3":7,"Generator.php--gearsdoc--4":8,"Generator.php--gearsdoc--5":9,"Generator.php--gearsdoc--6":10,"Generator.php--gearsdoc--7":11,"Generator.php--gearsdoc--8":12,"Generator.php--gearsdoc--9":13,"Generator.php--gearsdoc--10":14,"Generator.php--gearsdoc--11":15,"Generator.php--gearsdoc--12":16,"Generator.php--gearsdoc--13":17,"Generator.php--gearsdoc--14":18,"Views\/style.blade.php--gearsdoc--0":19,"Views\/style.blade.php--gearsdoc--1":20,"Views\/style.blade.php--gearsdoc--2":21,"Views\/style.blade.php--gearsdoc--3":22,"Views\/style.blade.php--gearsdoc--4":23};
+	var lunr_index = [{"id":"Console\/Application.php--gearsdoc--0","body":"\nOur factory method to create our \"gearsdoc\" application.\nParameters:\nn\/a\nReturns:\nstatic","title":"Method: boot","signature":"public static function boot()"},{"id":"Console\/Application.php--gearsdoc--1","body":"\nAdd our commands to the list of default commands.\nParameters:\nn\/a\nReturns:\narray","title":"Method: getDefaultCommands","signature":"protected function getDefaultCommands()"},{"id":"Console\/Commands\/Generate.php--gearsdoc--0","body":"Methodhhj","signature":"protected function configure()"},{"id":"Console\/Commands\/Generate.php--gearsdoc--1","body":"dhdfghjfg","signature":"protected function execute(InputInterface $input, OutputInterface $output)"},{"id":"Generator.php--gearsdoc--0","body":"\nTODO: When this class is actually finalised\nI will write some nice documentation here.","title":"Class: Generator","signature":"class Generator extends Container"},{"id":"Generator.php--gearsdoc--1","body":"\nThe path of where your src files are located.\nDefaults to: .\/src","title":"Property: inputPath","signature":"protected $injectInputPath;"},{"id":"Generator.php--gearsdoc--2","body":"\nThe path of where we will output the generated documentation.\nDefaults to: .\/docs","title":"Property: outputPath","signature":"protected $injectOutputPath;"},{"id":"Generator.php--gearsdoc--3","body":"\nOptional array that can be supplied of paths to ignore.\nEach path would be relative to the inputPath.","title":"Property: ignorePaths","signature":"protected $injectIgnorePaths;"},{"id":"Generator.php--gearsdoc--4","body":"\nThis is a path to a document that we will use for the main\nindex or home page of the documentation website.\nIf the document has a .html extension we will use the HTML as is\nwithout any modification, giving you ultimate control.\nIf the document ends in .md we of course will convert the markdown\ninto HTML for you. But unlike the markdown docblocks we do no further\nprocessing.\nDefaults to: $this-&gt;inputPath.'\/..\/README.md'","title":"Property: indexPage","signature":"protected $injectIndexPage;"},{"id":"Generator.php--gearsdoc--5","body":"\nYou don't have to set this but I would recommend that you do.\nIt is used in the header on the top left.\nWe default to: The Doctor","title":"Property: projectName","signature":"protected $injectProjectName;"},{"id":"Generator.php--gearsdoc--6","body":"\nThis completely optional. We use this in the header at the top right.\nIf you do decide you would like some links in your header please supply\nan array that looks like this:\n[\n        'https:\/\/github.com\/phpgearbox\/doc' =&gt; 'GitHub',\n        'https:\/\/travis-ci.org\/phpgearbox\/doc' =&gt; 'Travis CI'\n        'http:\/\/www.bjc.id.au\/' =&gt; 'Brad Jones Computing'\n]","title":"Property: headerLinks","signature":"protected $injectHeaderLinks;"},{"id":"Generator.php--gearsdoc--7","body":"\nAn array of file extensions to parse.\nOnly extensions listed here will be checked for docblocks.\nIt defaults to: php, js, css, less, sccs","title":"Property: exts","signature":"protected $injectExts;"},{"id":"Generator.php--gearsdoc--8","body":"\nAn instance of: Gears\\View or Illuminate\\View\\Factory","title":"Property: view","signature":"protected $injectView;"},{"id":"Generator.php--gearsdoc--9","body":"\nAn instance of: Parsedown","title":"Property: parsedown","signature":"protected $injectParsedown;"},{"id":"Generator.php--gearsdoc--10","body":"\nAn instance of: Symfony\\Component\\Filesystem\\Filesystem","title":"Property: filesystem","signature":"protected $injectFilesystem;"},{"id":"Generator.php--gearsdoc--11","body":"\nAn factory for: Symfony\\Component\\Finder\\Finder","title":"Property: finder","signature":"protected $injectFinder;"},{"id":"Generator.php--gearsdoc--12","body":"\nWe use this to store a hierarchal array of all the files we are\ngenerating documentation for. It is then used later on by\ngenerateJsonTree() to create the fancy tree and $relativeUrls\nproperty.","title":"Property: nav","signature":"private $nav;"},{"id":"Generator.php--gearsdoc--13","body":"\nThis helps with the lunr search index. It was a bit of an after thought\nthat I added into the generateJsonTree() method. Ideally I could\nrefactor the FancyTree to also use this to lookup the correct URL.","title":"Property: relativeUrls","signature":"private $relativeUrls;"},{"id":"Generator.php--gearsdoc--14","body":"\nThis is the main lunr index array that gets converted to JSON just before\nsending to the view. The browser will then loop over this to create the\nfinal index. Ideally I would like to generate the index at generation\ntime using node perhaps.\nSee: http:\/\/lunrjs.com\/docs\/#Index\n\nlunr.Index.prototype.toJSON()\nlunr.Index.load()\n","title":"Property: lunrIndex","signature":"private $lunrIndex;"},{"id":"Generator.php--gearsdoc--15","body":"\nThis is an index of the index haha... Actually thats not too far from the\ntruth. Unfortunately lunr does not return the full document when you\nperform a search query, only the document id. So we use this to tell us\nwhich document it is in our original lunrIndex json.\n@see: Views\/script.blade.php\nvar doc = lunr_index[lunr_index_lookup[result.ref]];","title":"Property: lunrIndexLookup","signature":"private $lunrIndexLookup;"},{"id":"Generator.php--gearsdoc--16","body":"\nThis is where we set all our defaults. If you need to customise this\ncontainer this is a good place to look to see what can be configured\nand how to configure it.\nParameters:\nn\/a\nReturns:\nvoid","title":"Method: setDefaults","signature":"protected function setDefaults()"},{"id":"Generator.php--gearsdoc--17","body":"\nOnce the container is configured, simply run this method\nand we will generate the documentation.\n\nWARNING: All content in the output path will be deleted!\n\nParameters:\nn\/a\nReturns:\nvoid\nThrows:\n\nRuntimeException: When the output path is not writable.\n","title":"Method: run","signature":"public function run()"},{"id":"Generator.php--gearsdoc--18","body":"\nEvery website needs a home page. This will generate one.\nThe basic idea is that every project will have a README.md so\nwhy not just use that as the contents for the home page.\n@see: Property: indexPage\nParameters:\nn\/a\nReturns:\nvoid","title":"Method: generateHomePage","signature":"private function generateHomePage()"},{"id":"Generator.php--gearsdoc--19","body":"\nWe are using a jquery plugin that implements the Lucene search.\n@see: http:\/\/lunrjs.com\/\nThis generates an array which then gets converted to JSON. The browser\nthen loops over the JSON to create the final index. I almost could have\npassed the \"blocks\" array directly but needed to remove HTML tags, etc.\n\nNOTE: That currently every single document that we write gets a copy\nof the index. From a space perspective this isn't very efficient.\nAnd for very large projects this may need to be refactored to use \nsome AJAX. But for now the searches are indeed very fast :)\n\nParameters:\n\n\n$blocks: An array of docblocks returned by the method\nextractDocBlocks()\n\n$file: This refers to the file that the docblock belongs to.\nIt must be an instance of Symfony\\Component\\Finder\\SplFileInfo\n\nReturns:\narray","title":"Method: generateLunrIndex","signature":"private function generateLunrIndex($blocks, SplFileInfo $file)"},{"id":"Generator.php--gearsdoc--20","body":"\nWe are using a jquery plugin to create our sidebar tree menu.\n@see: https:\/\/github.com\/mar10\/fancytree\nThe plugin uses a JSON object to build the tree. This method generates\nthe JSON object for each static file we output. The reason we can't share\nthe same JSON is because the links change for each file as they are\nrelative to one another.\nParameters:\n\n\n$file: This refers to the current file we are generating the\ndocumentation for. It must be an instance of\nSymfony\\Component\\Finder\\SplFileInfo\n\n$recurse: This is only used recursively. If this is not set we start\nlooping over the $this-&gt;nav property.\n\nReturns:\narray","title":"Method: generateJsonTree","signature":"private function generateJsonTree(SplFileInfo $file, $recurse = null)"},{"id":"Generator.php--gearsdoc--21","body":"\nEnsure the paths don't have trailing slashes.\nParameters:\nn\/a\nReturns:\nvoid","title":"Method: normalisePaths","signature":"private function normalisePaths()"},{"id":"Generator.php--gearsdoc--22","body":"\nSets up a finder object to list all our input source files.\nParameters:\nn\/a\nReturns:\nSymfony\\Component\\Finder\\Finder","title":"Method: getInputFiles","signature":"private function getInputFiles()"},{"id":"Generator.php--gearsdoc--23","body":"\nWrites the given html to the given filename\nand creates folders as needed.\nParameters:\n\n$filepath: The filepath to the new document.\n$html: The html to write into the new document.\n\nReturns:\nvoid\nThrows:\n\nRuntimeException: When we failed to write the new file.\n","title":"Method: writeHtmlDocument","signature":"private function writeHtmlDocument($filepath, $html)"},{"id":"Generator.php--gearsdoc--24","body":"\nExtracts each docblock using regular expression in the given file.\nWe do not use any form of Reflection, we do not include the file.\nWe only read it as a string. This means we work the same regardless of\nlanguage. This will work with LESS just as it does for PHP or JS.\nParameters:\n\n$file: A SplFileInfo object for the file.\n\nReturns:\narray","title":"Method: extractDocBlocks","signature":"private function extractDocBlocks(SplFileInfo $file)"},{"id":"Views\/snippets\/style.blade.php--gearsdoc--0","body":"Base structure"},{"id":"Views\/snippets\/style.blade.php--gearsdoc--1","body":"Global add-ons"},{"id":"Views\/snippets\/style.blade.php--gearsdoc--2","body":"Top navigation\nHide default border to remove 1px line.","signature":".navbar-fixed-top {"},{"id":"Views\/snippets\/style.blade.php--gearsdoc--3","body":"Sidebar"},{"id":"Views\/snippets\/style.blade.php--gearsdoc--4","body":"Main content"}];
 
+	var lunr_index_lookup = {"Console\/Application.php--gearsdoc--0":0,"Console\/Application.php--gearsdoc--1":1,"Console\/Commands\/Generate.php--gearsdoc--0":2,"Console\/Commands\/Generate.php--gearsdoc--1":3,"Generator.php--gearsdoc--0":4,"Generator.php--gearsdoc--1":5,"Generator.php--gearsdoc--2":6,"Generator.php--gearsdoc--3":7,"Generator.php--gearsdoc--4":8,"Generator.php--gearsdoc--5":9,"Generator.php--gearsdoc--6":10,"Generator.php--gearsdoc--7":11,"Generator.php--gearsdoc--8":12,"Generator.php--gearsdoc--9":13,"Generator.php--gearsdoc--10":14,"Generator.php--gearsdoc--11":15,"Generator.php--gearsdoc--12":16,"Generator.php--gearsdoc--13":17,"Generator.php--gearsdoc--14":18,"Generator.php--gearsdoc--15":19,"Generator.php--gearsdoc--16":20,"Generator.php--gearsdoc--17":21,"Generator.php--gearsdoc--18":22,"Generator.php--gearsdoc--19":23,"Generator.php--gearsdoc--20":24,"Generator.php--gearsdoc--21":25,"Generator.php--gearsdoc--22":26,"Generator.php--gearsdoc--23":27,"Generator.php--gearsdoc--24":28,"Views\/snippets\/style.blade.php--gearsdoc--0":29,"Views\/snippets\/style.blade.php--gearsdoc--1":30,"Views\/snippets\/style.blade.php--gearsdoc--2":31,"Views\/snippets\/style.blade.php--gearsdoc--3":32,"Views\/snippets\/style.blade.php--gearsdoc--4":33};
+	
 	var lunrIndex = lunr(function()
 	{
 		this.ref("id")
@@ -1407,7 +1897,14 @@ var lunr_index_lookup = {"Console\/Application.php--gearsdoc--0":0,"Console\/App
 					html += '<li><code>'+doc.signature+'</code></li>';
 				}
 
-				html += '<li>'+doc.body.substr(1, 140)+'</li>';
+				if (doc.body.length > 140)
+				{
+					html += '<li>'+doc.body.substr(0, 140)+'&hellip;</li>';
+				}
+				else
+				{
+					html += '<li>'+doc.body+'</li>';
+				}
 
 				html += '</ul><hr>';
 			});
@@ -1432,7 +1929,7 @@ var lunr_index_lookup = {"Console\/Application.php--gearsdoc--0":0,"Console\/App
 
 		$(".fancytree").fancytree
 		({
-			source: [{"title":"Console","folder":true,"expanded":false,"children":[{"title":"Commands","folder":true,"expanded":false,"children":[{"title":"Generate.php","active":false,"focus":false,"href":"Console\/Commands\/Generate.html"}]},{"title":"Application.php","active":false,"focus":false,"href":"Console\/Application.html"}]},{"title":"Views","folder":true,"expanded":false,"children":[{"title":"style.blade.php","active":false,"focus":false,"href":"Views\/style.blade.html"}]},{"title":"Generator.php","active":true,"focus":true,"href":"#"}],
+			source: [{"title":"Console","folder":true,"expanded":false,"children":[{"title":"Commands","folder":true,"expanded":false,"children":[{"title":"Generate.php","active":false,"focus":false,"href":"Console\/Commands\/Generate.html"}]},{"title":"Application.php","active":false,"focus":false,"href":"Console\/Application.html"}]},{"title":"Views","folder":true,"expanded":false,"children":[{"title":"snippets","folder":true,"expanded":false,"children":[{"title":"style.blade.php","active":false,"focus":false,"href":"Views\/snippets\/style.blade.html"}]}]},{"title":"Generator.php","active":true,"focus":true,"href":"#"}],
 
 			activate: function(event, data)
 			{
