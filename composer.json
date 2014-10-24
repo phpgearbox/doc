@@ -20,7 +20,9 @@
 		"erusev/parsedown": "1.*",
 		"symfony/console": "2.*",
 		"symfony/finder": "2.*",
-		"symfony/filesystem": "2.*"
+		"symfony/filesystem": "2.*",
+		"tedivm/jshrink": "*",
+		"natxet/CssMin": "*"
 	},
 	"require-dev":
 	{

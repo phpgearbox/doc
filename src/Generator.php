@@ -13,6 +13,8 @@
 
 use RuntimeException;
 use Parsedown;
+use CssMin;
+use JShrink\Minifier as JsMin;
 use Gears\View;
 use Gears\Di\Container;
 use Gears\String as Str;
@@ -134,6 +136,30 @@ class Generator extends Container
 	protected $injectFinder;
 
 	/**
+	 * Property: cssMin
+	 * =========================================================================
+	 * This must be a protected callable that can minify css.
+	 * For example:
+	 *
+	 * ```php
+	 * $this->protect(function($css){ return CssMin::minify($css); });
+	 * ```
+	 */
+	protected $injectCssMin;
+
+	/**
+	 * Property: jsMin
+	 * =========================================================================
+	 * This must be a protected callable that can minify js.
+	 * For example:
+	 *
+	 * ```php
+	 * $this->protect(function($js){ return JsMin::minify($js); });
+	 * ```
+	 */
+	protected $injectJsMin;
+
+	/**
 	 * Property: nav
 	 * =========================================================================
 	 * We use this to store a hierarchal array of all the files we are
@@ -225,6 +251,10 @@ class Generator extends Container
 		$this->lunrIndex = [];
 
 		$this->lunrIndexLookup = [];
+
+		$this->cssMin = $this->protect(function($css){ return CssMin::minify($css); });
+
+		$this->jsMin = $this->protect(function($js){ return JsMin::minify($js); });
 	}
 
 	/**
@@ -297,8 +327,8 @@ class Generator extends Container
 			$output_file_name = $this->outputPath.'/'.Str::replace
 			(
 				$file->getRelativePathname(),
-				$file->getExtension(),
-				'html'
+				'.'.$file->getExtension(),
+				'.html'
 			);
 
 			// Add the file and blocks to our list of views to create
@@ -322,10 +352,14 @@ class Generator extends Container
 
 			// Create the home page link
 			$homeLink = 'index.html';
+			$stylePath = 'assets/css/style.css';
+			$scriptPath = 'assets/js/script.js';
 			$parts = Str::split($data['src_file']->getRelativePathname(), '/');
 			for ($i = 2; $i <= count($parts); $i++)
 			{
 				$homeLink = '../'.$homeLink;
+				$stylePath = '../'.$stylePath;
+				$scriptPath = '../'.$scriptPath;
 			}
 
 			// Create our blade view
@@ -340,14 +374,91 @@ class Generator extends Container
 				->withHomeLink($homeLink)
 				->withProjectName($this->projectName)
 				->withHeaderLinks($this->headerLinks)
+				->withStylePath($stylePath)
+				->withScriptPath($scriptPath)
 			;
 
 			// Save the generated html
-			$this->writeHtmlDocument($output_file, $html);
+			$this->writeDocument($output_file, $html);
 		}
 
 		// Create the index / home page for our documentation site.
 		$this->generateHomePage();
+
+		// Lets build some css and js assets
+		$this->buildAssets();
+	}
+
+	/**
+	 * Method: buildAssets
+	 * =========================================================================
+	 *
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * n/a
+	 *
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * void
+	 */
+	private function buildAssets()
+	{
+		// Intialise some variables to keep the compiled assets
+		$js = ''; $css = '';
+
+		// NOTE: Order is important for the following arrays.
+		$js_files =
+		[
+			'jquery',
+			'jquery-ui',
+			'bootstrap',
+			'fancytree',
+			'lunr',
+			'highlight',
+			'main'
+		];
+
+		$css_files =
+		[
+			'bootstrap',
+			'bootstrap-theme',
+			'font-awesome',
+			'fancytree',
+			'highlight-github-theme',
+			'main'
+		];
+
+		// Loop through and build the js assets
+		foreach ($js_files as $asset)
+		{
+			$js .= $this['jsMin']
+			(
+				file_get_contents
+				(
+					__DIR__.'/Views/assets/js/'.$asset.'.js'
+				)
+			);
+		}
+
+		// Loop through and build the css assets
+		foreach ($css_files as $asset)
+		{
+			$css .= $this['cssMin']
+			(
+				file_get_contents
+				(
+					__DIR__.'/Views/assets/css/'.$asset.'.css'
+				)
+			);
+		}
+
+		// Save some compiled assets
+		$this->writeDocument($this->outputPath.'/assets/js/script.js', $js);
+		$this->writeDocument($this->outputPath.'/assets/css/style.css', $css);
+
+		// Copy across some other static assets
+		$this->filesystem->mirror(__DIR__.'/Views/assets/fonts', $this->outputPath.'/assets/fonts');
+		$this->filesystem->mirror(__DIR__.'/Views/assets/img', $this->outputPath.'/assets/img');
 	}
 
 	/**
@@ -399,10 +510,12 @@ class Generator extends Container
 			->withHomeLink('#')
 			->withProjectName($this->projectName)
 			->withHeaderLinks($this->headerLinks)
+			->withStylePath('assets/css/style.css')
+			->withScriptPath('assets/js/script.js')
 		;
 
 		// Save the generated html
-		$this->writeHtmlDocument($this->outputPath.'/index.html', $html);
+		$this->writeDocument($this->outputPath.'/index.html', $html);
 	}
 
 	/**
@@ -585,13 +698,32 @@ class Generator extends Container
 
 				$this->relativeUrls[$link->getRelativePathname()] = $uri;
 
+				// Work out the icon relative path
+				$icon_path = 'assets/img/silk';
+				$parts = Str::split($file->getRelativePathname(), '/');
+				for ($i = 2; $i <= count($parts); $i++)
+				{
+					$icon_path = '../'.$icon_path;
+				}
+
+				// Work out which icon we will show
+				switch ($link->getExtension())
+				{
+					case 'php': $icon = $icon_path.'/page_white_php.png'; break;
+					case 'html': $icon = $icon_path.'/html.png'; break;
+					case 'css': $icon = $icon_path.'/css.png'; break;
+					case 'js': $icon = $icon_path.'/script_code.png'; break;
+					default: $icon = null;
+				}
+
 				// Add the new tree element
 				$tree[] =
 				[
 					'title' => $link->getFileName(),
 					'active' => $active,
 					'focus' => $active,
-					'href' => $uri
+					'href' => $uri,
+					'icon' => $icon
 				];
 			}
 		}
@@ -685,7 +817,7 @@ class Generator extends Container
 	}
 
 	/**
-	 * Method: writeHtmlDocument
+	 * Method: writeDocument
 	 * =========================================================================
 	 * Writes the given html to the given filename
 	 * and creates folders as needed.
@@ -703,7 +835,7 @@ class Generator extends Container
 	 * -------------------------------------------------------------------------
 	 * - RuntimeException: When we failed to write the new file.
 	 */
-	private function writeHtmlDocument($filepath, $html)
+	private function writeDocument($filepath, $html)
 	{
 		// Create any needed folders
 		$folder = pathinfo($filepath, PATHINFO_DIRNAME);
