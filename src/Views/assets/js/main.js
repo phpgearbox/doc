@@ -46,6 +46,11 @@ $(document).ready(function()
 		event.preventDefault();
 	});
 
+	/**
+	 * Event: form.search button on click
+	 * =========================================================================
+	 * 
+	 */
 	$('form.search button').click(function()
 	{
 		var query = $('form.search input').val();

@@ -2,10 +2,10 @@
 
 @section('middle')
 
-	<div class="col-sm-9 col-sm-offset-3 col-md-8 col-md-offset-2 main">
+	<div class="col-md-6 col-md-offset-3 main">
 		
 		<h1 class="page-header">
-			{{ $file_info->getRelativePathname() }}
+			{{{ $file_info->getRelativePathname() }}}
 			<a class="view-source" title="View Source" data-toggle="modal" data-target="#sourceModal">
 				<i class="fa fa-file-code-o"></i>
 			</a>
@@ -17,7 +17,7 @@
 				@if (isset($block['title']))
 					<div class="panel-heading">
 						<h3 class="panel-title">
-							{{ $block['title'] }}
+							{{{ $block['title'] }}}
 							<a
 								class="view-source"
 								title="Take me to the code..."
@@ -41,12 +41,12 @@
 
 	</div>
 
-	<div class="col-sm-3 col-md-2 toc">
+	<div class="col-md-2 toc">
 		<div class="list-group">
 			@foreach ($blocks as $key => $block)
 				@if (isset($block['title']))
 					<a class="list-group-item<?php if ($key == 0) echo ' active'; ?>" data-block-target="#block_{{ $key }}">
-						{{ $block['title'] }}
+						{{{ $block['title'] }}}
 					</a>
 				@endif
 			@endforeach
@@ -66,7 +66,7 @@
 						<span class="sr-only">Close</span>
 					</button>
 					<h4 class="modal-title" id="sourceModalLabel">
-						{{ $file_info->getFileName() }}
+						{{{ $file_info->getFileName() }}}
 					</h4>
 				</div>
 				<div class="modal-body">

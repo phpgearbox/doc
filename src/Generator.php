@@ -26,8 +26,32 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Class: Generator
  * =============================================================================
- * TODO: When this class is actually finalised
- * I will write some nice documentation here.
+ * This is main class of this package.
+ * 
+ * While it is rather large and complex, it's use is fairly straight forward.
+ * It extends the [Gears\Di](https://github.com/phpgearbox/di) container which
+ * makes configuration super easy.
+ *
+ * > NOTE: The following example is for someone that wants to consume this class
+ * > with in some sort of larger system. If all you wish to do is run *gearsdoc*
+ * > you should see the main [README](index.html).
+ *
+ * ```php
+ * // Create the generator
+ * $g = new Gears\Doc\Generator();
+ *
+ * // At the very least you will probably want to set the following
+ * $g->inputPath = '???';
+ * $g->outputPath = '???';
+ * $g->projectName = '???';
+ *
+ * // Once the generator has been configured all you need to do is run it
+ * $g->run();
+ * ```
+ *
+ * Thats it, there are no other public methods. I have set everything else to
+ * protected so feel free to extend the class and make any modifcations you
+ * wish.
  */
 class Generator extends Container
 {
@@ -35,6 +59,7 @@ class Generator extends Container
 	 * Property: inputPath
 	 * =========================================================================
 	 * The path of where your src files are located.
+	 * 
 	 * Defaults to: ```./src```
 	 */
 	protected $injectInputPath;
@@ -43,6 +68,7 @@ class Generator extends Container
 	 * Property: outputPath
 	 * =========================================================================
 	 * The path of where we will output the generated documentation.
+	 * 
 	 * Defaults to: ```./docs```
 	 */
 	protected $injectOutputPath;
@@ -77,14 +103,15 @@ class Generator extends Container
 	 * =========================================================================
 	 * You don't have to set this but I would recommend that you do.
 	 * It is used in the header on the top left.
-	 * We default to: *The Doctor*
+	 * 
+	 * Defaults to: ```The Doctor```
 	 */
 	protected $injectProjectName;
 
 	/**
 	 * Property: headerLinks
 	 * =========================================================================
-	 * This completely optional. We use this in the header at the top right.
+	 * This is completely optional. We use this in the header at the top right.
 	 * If you do decide you would like some links in your header please supply
 	 * an array that looks like this:
 	 * 
@@ -103,7 +130,8 @@ class Generator extends Container
 	 * =========================================================================
 	 * An array of file extensions to parse.
 	 * Only extensions listed here will be checked for docblocks.
-	 * It defaults to: ```php, js, css, less, sccs```
+	 * 
+	 * Defaults to: ```php, js, css, less, sccs```
 	 */
 	protected $injectExts;
 
@@ -119,8 +147,7 @@ class Generator extends Container
 	 *   - [protected $injectCssAssets;](#)
 	 * 
 	 * However if you do find yourself wanting to completely replace the blade
-	 * templates with your own. Just provide the path to the templates
-	 * here.
+	 * templates with your own. Just provide the path to the templates here.
 	 * 
 	 * For Example:
 	 * -------------------------------------------------------------------------
@@ -177,8 +204,8 @@ class Generator extends Container
 	 * $g->protect(function($css){ return CssMin::minify($css); });
 	 * ```
 	 * 
-	 * *For more info on how the gears dependency injection container works,
-	 * have a look at: https://github.com/phpgearbox/di*
+	 * _For more info on how the gears dependency injection container works,
+	 * have a look at: https://github.com/phpgearbox/di_
 	 */
 	protected $injectCssMin;
 
@@ -195,8 +222,8 @@ class Generator extends Container
 	 * $g->protect(function($js){ return JsMin::minify($js); });
 	 * ```
 	 *
-	 * *For more info on how the gears dependency injection container works,
-	 * have a look at: https://github.com/phpgearbox/di*
+	 * _For more info on how the gears dependency injection container works,
+	 * have a look at: https://github.com/phpgearbox/di_
 	 */
 	protected $injectJsMin;
 
@@ -245,8 +272,8 @@ class Generator extends Container
 	 * =========================================================================
 	 * We use this to store a hierarchal array of all the files we are
 	 * generating documentation for. It is then used later on by
-	 * ```generateJsonTree()``` to create the fancy tree and the
-	 * ```$this->relativeUrls``` property.
+	 * [Method: generateJsonTree](#) to create the fancy tree and
+	 * the [Property: relativeUrls](#) property.
 	 *
 	 * > NOTE: This is not part of the public API.
 	 */
@@ -256,7 +283,7 @@ class Generator extends Container
 	 * Property: relativeUrls
 	 * =========================================================================
 	 * This helps with the lunr search index. It was a bit of an after thought
-	 * that I added into the ```generateJsonTree()``` method. Ideally I could
+	 * that I added into [Method: generateJsonTree](#). Ideally I could
 	 * refactor the FancyTree to also use this to lookup the correct URL.
 	 *
 	 * > NOTE: This is not part of the public API.
@@ -286,9 +313,9 @@ class Generator extends Container
 	 * This is an index of the index haha... Actually thats not too far from the
 	 * truth. Unfortunately lunr does not return the full document when you
 	 * perform a search query, only the document id. So we use this to tell us
-	 * which document it is in our original lunrIndex json.
+	 * which document it is in our original lunr_index json.
 	 * 
-	 * @see: Views/script.blade.php
+	 * See: [Event: form.search button on click](Views/assets/js/main.js)
 	 * 
 	 * ```var doc = lunr_index[lunr_index_lookup[result.ref]];```
 	 *
@@ -498,9 +525,9 @@ class Generator extends Container
 			$html = $this->view
 				->make('layouts.doc')
 				->withNav($tree)
-				->withRelativeUrls(json_encode($this->relativeUrls))
-				->withLunrIndex(json_encode($this->lunrIndex))
-				->withLunrIndexLookup(json_encode($this->lunrIndexLookup))
+				->withRelativeUrls($this->relativeUrls)
+				->withLunrIndex($this->lunrIndex)
+				->withLunrIndexLookup($this->lunrIndexLookup)
 				->withFileInfo($data['src_file'])
 				->withBlocks($data['blocks'])
 				->withHomeLink($homeLink)
@@ -528,7 +555,7 @@ class Generator extends Container
 	 * The basic idea is that every project will have a README.md so
 	 * why not just use that as the contents for the home page.
 	 * 
-	 * @see: ```Property: indexPage```
+	 * See: [Property: indexPage](#)
 	 * 
 	 * Parameters:
 	 * -------------------------------------------------------------------------
@@ -563,9 +590,9 @@ class Generator extends Container
 		$html = $this->view
 			->make('layouts.home')
 			->withNav($tree)
-			->withRelativeUrls(json_encode($this->relativeUrls))
-			->withLunrIndex(json_encode($this->lunrIndex))
-			->withLunrIndexLookup(json_encode($this->lunrIndexLookup))
+			->withRelativeUrls($this->relativeUrls)
+			->withLunrIndex($this->lunrIndex)
+			->withLunrIndexLookup($this->lunrIndexLookup)
 			->withContent($html)
 			->withHomeLink('#')
 			->withProjectName($this->projectName)
@@ -763,7 +790,7 @@ class Generator extends Container
 	 * Method: generateLunrIndex
 	 * =========================================================================
 	 * We are using a jquery plugin that implements the *Lucene* search.
-	 * @see: http://lunrjs.com/
+	 * See: http://lunrjs.com/
 	 * 
 	 * This generates an array which then gets converted to JSON. The browser
 	 * then loops over the JSON to create the final index. I almost could have
@@ -816,7 +843,7 @@ class Generator extends Container
 	 * Method: generateJsonTree
 	 * =========================================================================
 	 * We are using a jquery plugin to create our sidebar tree menu.
-	 * @see: https://github.com/mar10/fancytree
+	 * See: https://github.com/mar10/fancytree
 	 * 
 	 * The plugin uses a JSON object to build the tree. This method generates
 	 * the JSON object for each static file we output. The reason we can't share
@@ -1079,8 +1106,9 @@ class Generator extends Container
 	 * 
 	 * Parameters:
 	 * -------------------------------------------------------------------------
-	 * - $filepath: The filepath to the new document.
-	 * - $html: The html to write into the new document.
+	 *  - $filepath: The filepath to the new document.
+	 *  
+	 *  - $html: The html to write into the new document.
 	 * 
 	 * Returns:
 	 * -------------------------------------------------------------------------
@@ -1088,7 +1116,7 @@ class Generator extends Container
 	 * 
 	 * Throws:
 	 * -------------------------------------------------------------------------
-	 * - RuntimeException: When we failed to write the new file.
+	 *  - RuntimeException: When we failed to write the new file.
 	 */
 	protected function writeDocument($filepath, $html)
 	{
@@ -1116,7 +1144,7 @@ class Generator extends Container
 	 * 
 	 * Parameters:
 	 * -------------------------------------------------------------------------
-	 * - $file: A SplFileInfo object for the file.
+	 *  - $file: A SplFileInfo object for the file.
 	 * 
 	 * Returns:
 	 * -------------------------------------------------------------------------
@@ -1154,6 +1182,14 @@ class Generator extends Container
 					$block['lines'] = [$start+1, $line_no+1];
 					$block['md'] = rtrim($current_block);
 					$block['html'] = $this->parsedown->text($block['md']);
+
+					// The very next line after a docblock
+					// we consider the method signature.
+					if (isset($lines[$line_no+1]))
+					{
+						$sig = trim($lines[$line_no+1]);
+						if ($sig != '') $block['signature'] = $sig;
+					}
 
 					// The first <h1> element we consider the block title
 					if (Str::contains($block['html'], '<h1>'))
@@ -1198,15 +1234,16 @@ class Generator extends Container
 					}
 					else
 					{
+						$block['title'] = Str::split($block['md'], "\n")[0];
+
+						$block['html'] = $this->parsedown->text(Str::replace
+						(
+							$block['md'],
+							$block['title'],
+							''
+						));
+
 						$block['context'] = '';
-					}
-					
-					// The very next line after a docblock
-					// we consider the method signature.
-					if (isset($lines[$line_no+1]))
-					{
-						$sig = trim($lines[$line_no+1]);
-						if ($sig != '') $block['signature'] = $sig;
 					}
 					
 					// Add a new block to our array
