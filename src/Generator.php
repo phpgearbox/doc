@@ -108,9 +108,38 @@ class Generator extends Container
 	protected $injectExts;
 
 	/**
+	 * Property: viewPath
+	 * =========================================================================
+	 * This is the path to the blade views. The bundled views are very
+	 * customisable through a number of other injectable properties.
+	 * Perhaps all you need to do is override some css or js,
+	 * checkout:
+	 * 
+	 *   - [protected $injectJsAssets;](#)
+	 *   - [protected $injectCssAssets;](#)
+	 * 
+	 * However if you do find yourself wanting to completely replace the blade
+	 * templates with your own. Just provide the path to the templates
+	 * here.
+	 * 
+	 * For Example:
+	 * -------------------------------------------------------------------------
+	 *
+	 * ```php
+	 * $g = new Generator();
+	 * $g->viewPath = '/my/custom/blade/templates';
+	 * ```
+	 */
+	protected $injectViewPath;
+
+	/**
 	 * Property: view
 	 * =========================================================================
 	 * An instance of: ```Gears\View``` or ```Illuminate\View\Factory```
+	 *
+	 * > NOTE: If you wanted to completely replace the view layer
+	 * > this is where to do it. But the new view class must still
+	 * > extend ```Illuminate\View\Factory```.
 	 */
 	protected $injectView;
 
@@ -131,7 +160,7 @@ class Generator extends Container
 	/**
 	 * Property: finder
 	 * =========================================================================
-	 * An factory for: ```Symfony\Component\Finder\Finder```
+	 * A factory for: ```Symfony\Component\Finder\Finder```
 	 */
 	protected $injectFinder;
 
@@ -139,11 +168,17 @@ class Generator extends Container
 	 * Property: cssMin
 	 * =========================================================================
 	 * This must be a protected callable that can minify css.
-	 * For example:
-	 *
+	 * 
+	 * For Example:
+	 * -------------------------------------------------------------------------
+	 * 
 	 * ```php
-	 * $this->protect(function($css){ return CssMin::minify($css); });
+	 * $g = new Generator();
+	 * $g->protect(function($css){ return CssMin::minify($css); });
 	 * ```
+	 * 
+	 * *For more info on how the gears dependency injection container works,
+	 * have a look at: https://github.com/phpgearbox/di*
 	 */
 	protected $injectCssMin;
 
@@ -151,23 +186,71 @@ class Generator extends Container
 	 * Property: jsMin
 	 * =========================================================================
 	 * This must be a protected callable that can minify js.
-	 * For example:
+	 * 
+	 * For Example:
+	 * -------------------------------------------------------------------------
 	 *
 	 * ```php
-	 * $this->protect(function($js){ return JsMin::minify($js); });
+	 * $g = new Generator();
+	 * $g->protect(function($js){ return JsMin::minify($js); });
 	 * ```
+	 *
+	 * *For more info on how the gears dependency injection container works,
+	 * have a look at: https://github.com/phpgearbox/di*
 	 */
 	protected $injectJsMin;
+
+	/**
+	 * Property: jsAssets
+	 * =========================================================================
+	 * This is an array of javascript files that will get concatenated and
+	 * minifed together. This should be obvious hopefully but if you replace
+	 * one of the core assets for example ```highlight.js```, the new asset must
+	 * provide the same public API / functionality.
+	 */
+	protected $injectJsAssets;
+
+	/**
+	 * Property: cssAssets
+	 * =========================================================================
+	 * Same idea as the jsAssets above, this is an array of stylesheet files
+	 * that will get concatenated and minifed together. 
+	 */
+	protected $injectCssAssets;
+
+	/**
+	 * Property: staticAssets
+	 * =========================================================================
+	 * Again similar concept to the js and css asset arrays. However this time
+	 * we provide entire folders. Each folder is then copied into the output
+	 * paths ```/assets``` directory.
+	 *
+	 * For Example:
+	 * -------------------------------------------------------------------------
+	 *
+	 * ```php
+	 * $g = new Generator();
+	 * $g->outputPath = '/path/to/generated/docs';
+	 * $g->staticAssets = ['/path/to/some/images'];
+	 * $g->run();
+	 * ```
+	 *
+	 * Now you will find a copy of your images here:
+	 * ```/path/to/generated/docs/assets/images```
+	 */
+	protected $injectStaticAssets;
 
 	/**
 	 * Property: nav
 	 * =========================================================================
 	 * We use this to store a hierarchal array of all the files we are
 	 * generating documentation for. It is then used later on by
-	 * ```generateJsonTree()``` to create the fancy tree and ```$relativeUrls```
-	 * property.
+	 * ```generateJsonTree()``` to create the fancy tree and the
+	 * ```$this->relativeUrls``` property.
+	 *
+	 * > NOTE: This is not part of the public API.
 	 */
-	private $nav;
+	protected $nav;
 
 	/**
 	 * Property: relativeUrls
@@ -175,8 +258,10 @@ class Generator extends Container
 	 * This helps with the lunr search index. It was a bit of an after thought
 	 * that I added into the ```generateJsonTree()``` method. Ideally I could
 	 * refactor the FancyTree to also use this to lookup the correct URL.
+	 *
+	 * > NOTE: This is not part of the public API.
 	 */
-	private $relativeUrls;
+	protected $relativeUrls;
 
 	/**
 	 * Property: lunrIndex
@@ -190,8 +275,10 @@ class Generator extends Container
 	 * 
 	 *   - lunr.Index.prototype.toJSON()
 	 *   - lunr.Index.load()
+	 *
+	 * > NOTE: This is not part of the public API.
 	 */
-	private $lunrIndex;
+	protected $lunrIndex;
 
 	/**
 	 * Property: lunrIndexLookup
@@ -204,8 +291,10 @@ class Generator extends Container
 	 * @see: Views/script.blade.php
 	 * 
 	 * ```var doc = lunr_index[lunr_index_lookup[result.ref]];```
+	 *
+	 * > NOTE: This is not part of the public API.
 	 */
-	private $lunrIndexLookup;
+	protected $lunrIndexLookup;
 
 	/**
 	 * Method: setDefaults
@@ -238,7 +327,9 @@ class Generator extends Container
 
 		$this->exts = ['php', 'js', 'css', 'less', 'sccs'];
 
-		$this->view = function () { return new View(__DIR__.'/Views'); };
+		$this->viewPath = __DIR__.'/Views';
+
+		$this->view = function () { return new View($this->viewPath); };
 
 		$this->parsedown = function () { return new Parsedown(); };
 
@@ -252,9 +343,44 @@ class Generator extends Container
 
 		$this->lunrIndexLookup = [];
 
-		$this->cssMin = $this->protect(function($css){ return CssMin::minify($css); });
+		$this->cssMin = $this->protect(function($css)
+		{
+			return CssMin::minify($css);
+		});
 
-		$this->jsMin = $this->protect(function($js){ return JsMin::minify($js); });
+		$this->jsMin = $this->protect(function($js)
+		{
+			return JsMin::minify($js);
+		});
+
+		// NOTE: Order is important for the following arrays.
+		// Especially so for the js assets for obvious reasons.
+		$this->jsAssets =
+		[
+			__DIR__.'/Views/assets/js/jquery.js',
+			__DIR__.'/Views/assets/js/jquery-ui.js',
+			__DIR__.'/Views/assets/js/bootstrap.js',
+			__DIR__.'/Views/assets/js/fancytree.js',
+			__DIR__.'/Views/assets/js/highlight.js',
+			__DIR__.'/Views/assets/js/lunr.js',
+			__DIR__.'/Views/assets/js/main.js'
+		];
+
+		$this->cssAssets =
+		[
+			__DIR__.'/Views/assets/css/bootstrap.css',
+			__DIR__.'/Views/assets/css/bootstrap-theme.css',
+			__DIR__.'/Views/assets/css/font-awesome.css',
+			__DIR__.'/Views/assets/css/fancytree.css',
+			__DIR__.'/Views/assets/css/highlight-github-theme.css',
+			__DIR__.'/Views/assets/css/main.css'
+		];
+
+		$this->staticAssets =
+		[
+			__DIR__.'/Views/assets/img',
+			__DIR__.'/Views/assets/fonts'
+		];
 	}
 
 	/**
@@ -338,10 +464,13 @@ class Generator extends Container
 				'blocks' => $blocks
 			];
 		}
-
+		
+		/*
+		 * NOTE: We need to do this in 2 loops because we need to
+		 * know about all files to generate the fancy tree navigation.
+		 */
+		
 		// Now finally write each static file
-		// NOTE: We need to do this in 2 loops because we need to
-		// know about all files to generate the fancy tree navigation.
 		foreach ($output_files as $output_file => $data)
 		{
 			// Reset our relative urls, these change per file obviously.
@@ -350,10 +479,13 @@ class Generator extends Container
 			// Create the fancy tree json
 			$tree = $this->generateJsonTree($data['src_file']);
 
-			// Create the home page link
+			// Search for any internal links
+			$data['blocks'] = $this->searchForInternalLinks($data['blocks'], $output_files);
+
+			// Create some more relative links
 			$homeLink = 'index.html';
-			$stylePath = 'assets/css/style.css';
-			$scriptPath = 'assets/js/script.js';
+			$stylePath = 'assets/style.css';
+			$scriptPath = 'assets/script.js';
 			$parts = Str::split($data['src_file']->getRelativePathname(), '/');
 			for ($i = 2; $i <= count($parts); $i++)
 			{
@@ -390,78 +522,6 @@ class Generator extends Container
 	}
 
 	/**
-	 * Method: buildAssets
-	 * =========================================================================
-	 *
-	 * Parameters:
-	 * -------------------------------------------------------------------------
-	 * n/a
-	 *
-	 * Returns:
-	 * -------------------------------------------------------------------------
-	 * void
-	 */
-	private function buildAssets()
-	{
-		// Intialise some variables to keep the compiled assets
-		$js = ''; $css = '';
-
-		// NOTE: Order is important for the following arrays.
-		$js_files =
-		[
-			'jquery',
-			'jquery-ui',
-			'bootstrap',
-			'fancytree',
-			'lunr',
-			'highlight',
-			'main'
-		];
-
-		$css_files =
-		[
-			'bootstrap',
-			'bootstrap-theme',
-			'font-awesome',
-			'fancytree',
-			'highlight-github-theme',
-			'main'
-		];
-
-		// Loop through and build the js assets
-		foreach ($js_files as $asset)
-		{
-			$js .= $this['jsMin']
-			(
-				file_get_contents
-				(
-					__DIR__.'/Views/assets/js/'.$asset.'.js'
-				)
-			);
-		}
-
-		// Loop through and build the css assets
-		foreach ($css_files as $asset)
-		{
-			$css .= $this['cssMin']
-			(
-				file_get_contents
-				(
-					__DIR__.'/Views/assets/css/'.$asset.'.css'
-				)
-			);
-		}
-
-		// Save some compiled assets
-		$this->writeDocument($this->outputPath.'/assets/js/script.js', $js);
-		$this->writeDocument($this->outputPath.'/assets/css/style.css', $css);
-
-		// Copy across some other static assets
-		$this->filesystem->mirror(__DIR__.'/Views/assets/fonts', $this->outputPath.'/assets/fonts');
-		$this->filesystem->mirror(__DIR__.'/Views/assets/img', $this->outputPath.'/assets/img');
-	}
-
-	/**
 	 * Method: generateHomePage
 	 * =========================================================================
 	 * Every website needs a home page. This will generate one.
@@ -478,7 +538,7 @@ class Generator extends Container
 	 * -------------------------------------------------------------------------
 	 * void
 	 */
-	private function generateHomePage()
+	protected function generateHomePage()
 	{
 		// Reset our relative urls, these change per file obviously.
 		$this->relativeUrls = [];
@@ -510,12 +570,193 @@ class Generator extends Container
 			->withHomeLink('#')
 			->withProjectName($this->projectName)
 			->withHeaderLinks($this->headerLinks)
-			->withStylePath('assets/css/style.css')
-			->withScriptPath('assets/js/script.js')
+			->withStylePath('assets/style.css')
+			->withScriptPath('assets/script.js')
 		;
 
 		// Save the generated html
 		$this->writeDocument($this->outputPath.'/index.html', $html);
+	}
+
+	/**
+	 * Method: searchForInternalLinks
+	 * =========================================================================
+	 * This makes internal links to other doc blocks work.
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 *  - $current_blocks: An array which represents the current set of blocks
+	 *    that we are about to generate the view for.
+	 *    
+	 *  - $all_blocks: An array of all the blocks.
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * array
+	 */
+	protected function searchForInternalLinks($current_blocks, $all_blocks)
+	{
+		// Loop through each docblock
+		foreach ($current_blocks as $block_key => $block)
+		{
+			// Does the block contain any links?
+			if (Str::contains($block['html'], '</a>'))
+			{
+				// Extract those links
+				$matches = Str::wildCardMatch($block['html'], '<a*href="*"*>*</a>');
+
+				// Loop through the href attributes of the links
+				foreach ($matches[2] as $match_key => $url)
+				{
+					// The link is local to the current file
+					if ($url == '#')
+					{
+						// We will search the current set of blocks
+						$blocks_to_search = $current_blocks;
+
+						// The URL prefix is nothing as the link
+						// is internal to the current document.
+						$url_prefix = '';
+					}
+
+					// We assume the link is pointing to another doc file if
+					// it does not have a protocol identifier.
+					elseif (!Str::contains($url, '://'))
+					{
+						// Now we need to lookup the relative URL
+						if (isset($this->relativeUrls[$url]))
+						{
+							$url_prefix = $this->relativeUrls[$url];
+						}
+						else
+						{
+							continue;
+						}
+
+						// Make sure the link has a .html extension
+						$url = Str::replace
+						(
+							$url,
+							'.'.pathinfo($url, PATHINFO_EXTENSION),
+							'.html'
+						);
+
+						// Create the output file path
+						$path = Str::replace($this->outputPath.'/'.$url, '//', '/');
+
+						// Grab the blocks from that file
+						if (isset($all_blocks[$path]))
+						{
+							$blocks_to_search = $all_blocks[$path]['blocks'];
+						}
+						else
+						{
+							continue;
+						}
+					}
+
+					// Skip all other types of links
+					else
+					{
+						continue;
+					}
+
+					// Now we need to find the first block that has a title
+					// or signature which is the same as the link text.
+					$found_block_key = Arr::firstKey
+					(
+						$blocks_to_search,
+						function($v) use ($matches, $match_key)
+						{
+							$link_text = $matches[4][$match_key];
+
+							if (isset($v['title']) && $v['title'] == $link_text)
+							{
+								return true;
+							}
+
+							if (isset($v['signature']) && $v['signature'] == $link_text)
+							{
+								return true;
+							}
+
+							return false;
+						}
+					);
+
+					// Check to see if we got a result
+					if (!is_null($found_block_key))
+					{
+						// Replace the link with one that will actually work
+						$block['html'] = Str::replace
+						(
+							$block['html'],
+							$matches[0][$match_key],
+							'<a href="'.$url_prefix.'#'.$found_block_key.'" class="internal-link">'.$matches[4][$match_key].'</a>'
+						);
+					}
+				}
+
+				// Replace the block html with our modified version
+				$current_blocks[$block_key]['html'] = $block['html'];
+			}
+		}
+
+		return $current_blocks;
+	}
+
+	/**
+	 * Method: buildAssets
+	 * =========================================================================
+	 * Here we build the javascript and stylesheet assets into 2 main files.
+	 *
+	 *   - ```$this->outputPath.'/assets/script.js'```
+	 *   - ```$this->outputPath.'/assets/style.css'```
+	 *
+	 * We also copy some additional static assets, such as fonts and images,
+	 * into the output path's ```/assets``` directory.
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * n/a
+	 *
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * void
+	 */
+	protected function buildAssets()
+	{
+		// Intialise some variables to keep the compiled assets
+		$js = ''; $css = '';
+
+		// Loop through and build the js assets
+		foreach ($this->jsAssets as $asset)
+		{
+			$js .= $this['jsMin'](file_get_contents($asset));
+		}
+
+		// Loop through and build the css assets
+		foreach ($this->cssAssets as $asset)
+		{
+			$css .= $this['cssMin'](file_get_contents($asset));
+		}
+
+		// Save some compiled assets
+		$this->writeDocument($this->outputPath.'/assets/script.js', $js);
+		$this->writeDocument($this->outputPath.'/assets/style.css', $css);
+
+		// Copy across some other static assets
+		foreach ($this->staticAssets as $asset)
+		{
+			// Source folder
+			$from = $asset;
+
+			// Output folder
+			$to = $this->outputPath.'/assets/'.basename($asset);
+
+			// Mirror the folder
+			$this->filesystem->mirror($from, $to);
+		}
 	}
 
 	/**
@@ -545,16 +786,28 @@ class Generator extends Container
 	 * -------------------------------------------------------------------------
 	 * array
 	 */
-	private function generateLunrIndex($blocks, SplFileInfo $file)
+	protected function generateLunrIndex($blocks, SplFileInfo $file)
 	{
 		foreach ($blocks as $key => $block)
 		{
 			$index = [];
+
 			$index['id'] = $file->getRelativePathname().'--gearsdoc--'.$key;
+
 			$index['body'] = strip_tags($block['html']);
-			if (isset($block['title'])) $index['title'] = $block['title'];
-			if (isset($block['signature'])) $index['signature'] = $block['signature'];
+
+			if (isset($block['title']))
+			{
+				$index['title'] = $block['title'];
+			}
+
+			if (isset($block['signature']))
+			{
+				$index['signature'] = $block['signature'];
+			}
+
 			$this->lunrIndex[] = $index;
+
 			$this->lunrIndexLookup[$index['id']] = count($this->lunrIndex)-1;
 		}
 	}
@@ -583,7 +836,7 @@ class Generator extends Container
 	 * -------------------------------------------------------------------------
 	 * array
 	 */
-	private function generateJsonTree(SplFileInfo $file, $recurse = null)
+	protected function generateJsonTree(SplFileInfo $file, $recurse = null)
 	{
 		// This is what gets returned
 		$tree = [];
@@ -689,6 +942,7 @@ class Generator extends Container
 					);
 				}
 
+				// Swap the extension to '.html'
 				$uri = Str::replace
 				(
 					$uri,
@@ -696,6 +950,7 @@ class Generator extends Container
 					'.html'
 				);
 
+				// Add the relative url mapping
 				$this->relativeUrls[$link->getRelativePathname()] = $uri;
 
 				// Work out the icon relative path
@@ -766,7 +1021,7 @@ class Generator extends Container
 	 * -------------------------------------------------------------------------
 	 * void
 	 */
-	private function normalisePaths()
+	protected function normalisePaths()
 	{
 		if (Str::endsWith($this->inputPath, DIRECTORY_SEPARATOR))
 		{
@@ -792,7 +1047,7 @@ class Generator extends Container
 	 * -------------------------------------------------------------------------
 	 * Symfony\Component\Finder\Finder
 	 */
-	private function getInputFiles()
+	protected function getInputFiles()
 	{
 		// Create our finder
 		$finder = $this->finder;
@@ -835,7 +1090,7 @@ class Generator extends Container
 	 * -------------------------------------------------------------------------
 	 * - RuntimeException: When we failed to write the new file.
 	 */
-	private function writeDocument($filepath, $html)
+	protected function writeDocument($filepath, $html)
 	{
 		// Create any needed folders
 		$folder = pathinfo($filepath, PATHINFO_DIRNAME);
@@ -867,7 +1122,7 @@ class Generator extends Container
 	 * -------------------------------------------------------------------------
 	 * array
 	 */
-	private function extractDocBlocks(SplFileInfo $file)
+	protected function extractDocBlocks(SplFileInfo $file)
 	{
 		// Create our docblocks array
 		$blocks = [];
@@ -884,7 +1139,7 @@ class Generator extends Container
 		// Loop through each line that we found
 		foreach ($linesFound as $line_no => $line)
 		{
-			if (!$start)
+			if ($start === false)
 			{
 				// We are looking for the start of a docblock
 				if (trim($line) == '/**') $start = $line_no;

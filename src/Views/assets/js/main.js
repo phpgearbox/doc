@@ -1,3 +1,9 @@
+/**
+ * Section: Lunr Index
+ * =============================================================================
+ * One of the first things we do is setup the lunr index so that it is ready to
+ * go when someone makes a search.
+ */
 var lunrIndex = lunr(function()
 {
 	this.ref("id")
@@ -11,6 +17,11 @@ $.each(lunr_index, function(key, value)
 	lunrIndex.add(value);
 });
 
+/**
+ * Section: Dom Ready
+ * =============================================================================
+ * Everything inside here will be run on dom ready.
+ */
 $(document).ready(function()
 {
 	if (window.location.hash != '')
@@ -19,6 +30,16 @@ $(document).ready(function()
 		var top = $(target).offset().top - 55;
 		$('html, body').animate({scrollTop: top}, 500);
 	}
+
+	$('a.internal-link').click(function()
+	{
+		if ($(this).attr('href').indexOf('#') == 0)
+		{
+			var target = '#block_'+$(this).attr('href').split('#')[1];
+			var top = $(target).offset().top - 55;
+			$('html, body').animate({scrollTop: top}, 500);
+		}
+	});
 
 	$('form.search').submit(function(event)
 	{
@@ -107,8 +128,12 @@ $(document).ready(function()
 
 	$('.toc .list-group-item').click(function()
 	{
-		var top = $($(this).attr('data-block-target')).offset().top - 55;
-		$('html, body').animate({scrollTop: top}, 500);
+		var target = $(this).attr('data-block-target');
+		var top = $(target).offset().top - 55;
+		$('html, body').animate({scrollTop: top}, 500, function()
+		{
+			window.location.hash = target.split('block_')[1];
+		});
 	});
 
 	$(window).scroll(function()
@@ -134,6 +159,8 @@ $(document).ready(function()
 
 		$('.toc .list-group-item').removeClass('active');
 		current_toc.addClass('active');
+
+		window.location.hash = current_toc.attr('data-block-target').split('block_')[1];
 	});
 
 	$('.panel .view-source').click(function()
