@@ -1,8 +1,8 @@
 /**
  * Section: Lunr Index
  * =============================================================================
- * One of the first things we do is setup the lunr index so that it is ready to
- * go when someone makes a search.
+ * One of the first things we do is setup the lunr index
+ * so that it is ready to go when someone makes a search.
  */
 var lunrIndex = lunr(function()
 {
@@ -24,6 +24,38 @@ $.each(lunr_index, function(key, value)
  */
 $(document).ready(function()
 {
+	/**
+	 * Section: Syntax Highlighting
+	 * =========================================================================
+	 * We are using https://highlightjs.org/ for our syntax highlighting needs.
+	 * Because it has an effect to the visual layout of the dom, ie: effects
+	 * height calculations. We run it high in the order.
+	 */
+	hljs.initHighlighting();
+
+	/**
+	 * For the main source modal lets add some line numbers.
+	 * highlight.js does not support line numbers.
+	 * see: http://highlightjs.readthedocs.org/en/latest/line-numbers.html
+	 */
+	if ($('#sourceModal code').length > 0)
+	{
+		var code = '';
+
+		$.each($('#sourceModal code').html().split(/\n/), function(index, value)
+		{
+			code += '<span class="line-number" data-num="'+(index+1)+'">'+value+'</span>'+"\n";
+		});
+
+		$('#sourceModal code').html(code);
+	}
+
+	/**
+	 * Section: OnLoad Hash Detection
+	 * =========================================================================
+	 * When the browser first loads we check for a hash, if one exists we
+	 * scroll to that location for the user automatically.
+	 */
 	if (window.location.hash != '')
 	{
 		var target = '#block_'+window.location.hash.split('#')[1];
@@ -31,6 +63,32 @@ $(document).ready(function()
 		$('html, body').animate({scrollTop: top}, 500);
 	}
 
+	/**
+	 * Section: Fancytree
+	 * =========================================================================
+	 * We are using https://github.com/mar10/fancytree to create our tree menu
+	 * in the left hand sidebar. See [Method: generateJsonTree](Generator.php)
+	 * for where the json tree is created.
+	 */
+	$(".fancytree").fancytree
+	({
+		source: fancy_tree,
+
+		activate: function(event, data)
+		{
+			if (typeof data.node.data.href != 'undefined')
+			{
+				window.location = data.node.data.href;
+			}
+		}
+	});
+
+	/**
+	 * Event: Internal Link Click
+	 * =========================================================================
+	 * When a user clicks on a link that is on the exact same document this will
+	 * handle that event. It will scroll to the associated docblock.
+	 */
 	$('a.internal-link').click(function()
 	{
 		if ($(this).attr('href').indexOf('#') == 0)
@@ -41,15 +99,28 @@ $(document).ready(function()
 		}
 	});
 
+	/**
+	 * Event: Search Form Submit
+	 * =========================================================================
+	 * This stops the browser from actually submitting, as the search is all
+	 * done client side. So AJAX requests are sent of any kind.
+	 */
 	$('form.search').submit(function(event)
 	{
 		event.preventDefault();
 	});
 
 	/**
-	 * Event: form.search button on click
+	 * Event: Search Form Go Button
 	 * =========================================================================
+	 * When a user clicks the search "Go" button this will fire.
 	 * 
+	 * > NOTE: When a user hits the enter key on the search input this event
+	 * > will also be fired. Even though I have no event handler for that,
+	 * > I believe bootstrap is doing it for us...
+	 * 
+	 * This grabs the search query and send it to the lunr index and then
+	 * generates the HTML that goes into the search results modal.
 	 */
 	$('form.search button').click(function()
 	{
@@ -106,7 +177,16 @@ $(document).ready(function()
 
 		$('#searchModal').modal('show');
 	});
-
+	
+	/**
+	 * Event: Search Result Link Click
+	 * =========================================================================
+	 * Because the search result links are loaded at runtime, the standard
+	 * [Event: Internal Link Click](#) does not handle them for us.
+	 * 
+	 * This event is attached to the document but is
+	 * filtered by the ```search-result-link``` class.
+	 */
 	$(document).on('click', 'a.search-result-link', function()
 	{
 		if ($(this).attr('href').indexOf('#') == 0)
@@ -118,54 +198,57 @@ $(document).ready(function()
 		}
 	});
 
-	$(".fancytree").fancytree
-	({
-		source: fancy_tree,
-
-		activate: function(event, data)
-		{
-			if (typeof data.node.data.href != 'undefined')
-			{
-				window.location = data.node.data.href;
-			}
-		}
-	});
-
+	/**
+	 * Event: Table of Contents Click
+	 * =========================================================================
+	 * On pages that have a table of contents on the right hand side.
+	 * We animate the scroll to the appropriate docblock.
+	 */
 	$('.toc .list-group-item').click(function()
 	{
 		var target = $(this).attr('data-block-target');
 		var top = $(target).offset().top - 55;
-		$('html, body').animate({scrollTop: top}, 500, function()
-		{
-			window.location.hash = target.split('block_')[1];
-		});
+		$('html, body').animate({scrollTop: top}, 500);
 	});
 
+	/**
+	 * Event: Window Scroll
+	 * =========================================================================
+	 * When ever the window scrolls we update the Table of Contents
+	 * in the right hand sidebar. Along with the hash in the address bar.
+	 */
 	$(window).scroll(function()
 	{
-		var top = $(window).scrollTop();
-
-		var current_toc = null;
-
-		$('.panel').each(function(index, el)
+		if ($('.toc .list-group-item').length > 0)
 		{
-			var panel_top = $(el).offset().top - 56;
+			var top = $(window).scrollTop();
 
-			if (top >= panel_top)
+			var current_toc = null;
+
+			$('.panel').each(function(index, el)
 			{
-				current_toc = $('[data-block-target="#'+$(el).attr('id')+'"]');
+				var panel_top = $(el).offset().top - 56;
+
+				if (top >= panel_top)
+				{
+					current_toc = $(el).attr('id');
+				}
+			});
+
+			if (current_toc == null)
+			{
+				window.location.hash = 0;
+				current_toc = $('[data-block-target="#block_0"]');
 			}
-		});
+			else
+			{
+				window.location.hash = current_toc.split('block_')[1];
+				current_toc = $('[data-block-target="#'+current_toc+'"]')
+			}
 
-		if (current_toc == null)
-		{
-			current_toc = $('[data-block-target="#block_0"]');
+			$('.toc .list-group-item').removeClass('active');
+			current_toc.addClass('active');
 		}
-
-		$('.toc .list-group-item').removeClass('active');
-		current_toc.addClass('active');
-
-		window.location.hash = current_toc.attr('data-block-target').split('block_')[1];
 	});
 
 	$('.panel .view-source').click(function()
@@ -201,22 +284,4 @@ $(document).ready(function()
 			});
 		}, 500);
 	});
-
-	// Highlight all our code blocks
-	hljs.initHighlighting();
-
-	if ($('#sourceModal code').length > 0)
-	{
-		// For the main source modal lets add some line numbers
-		// highlight.js does not support line numbers.
-		// see: http://highlightjs.readthedocs.org/en/latest/line-numbers.html
-		var code = '';
-
-		$.each($('#sourceModal code').html().split(/\n/), function(index, value)
-		{
-			code += '<span class="line-number" data-num="'+(index+1)+'">'+value+'</span>'+"\n";
-		});
-
-		$('#sourceModal code').html(code);
-	}
 });

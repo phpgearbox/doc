@@ -77,7 +77,13 @@ class Generator extends Container
 	 * Property: ignorePaths
 	 * =========================================================================
 	 * Optional array that can be supplied of paths to ignore.
-	 * Each path would be relative to the inputPath.
+	 * Each path would be relative to the [Property: inputPath](#).
+	 * 
+	 * The paths are ignored by using the Finder ```notPath()```
+	 * method, which also accepts regular expressions.
+	 * 
+	 * For more info see:
+	 * http://api.symfony.com/2.5/Symfony/Component/Finder/Finder.html
 	 */
 	protected $injectIgnorePaths;
 
@@ -1082,10 +1088,10 @@ class Generator extends Container
 		// Look for files in the input dir
 		$finder->files()->in($this->inputPath);
 
-		// Exclude any dirs
-		foreach ($this->ignorePaths as $dir)
+		// Exclude some paths
+		foreach ($this->ignorePaths as $path)
 		{
-			$finder->exclude($dir);
+			$finder->notPath($path);
 		}
 
 		// Only look for registered extensions
@@ -1101,14 +1107,18 @@ class Generator extends Container
 	/**
 	 * Method: writeDocument
 	 * =========================================================================
-	 * Writes the given html to the given filename
+	 * Writes the given data to the given filename
 	 * and creates folders as needed.
+	 * 
+	 * We also add ```target="_blank"``` to any links that are external.
+	 * We do this here so we catch all links, even ones in the blade
+	 * views for example.
 	 * 
 	 * Parameters:
 	 * -------------------------------------------------------------------------
 	 *  - $filepath: The filepath to the new document.
 	 *  
-	 *  - $html: The html to write into the new document.
+	 *  - $data: The data to write into the new document.
 	 * 
 	 * Returns:
 	 * -------------------------------------------------------------------------
@@ -1118,7 +1128,7 @@ class Generator extends Container
 	 * -------------------------------------------------------------------------
 	 *  - RuntimeException: When we failed to write the new file.
 	 */
-	protected function writeDocument($filepath, $html)
+	protected function writeDocument($filepath, $data)
 	{
 		// Create any needed folders
 		$folder = pathinfo($filepath, PATHINFO_DIRNAME);
@@ -1127,11 +1137,69 @@ class Generator extends Container
 			$this->filesystem->mkdir($folder);
 		}
 
-		// Save the new html document
-		if (file_put_contents($filepath, $html) === false)
+		// Add target="_blank" as needed
+		if (pathinfo($filepath, PATHINFO_EXTENSION) == 'html')
+		{
+			$data = $this->setLinkTarget($data);
+		}
+
+		// Save the new document
+		if (file_put_contents($filepath, $data) === false)
 		{
 			throw new RuntimeException('Failed to write file: '.$filepath);
 		}
+	}
+
+	/**
+	 * Method: setLinkTarget
+	 * =========================================================================
+	 * Finds all ```<a>``` tags, checks their ```href```
+	 * attributes for an external link.
+	 * 
+	 * If one is found we ensure that the ```target``` for the
+	 * link is set to ```_blank```, making a new window open.
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 *  - $html: A html string to read through.
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * The modified HTML.
+	 */
+	protected function setLinkTarget($html)
+	{
+		// Check to see if we have any links, if not we do nothing
+		if (Str::contains($html, '</a>'))
+		{
+			// Extract those links
+			$matches = Str::betweenRegx($html, '<a', '</a>');
+
+			// Loop through each link
+			foreach ($matches[1] as $key => $link)
+			{
+				// Does the link contain a href attribute & protocol identifier?
+				if (Str::contains($link, 'href') && Str::contains($link, '://'))
+				{
+					// Extract the url
+					$url = Str::between($link, 'href="', '"');
+
+					// Extract the link text
+					$text = Str::between($matches[0][$key], '">', '</a>');
+
+					// This link is external so lets add in the target attribute
+					$html = Str::replace
+					(
+						$html,
+						$matches[0][$key],
+						'<a href="'.$url.'" target="_blank">'.$text.'</a>'
+					);
+				}
+			}
+		}
+
+		// Return the modified HTML
+		return $html;
 	}
 
 	/**

@@ -3440,9 +3440,15 @@ this.field("title",{boost:10})
 this.field("signature")
 this.field("body")});$.each(lunr_index,function(key,value)
 {lunrIndex.add(value);});$(document).ready(function()
-{if(window.location.hash!='')
+{hljs.initHighlighting();if($('#sourceModal code').length>0)
+{var code='';$.each($('#sourceModal code').html().split(/\n/),function(index,value)
+{code+='<span class="line-number" data-num="'+(index+1)+'">'+value+'</span>'+"\n";});$('#sourceModal code').html(code);}
+if(window.location.hash!='')
 {var target='#block_'+window.location.hash.split('#')[1];var top=$(target).offset().top-55;$('html, body').animate({scrollTop:top},500);}
-$('a.internal-link').click(function()
+$(".fancytree").fancytree
+({source:fancy_tree,activate:function(event,data)
+{if(typeof data.node.data.href!='undefined')
+{window.location=data.node.data.href;}}});$('a.internal-link').click(function()
 {if($(this).attr('href').indexOf('#')==0)
 {var target='#block_'+$(this).attr('href').split('#')[1];var top=$(target).offset().top-55;$('html, body').animate({scrollTop:top},500);}});$('form.search').submit(function(event)
 {event.preventDefault();});$('form.search button').click(function()
@@ -3461,23 +3467,20 @@ else
 {html+='<li>'+doc.body+'</li>';}
 html+='</ul><hr>';});$('#searchModalLabel').html('Search Results for: '+query);$('#searchModal .modal-body').html(html);$('#searchModal').modal('show');});$(document).on('click','a.search-result-link',function()
 {if($(this).attr('href').indexOf('#')==0)
-{$('#searchModal').modal('hide');var target='#block_'+$(this).attr('href').split('#')[1];var top=$(target).offset().top-55;$('html, body').animate({scrollTop:top},500);}});$(".fancytree").fancytree
-({source:fancy_tree,activate:function(event,data)
-{if(typeof data.node.data.href!='undefined')
-{window.location=data.node.data.href;}}});$('.toc .list-group-item').click(function()
-{var target=$(this).attr('data-block-target');var top=$(target).offset().top-55;$('html, body').animate({scrollTop:top},500,function()
-{window.location.hash=target.split('block_')[1];});});$(window).scroll(function()
+{$('#searchModal').modal('hide');var target='#block_'+$(this).attr('href').split('#')[1];var top=$(target).offset().top-55;$('html, body').animate({scrollTop:top},500);}});$('.toc .list-group-item').click(function()
+{var target=$(this).attr('data-block-target');var top=$(target).offset().top-55;$('html, body').animate({scrollTop:top},500);});$(window).scroll(function()
+{if($('.toc .list-group-item').length>0)
 {var top=$(window).scrollTop();var current_toc=null;$('.panel').each(function(index,el)
 {var panel_top=$(el).offset().top-56;if(top>=panel_top)
-{current_toc=$('[data-block-target="#'+$(el).attr('id')+'"]');}});if(current_toc==null)
-{current_toc=$('[data-block-target="#block_0"]');}
-$('.toc .list-group-item').removeClass('active');current_toc.addClass('active');window.location.hash=current_toc.attr('data-block-target').split('block_')[1];});$('.panel .view-source').click(function()
+{current_toc=$(el).attr('id');}});if(current_toc==null)
+{window.location.hash=0;current_toc=$('[data-block-target="#block_0"]');}
+else
+{window.location.hash=current_toc.split('block_')[1];current_toc=$('[data-block-target="#'+current_toc+'"]')}
+$('.toc .list-group-item').removeClass('active');current_toc.addClass('active');}});$('.panel .view-source').click(function()
 {var start=parseInt($(this).attr('data-start-line'));var end=parseInt($(this).attr('data-end-line'));var lines=[];$('#sourceModal .line-number').each(function(index,el)
 {var lineno=parseInt($(el).attr('data-num'));if(lineno>=start&&lineno<=end)
 {lines[lines.length]=el;}});$('#sourceModal').modal();setTimeout(function()
 {$('#sourceModal').animate({scrollTop:$(lines[0]).position().top},500,function()
 {$.each(lines,function(index,el)
 {$(el).animate({backgroundColor:'yellow'},1000,function()
-{$(this).animate({backgroundColor:'transparent'},1000);});});});},500);});hljs.initHighlighting();if($('#sourceModal code').length>0)
-{var code='';$.each($('#sourceModal code').html().split(/\n/),function(index,value)
-{code+='<span class="line-number" data-num="'+(index+1)+'">'+value+'</span>'+"\n";});$('#sourceModal code').html(code);}});
+{$(this).animate({backgroundColor:'transparent'},1000);});});});},500);});});
