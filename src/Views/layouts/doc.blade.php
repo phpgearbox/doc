@@ -66,7 +66,7 @@
 						<span class="sr-only">Close</span>
 					</button>
 					<h4 class="modal-title" id="sourceModalLabel">
-						{{{ $file_info->getFileName() }}}
+						{{{ $file_info->getRelativePathname() }}}
 					</h4>
 				</div>
 				<div class="modal-body">

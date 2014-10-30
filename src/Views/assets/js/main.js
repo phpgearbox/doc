@@ -31,6 +31,11 @@ $(document).ready(function()
 	 * Because it has an effect to the visual layout of the dom, ie: effects
 	 * height calculations. We run it high in the order.
 	 */
+
+	// Replace tabs with 4 spaces, it looks nicer in the web browser.
+	hljs.configure({tabReplace: '    '});
+
+	// Highlight everything on the page.
 	hljs.initHighlighting();
 
 	/**
@@ -58,9 +63,30 @@ $(document).ready(function()
 	 */
 	if (window.location.hash != '')
 	{
-		var target = '#block_'+window.location.hash.split('#')[1];
-		var top = $(target).offset().top - 55;
-		$('html, body').animate({scrollTop: top}, 500);
+		if (window.location.hash.indexOf('#line_') == 0)
+		{
+			var line = window.location.hash.split('_')[1];
+			line = $('#sourceModal .line-number[data-num="'+line+'"]');
+
+			$('#sourceModal').modal('show');
+
+			setTimeout(function()
+			{
+				$('#sourceModal').animate({scrollTop: line.position().top}, 500, function()
+				{
+					line.animate({backgroundColor: 'yellow'}, 1000, function()
+					{
+						$(this).animate({backgroundColor: 'transparent'}, 1000);
+					});
+				});
+			}, 500);
+		}
+		else
+		{
+			var target = '#block_'+window.location.hash.split('#')[1];
+			var top = $(target).offset().top - 55;
+			$('html, body').animate({scrollTop: top}, 500);
+		}
 	}
 
 	/**
@@ -91,11 +117,32 @@ $(document).ready(function()
 	 */
 	$('a.internal-link').click(function()
 	{
-		if ($(this).attr('href').indexOf('#') == 0)
+		if ($(this).attr('href').indexOf('#line_') == 0)
 		{
-			var target = '#block_'+$(this).attr('href').split('#')[1];
-			var top = $(target).offset().top - 55;
-			$('html, body').animate({scrollTop: top}, 500);
+			var line = $(this).attr('href').split('_')[1];
+			line = $('#sourceModal .line-number[data-num="'+line+'"]');
+
+			$('#sourceModal').modal('show');
+
+			setTimeout(function()
+			{
+				$('#sourceModal').animate({scrollTop: line.position().top}, 500, function()
+				{
+					line.animate({backgroundColor: 'yellow'}, 1000, function()
+					{
+						$(this).animate({backgroundColor: 'transparent'}, 1000);
+					});
+				});
+			}, 500);
+		}
+		else
+		{
+			if ($(this).attr('href').indexOf('#') == 0)
+			{
+				var target = '#block_'+$(this).attr('href').split('#')[1];
+				var top = $(target).offset().top - 55;
+				$('html, body').animate({scrollTop: top}, 500);
+			}
 		}
 	});
 
@@ -225,32 +272,38 @@ $(document).ready(function()
 
 			var current_toc = null;
 
-			$('.panel').each(function(index, el)
+			$('.toc .list-group-item').each(function(index, el)
 			{
-				var panel_top = $(el).offset().top - 56;
+				var block_top = $($(el).attr('data-block-target')).offset().top - 56;
 
-				if (top >= panel_top)
+				if (top >= block_top)
 				{
-					current_toc = $(el).attr('id');
+					current_toc = $(el);
 				}
 			});
+
+			$('.toc .list-group-item').removeClass('active');
 
 			if (current_toc == null)
 			{
 				window.location.hash = 0;
-				current_toc = $('[data-block-target="#block_0"]');
+				$('.toc .list-group-item').first().addClass('active');
 			}
 			else
 			{
-				window.location.hash = current_toc.split('block_')[1];
-				current_toc = $('[data-block-target="#'+current_toc+'"]')
+				window.location.hash = current_toc.attr('data-block-target').split('block_')[1];
+				current_toc.addClass('active');
 			}
-
-			$('.toc .list-group-item').removeClass('active');
-			current_toc.addClass('active');
 		}
 	});
 
+	/**
+	 * Event: View Source Button
+	 * =========================================================================
+	 * Each doc block panel has a little view source button / icon in the title
+	 * bar aligned to the right. This will open up the source code modal and
+	 * then scroll to and highlight the actual docblock in the code.
+	 */
 	$('.panel .view-source').click(function()
 	{
 		var start = parseInt($(this).attr('data-start-line'));

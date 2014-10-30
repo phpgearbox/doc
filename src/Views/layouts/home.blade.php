@@ -2,10 +2,20 @@
 
 @section('middle')
 
-	<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+	<div class="col-md-6 col-md-offset-3 main">
 					
 		{{ $content }}
 
+	</div>
+
+	<div class="col-md-2 toc">
+		<div class="list-group">
+			@foreach ($sections as $key => $section)
+				<a class="list-group-item<?php if ($key == 0) echo ' active'; ?>" data-block-target="#block_{{ $key }}">
+					{{ $section }}
+				</a>
+			@endforeach
+		</div>
 	</div>
 	
 @stop

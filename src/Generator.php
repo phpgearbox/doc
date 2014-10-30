@@ -28,30 +28,35 @@ use Symfony\Component\Filesystem\Filesystem;
  * =============================================================================
  * This is main class of this package.
  * 
- * While it is rather large and complex, it's use is fairly straight forward.
- * It extends the [Gears\Di](https://github.com/phpgearbox/di) container which
- * makes configuration super easy.
+ * While it is rather large and complex _(version 2.0 will probably get a
+ * re-factor so that we are slightly more object oriented rather one big
+ * procedural mess)_, it's use is fairly straight forward.
+ * 
+ * It extends the [Gears\Di](https://github.com/phpgearbox/di)
+ * container which makes configuration super easy.
  *
  * > NOTE: The following example is for someone that wants to consume this class
  * > with in some sort of larger system. If all you wish to do is run *gearsdoc*
  * > you should see the main [README](index.html).
- *
+ * 
+ * For Example:
+ * -----------------------------------------------------------------------------
  * ```php
  * // Create the generator
  * $g = new Gears\Doc\Generator();
  *
  * // At the very least you will probably want to set the following
- * $g->inputPath = '???';
- * $g->outputPath = '???';
- * $g->projectName = '???';
+ * $g->inputPath = '/the/path/to/your/source/code';
+ * $g->outputPath = '/the/path/to/where/you/want/the/generated/docs/to/go';
+ * $g->projectName = 'Your Awesome Project Name';
  *
  * // Once the generator has been configured all you need to do is run it
  * $g->run();
  * ```
  *
- * Thats it, there are no other public methods. I have set everything else to
- * protected so feel free to extend the class and make any modifcations you
- * wish.
+ * Thats it, apart from all the other injectable properties there are no other
+ * public methods. I have set everything else to protected so feel free to
+ * extend this class and make any modifications you wish.
  */
 class Generator extends Container
 {
@@ -79,8 +84,8 @@ class Generator extends Container
 	 * Optional array that can be supplied of paths to ignore.
 	 * Each path would be relative to the [Property: inputPath](#).
 	 * 
-	 * The paths are ignored by using the Finder ```notPath()```
-	 * method, which also accepts regular expressions.
+	 * _The paths are ignored by using the Finder ```notPath()```
+	 * method, which also accepts regular expressions._
 	 * 
 	 * For more info see:
 	 * http://api.symfony.com/2.5/Symfony/Component/Finder/Finder.html
@@ -119,8 +124,10 @@ class Generator extends Container
 	 * =========================================================================
 	 * This is completely optional. We use this in the header at the top right.
 	 * If you do decide you would like some links in your header please supply
-	 * an array that looks like this:
+	 * an array that looks like this.
 	 * 
+	 * For Example:
+	 * -------------------------------------------------------------------------
 	 * ```php
 	 * [
 	 * 		'https://github.com/phpgearbox/doc' => 'GitHub',
@@ -157,7 +164,6 @@ class Generator extends Container
 	 * 
 	 * For Example:
 	 * -------------------------------------------------------------------------
-	 *
 	 * ```php
 	 * $g = new Generator();
 	 * $g->viewPath = '/my/custom/blade/templates';
@@ -204,7 +210,6 @@ class Generator extends Container
 	 * 
 	 * For Example:
 	 * -------------------------------------------------------------------------
-	 * 
 	 * ```php
 	 * $g = new Generator();
 	 * $g->protect(function($css){ return CssMin::minify($css); });
@@ -222,7 +227,6 @@ class Generator extends Container
 	 * 
 	 * For Example:
 	 * -------------------------------------------------------------------------
-	 *
 	 * ```php
 	 * $g = new Generator();
 	 * $g->protect(function($js){ return JsMin::minify($js); });
@@ -274,6 +278,66 @@ class Generator extends Container
 	protected $injectStaticAssets;
 
 	/**
+	 * Property: blockContexts
+	 * =========================================================================
+	 * Each doc block can be given a special css class to style it differently
+	 * from other doc blocks. This works by using the doc block title.
+	 * 
+	 * _Obviously this means if the doc block
+	 * does not have a title this will not work._
+	 * 
+	 * The doc block title is the first ```<h1>``` element of the doc block.
+	 * Thus the title of this very doc block is ```Property: blockContexts```.
+	 * 
+	 * Example:
+	 * -------------------------------------------------------------------------
+	 * The array that you provide must look something like this:
+	 * 
+	 * ```php
+	 * $g = new Generator();
+	 * $g->blockContexts =
+	 * [
+	 * 		'Property:' => 'panel-success',
+	 * 		'Custom:'	=> 'custom-css-class'
+	 * ];
+	 * ```
+	 * 
+	 *  - Where the array keys denote the _"starting"_ value of the title.
+	 *  - And the array values donate the custom css class you wish to apply.
+	 * 
+	 * > NOTE: The default setup just uses the built in bootstrap contexts but
+	 * > there is no reason that with some custom css classes in conjunction
+	 * > with this property that you could create any custom contexts you wish.
+	 * 
+	 * For consumption see:
+	 * [```foreach ($this->blockContexts as $start => $class)```](#)
+	 * 
+	 * TODO: 
+	 * -------------------------------------------------------------------------
+	 * I could possibly take this one step further by providing custom
+	 * blade views for different types of doc blocks.
+	 * 
+	 * Starting to stray away from the original simplicity though...
+	 */
+	protected $injectBlockContexts;
+
+	/**
+	 * Property: additionalMdDocuments
+	 * =========================================================================
+	 * Apart from the simplest of projects most of the time you will probably
+	 * want to write additional documentation, such as detailed examples and
+	 * tutorials, in addition to the _docblock_ documentation.
+	 * 
+	 * Example:
+	 * -------------------------------------------------------------------------
+	 * ```php
+	 * $g = new Generator();
+	 * $g->additionalMdDocuments = '/path/to/your/additional/md/docs';
+	 * ```
+	 */
+	protected $injectAdditionalMdDocuments;
+
+	/**
 	 * Property: nav
 	 * =========================================================================
 	 * We use this to store a hierarchal array of all the files we are
@@ -321,10 +385,8 @@ class Generator extends Container
 	 * perform a search query, only the document id. So we use this to tell us
 	 * which document it is in our original lunr_index json.
 	 * 
-	 * See: [Event: form.search button on click](Views/assets/js/main.js)
+	 * See: [```var doc = lunr_index[lunr_index_lookup[result.ref]];```](Views/assets/js/main.js)
 	 * 
-	 * ```var doc = lunr_index[lunr_index_lookup[result.ref]];```
-	 *
 	 * > NOTE: This is not part of the public API.
 	 */
 	protected $lunrIndexLookup;
@@ -414,6 +476,16 @@ class Generator extends Container
 			__DIR__.'/Views/assets/img',
 			__DIR__.'/Views/assets/fonts'
 		];
+
+		$this->blockContexts =
+		[
+			'Class:'	=> 'panel-primary',
+			'Property:'	=> 'panel-success',
+			'Method:'	=> 'panel-info',
+			'Function:'	=> 'panel-info',
+			'Section:'	=> 'panel-warning',
+			'Event:'	=> 'panel-danger'
+		];
 	}
 
 	/**
@@ -444,7 +516,6 @@ class Generator extends Container
 		// Make sure the output folder exists and is writeable
 		if (!is_dir($this->outputPath) || !is_writeable($this->outputPath))
 		{
-			// It is on the user to create the root output folder
 			throw new RuntimeException
 			(
 				'Please create the output folder with appropriate permissions!'
@@ -454,57 +525,54 @@ class Generator extends Container
 		// Remove all contents of output folder
 		$this->filesystem->remove($this->finder->in($this->outputPath));
 
-		// The below loop will fill this array
-		$output_files = [];
+		// Create a list of views to create
+		$views = [];
 
-		// Loop through each source file
+		// This loop runs through all the src files and extracts the docblocks
 		foreach ($this->getInputFiles() as $file)
 		{
-			// Extract the docblocks from the source file
+			// Grab the blocks from the file, skip to next file if no blocks
 			$blocks = $this->extractDocBlocks($file);
-
-			// Skip to next file if no blocks found
 			if (empty($blocks)) continue;
 
-			// Create the lunr index
+			// Create the Lunr Index for this file
 			$this->generateLunrIndex($blocks, $file);
 
-			// The following sets up our nav array
-			$segments = Str::split($file->getRelativePath(), '/');
-			if ($segments == [''])
-			{
-				$this->nav[] = $file;
-			}
-			else
-			{
-				$existing = Arr::get($this->nav, $segments, []);
-				$existing[] = $file;
-				Arr::set($this->nav, $segments, $existing);
-			}
-
-			// Create the output filename
-			$output_file_name = $this->outputPath.'/'.Str::replace
-			(
-				$file->getRelativePathname(),
-				'.'.$file->getExtension(),
-				'.html'
-			);
+			// Add the file to our nav array
+			$this->addFileToNav($file);
 
 			// Add the file and blocks to our list of views to create
-			$output_files[$output_file_name] =
+			$views[$this->getOutputFileName($file)] =
 			[
 				'src_file' => $file,
 				'blocks' => $blocks
 			];
 		}
-		
-		/*
-		 * NOTE: We need to do this in 2 loops because we need to
-		 * know about all files to generate the fancy tree navigation.
-		 */
-		
+
+		// This loop runs through all the addtional mark down documents, if any
+		foreach ($this->getMarkDownFiles() as $file)
+		{
+			// Grab the blocks from the file, skip to next file if no blocks
+			$blocks = $this->extractPseudoDocBlocks($file);
+			if (empty($blocks)) continue;
+
+			// Add the file to our nav array
+			$this->addFileToNav($file);
+
+			// Create the Lunr Index for this file
+			$this->generateLunrIndex($blocks, $file);
+
+			// Add the file and blocks to our list of views to create
+			$views[$this->getOutputFileName($file)] =
+			[
+				'src_file' => $file,
+				'blocks' => $blocks,
+				'additional' => true
+			];
+		}
+
 		// Now finally write each static file
-		foreach ($output_files as $output_file => $data)
+		foreach ($views as $output_file => $data)
 		{
 			// Reset our relative urls, these change per file obviously.
 			$this->relativeUrls = [];
@@ -513,7 +581,7 @@ class Generator extends Container
 			$tree = $this->generateJsonTree($data['src_file']);
 
 			// Search for any internal links
-			$data['blocks'] = $this->searchForInternalLinks($data['blocks'], $output_files);
+			$data['blocks'] = $this->searchForInternalLinks($data, $views);
 
 			// Create some more relative links
 			$homeLink = 'index.html';
@@ -527,9 +595,19 @@ class Generator extends Container
 				$scriptPath = '../'.$scriptPath;
 			}
 
+			// Which layout will we use?
+			if (isset($data['additional']))
+			{
+				$layout = 'layouts.additional';
+			}
+			else
+			{
+				$layout = 'layouts.doc';
+			}
+
 			// Create our blade view
 			$html = $this->view
-				->make('layouts.doc')
+				->make($layout)
 				->withNav($tree)
 				->withRelativeUrls($this->relativeUrls)
 				->withLunrIndex($this->lunrIndex)
@@ -591,6 +669,36 @@ class Generator extends Container
 			$html = $this->parsedown->text($html);
 		}
 
+		/*
+		 * Lets build an array of the sections, delimited by <h1> and <h2>
+		 * elements. This is used for the Table of Contents in the right
+		 * hand sidebar.
+		 */
+		$section_key = 0;
+		$sections = [];
+
+		// Grab some headings
+		$h1s = Str::betweenRegx($html, '<h1>', '</h1>');
+		$h2s = Str::betweenRegx($html, '<h2>', '</h2>');
+
+		foreach ($h1s[1] as $k => $v)
+		{
+			$sections[] = $v;
+
+			$html = Str::replace($html, $h1s[0][$k], '<h1 id="block_'.$section_key.'">'.$v.'</h1>');
+
+			$section_key++;
+		}
+
+		foreach ($h2s[1] as $k => $v)
+		{
+			$sections[] = $v;
+
+			$html = Str::replace($html, $h2s[0][$k], '<h2 id="block_'.$section_key.'">'.$v.'</h2>');
+
+			$section_key++;
+		}
+
 		// Create our blade view
 		// NOTE: We use a slightly different blade template for the home page
 		$html = $this->view
@@ -600,6 +708,7 @@ class Generator extends Container
 			->withLunrIndex($this->lunrIndex)
 			->withLunrIndexLookup($this->lunrIndexLookup)
 			->withContent($html)
+			->withSections($sections)
 			->withHomeLink('#')
 			->withProjectName($this->projectName)
 			->withHeaderLinks($this->headerLinks)
@@ -612,14 +721,72 @@ class Generator extends Container
 	}
 
 	/**
+	 * Method: getOutputFileName
+	 * =========================================================================
+	 * A very simple method to turn an input file into the output file name.
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 *  - $file: The file object to tunr into the output file name.
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * string
+	 */
+	protected function getOutputFileName(SplFileInfo $file)
+	{
+		return $this->outputPath.'/'.Str::replace
+		(
+			$file->getRelativePathname(),
+			'.'.$file->getExtension(),
+			'.html'
+		);
+	}
+
+	/**
+	 * Method: addFileToNav
+	 * =========================================================================
+	 * Creates the nav array, see: [Property: nav](#)
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 *  - $file: The file object that we are about to add to the nav array.
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * void
+	 */
+	protected function addFileToNav(SplFileInfo $file)
+	{
+		// Split the file path into it's segments
+		$segments = Str::split($file->getRelativePath(), '/');
+
+		// Are we at the root?
+		if ($segments == [''])
+		{
+			$this->nav[] = $file;
+		}
+		else
+		{
+			// Grab the existing portion of the nav array if it exists
+			$existing = Arr::get($this->nav, $segments, []);
+
+			// Add our file to the array
+			$existing[] = $file;
+
+			// And then place it back into the root nav
+			Arr::set($this->nav, $segments, $existing);
+		}
+	}
+	
+	/**
 	 * Method: searchForInternalLinks
 	 * =========================================================================
 	 * This makes internal links to other doc blocks work.
 	 * 
 	 * Parameters:
 	 * -------------------------------------------------------------------------
-	 *  - $current_blocks: An array which represents the current set of blocks
-	 *    that we are about to generate the view for.
+	 *  - $data: An array which represents the current file we are building.
 	 *    
 	 *  - $all_blocks: An array of all the blocks.
 	 * 
@@ -627,8 +794,10 @@ class Generator extends Container
 	 * -------------------------------------------------------------------------
 	 * array
 	 */
-	protected function searchForInternalLinks($current_blocks, $all_blocks)
+	protected function searchForInternalLinks($data, $all_blocks)
 	{
+		$current_blocks = $data['blocks'];
+
 		// Loop through each docblock
 		foreach ($current_blocks as $block_key => $block)
 		{
@@ -667,7 +836,7 @@ class Generator extends Container
 						}
 
 						// Make sure the link has a .html extension
-						$url = Str::replace
+						$urlHTML = Str::replace
 						(
 							$url,
 							'.'.pathinfo($url, PATHINFO_EXTENSION),
@@ -675,7 +844,7 @@ class Generator extends Container
 						);
 
 						// Create the output file path
-						$path = Str::replace($this->outputPath.'/'.$url, '//', '/');
+						$path = Str::replace($this->outputPath.'/'.$urlHTML, '//', '/');
 
 						// Grab the blocks from that file
 						if (isset($all_blocks[$path]))
@@ -694,39 +863,94 @@ class Generator extends Container
 						continue;
 					}
 
-					// Now we need to find the first block that has a title
-					// or signature which is the same as the link text.
-					$found_block_key = Arr::firstKey
-					(
-						$blocks_to_search,
-						function($v) use ($matches, $match_key)
-						{
-							$link_text = $matches[4][$match_key];
+					// Grab some other data
+					$original_link = $matches[0][$match_key];
+					$link_text = $matches[4][$match_key];
 
-							if (isset($v['title']) && $v['title'] == $link_text)
-							{
-								return true;
-							}
-
-							if (isset($v['signature']) && $v['signature'] == $link_text)
-							{
-								return true;
-							}
-
-							return false;
-						}
-					);
-
-					// Check to see if we got a result
-					if (!is_null($found_block_key))
+					// Is it a code link?
+					if (Str::contains($link_text, '<code>'))
 					{
-						// Replace the link with one that will actually work
-						$block['html'] = Str::replace
+						// Extract the code
+						$code = Str::between($link_text, '<code>', '</code>');
+
+						// Decode HTML entities
+						$code = html_entity_decode($code);
+
+						// Read in the src file
+						if ($url == '#')
+						{
+							$src = file($data['src_file']->getPathname());
+						}
+						else
+						{
+							$src = file($this->inputPath.'/'.$url);
+						}
+
+						// Find the code line number in our src file
+						$line = 0;
+						foreach ($src as $key => $value)
+						{
+							if (Str::contains($value, $code) && !Str::contains($value, '[```'.$code.'```]'))
+							{
+								$line = $key+1; break;
+							}
+						}
+
+						if ($line > 0)
+						{
+							// Link directly to the line number
+							$block['html'] = Str::replace
+							(
+								$block['html'],
+								$original_link,
+								'<a href="'.$url_prefix.'#line_'.$line.'" class="internal-link">'.$link_text.'</a>'
+							);
+						}
+						else
+						{
+							// Link directly to the file
+							$block['html'] = Str::replace
+							(
+								$block['html'],
+								$original_link,
+								'<a href="'.$url_prefix.'" class="internal-link">'.$link_text.'</a>'
+							);
+						}
+					}
+					else
+					{
+						// Now we need to find the first block that has a title
+						// or signature which is the same as the link text.
+						$found_block_key = Arr::firstKey
 						(
-							$block['html'],
-							$matches[0][$match_key],
-							'<a href="'.$url_prefix.'#'.$found_block_key.'" class="internal-link">'.$matches[4][$match_key].'</a>'
+							$blocks_to_search,
+							function($v) use ($link_text)
+							{
+								if (isset($v['title']) && $v['title'] == $link_text)
+								{
+									return true;
+								}
+
+								if (isset($v['signature']) && $v['signature'] == $link_text)
+								{
+									return true;
+								}
+
+								return false;
+							}
 						);
+
+						// Check to see if we got a result
+						if (!is_null($found_block_key))
+						{
+							// Replace the link with one that will actually work
+							$block['html'] = Str::replace
+							(
+								$block['html'],
+								$original_link,
+								'<a href="'.$url_prefix.'#'.$found_block_key.'" class="internal-link">'.$link_text.'</a>'
+							);
+						}
 					}
 				}
 
@@ -809,8 +1033,8 @@ class Generator extends Container
 	 * 
 	 * Parameters:
 	 * -------------------------------------------------------------------------
-	 * - $blocks: An array of *docblocks* returned by the method
-	 *   ```extractDocBlocks()```
+	 * - $blocks: This must be an array of *docblocks* returned
+	 *   by the [Method: extractDocBlocks](#).
 	 * 
 	 * - $file: This refers to the file that the *docblock* belongs to.
 	 *   It must be an instance of ```Symfony\Component\Finder\SplFileInfo```
@@ -1065,6 +1289,11 @@ class Generator extends Container
 		{
 			$this->outputPath = substr($this->outputPath, 0, -1);
 		}
+
+		if (Str::endsWith($this->additionalMdDocuments, DIRECTORY_SEPARATOR))
+		{
+			$this->additionalMdDocuments = substr($this->additionalMdDocuments, 0, -1);
+		}
 	}
 
 	/**
@@ -1099,6 +1328,38 @@ class Generator extends Container
 		{
 			$finder->name('*.'.$ext);	
 		}
+
+		// Return the finder
+		return $finder;
+	}
+
+	/**
+	 * Method: getMarkDownFiles
+	 * =========================================================================
+	 * Sets up a finder object to list all our
+	 * [Property: additionalMdDocuments](#) files.
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * n/a
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * ```Symfony\Component\Finder\Finder``` or just an empty array
+	 */
+	protected function getMarkDownFiles()
+	{
+		// If the property has not been given return an empty array
+		if (is_null($this->additionalMdDocuments)) return [];
+
+		// Create our finder
+		$finder = $this->finder;
+
+		// Look for files in the input dir
+		$finder->files()->in($this->additionalMdDocuments);
+
+		// Only look for markdown documents
+		$finder->name('*.md');
 
 		// Return the finder
 		return $finder;
@@ -1277,27 +1538,19 @@ class Generator extends Container
 						);
 
 						// Create the block context
+						$block['context'] = '';
+
+						// Grab the title and lowercase it
 						$title = Str::s($block['title'])->to('lower');
 
-						if ($title->startsWith('class:'))
+						// Loop through all our contexts
+						foreach ($this->blockContexts as $start => $class)
 						{
-							$block['context'] = 'panel-primary';
-						}
-						elseif ($title->startsWith('property:'))
-						{
-							$block['context'] = 'panel-success';
-						}
-						elseif ($title->startsWith('method:'))
-						{
-							$block['context'] = 'panel-info';
-						}
-						elseif ($title->startsWith('function:'))
-						{
-							$block['context'] = 'panel-warning';
-						}
-						else
-						{
-							$block['context'] = '';
+							if ($title->startsWith(Str::to($start, 'lower')))
+							{
+								$block['context'] = $class;
+								break;
+							}
 						}
 					}
 					else
@@ -1335,6 +1588,68 @@ class Generator extends Container
 		}
 
 		// Return the blocks we found, if any
+		return $blocks;
+	}
+
+	/**
+	 * Method: extractPseudoDocBlocks
+	 * =========================================================================
+	 * This is used to put the [Property: additionalMdDocuments](#) into the
+	 * same sort of format as a normal file with doc blocks. All we do is split
+	 * the file at every ```<h1>``` element.
+	 * 
+	 * For consumption see:
+	 * [```$blocks = $this->extractPseudoDocBlocks($file);```](#)
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 *  - $file: A SplFileInfo object for the file.
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * array
+	 */
+	protected function extractPseudoDocBlocks(SplFileInfo $file)
+	{
+		// Create our blocks array
+		$blocks = [];
+
+		// Convert the mardown to html
+		$html = $this->parsedown->text($file->getContents());
+
+		// Grab some headings
+		$h1s = Str::betweenRegx($html, '<h1>', '</h1>');
+
+		// Loop through the h1s and create the pseudo blocks
+		foreach ($h1s[1] as $k => $v)
+		{
+			$block = [];
+
+			$block['title'] = $v;
+
+			if (isset($h1s[0][$k+1]))
+			{
+				$block['html'] = Str::between
+				(
+					$html,
+					$h1s[0][$k],
+					$h1s[0][$k+1]
+				);
+			}
+			else
+			{
+				$block['html'] = Str::between
+				(
+					$html.'<END>',
+					$h1s[0][$k],
+					'<END>'
+				);
+			}
+
+			$blocks[] = $block;
+		}
+
+		// Return the blocks
 		return $blocks;
 	}
 }
