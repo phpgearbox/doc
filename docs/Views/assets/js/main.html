@@ -762,7 +762,7 @@ $(document).ready(function()
 	// Create a bloodhound suggestion engine based on the existing lunr_index
 	var blocks = new Bloodhound
 	({
-		datumTokenizer: Bloodhound.tokenizers.obj.whitespace(&#039;title&#039;, &#039;body&#039;),
+		datumTokenizer: Bloodhound.tokenizers.obj.whitespace(&#039;title&#039;, &#039;signature&#039;, &#039;body&#039;),
 		queryTokenizer: Bloodhound.tokenizers.whitespace,
 		local: lunr_index
 	});
@@ -783,6 +783,26 @@ $(document).ready(function()
 			source: blocks.ttAdapter()
 		}
 	);
+
+	// Go directly to the suggestion, bypassing the search result modal
+	$(&#039;#search-query&#039;).on(&#039;typeahead:selected&#039;, function(event, datum)
+	{
+		var doc = lunr_index[lunr_index_lookup[datum.id]];
+		var ref = datum.id.split(&#039;--gearsdoc--&#039;);
+		var file = ref[0];
+		var block = ref[1];
+		var relative_url = relative_urls[file];
+
+		if (relative_url == &#039;#&#039;)
+		{
+			var top = $(&#039;#block_&#039;+block).offset().top - 55;
+			$(&#039;html, body&#039;).animate({scrollTop: top}, 500);
+		}
+		else
+		{
+			window.location = relative_url+&#039;#&#039;+block;
+		}
+	});
 });</code></pre>
 				</div>
 			</div>

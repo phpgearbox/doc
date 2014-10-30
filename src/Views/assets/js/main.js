@@ -341,7 +341,7 @@ $(document).ready(function()
 	// Create a bloodhound suggestion engine based on the existing lunr_index
 	var blocks = new Bloodhound
 	({
-		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('title', 'body'),
+		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('title', 'signature', 'body'),
 		queryTokenizer: Bloodhound.tokenizers.whitespace,
 		local: lunr_index
 	});
@@ -362,4 +362,24 @@ $(document).ready(function()
 			source: blocks.ttAdapter()
 		}
 	);
+
+	// Go directly to the suggestion, bypassing the search result modal
+	$('#search-query').on('typeahead:selected', function(event, datum)
+	{
+		var doc = lunr_index[lunr_index_lookup[datum.id]];
+		var ref = datum.id.split('--gearsdoc--');
+		var file = ref[0];
+		var block = ref[1];
+		var relative_url = relative_urls[file];
+
+		if (relative_url == '#')
+		{
+			var top = $('#block_'+block).offset().top - 55;
+			$('html, body').animate({scrollTop: top}, 500);
+		}
+		else
+		{
+			window.location = relative_url+'#'+block;
+		}
+	});
 });
