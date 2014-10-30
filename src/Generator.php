@@ -204,6 +204,17 @@ class Generator extends Container
 	protected $injectFinder;
 
 	/**
+	 * Property: assetMin
+	 * =========================================================================
+	 * If set to true we will run the minfication on our main js and css assets.
+	 * If set to false we will not perform the minfication thus allowing easier
+	 * debugging.
+	 *
+	 * Defaults to: ```true```
+	 */
+	protected $injectAssetMin;
+
+	/**
 	 * Property: cssMin
 	 * =========================================================================
 	 * This must be a protected callable that can minify css.
@@ -438,6 +449,8 @@ class Generator extends Container
 
 		$this->lunrIndexLookup = [];
 
+		$this->assetMin = false;
+
 		$this->cssMin = $this->protect(function($css)
 		{
 			return CssMin::minify($css);
@@ -457,6 +470,7 @@ class Generator extends Container
 			__DIR__.'/Views/assets/js/bootstrap.js',
 			__DIR__.'/Views/assets/js/fancytree.js',
 			__DIR__.'/Views/assets/js/highlight.js',
+			__DIR__.'/Views/assets/js/typeahead.js',
 			__DIR__.'/Views/assets/js/lunr.js',
 			__DIR__.'/Views/assets/js/main.js'
 		];
@@ -468,6 +482,7 @@ class Generator extends Container
 			__DIR__.'/Views/assets/css/font-awesome.css',
 			__DIR__.'/Views/assets/css/fancytree.css',
 			__DIR__.'/Views/assets/css/highlight-github-theme.css',
+			__DIR__.'/Views/assets/css/typeahead.css',
 			__DIR__.'/Views/assets/css/main.css'
 		];
 
@@ -610,8 +625,6 @@ class Generator extends Container
 				->make($layout)
 				->withNav($tree)
 				->withRelativeUrls($this->relativeUrls)
-				->withLunrIndex($this->lunrIndex)
-				->withLunrIndexLookup($this->lunrIndexLookup)
 				->withFileInfo($data['src_file'])
 				->withBlocks($data['blocks'])
 				->withHomeLink($homeLink)
@@ -674,10 +687,7 @@ class Generator extends Container
 		 * elements. This is used for the Table of Contents in the right
 		 * hand sidebar.
 		 */
-		$section_key = 0;
-		$sections = [];
-
-		// Grab some headings
+		$section_key = 0; $sections = [];
 		$h1s = Str::betweenRegx($html, '<h1>', '</h1>');
 		$h2s = Str::betweenRegx($html, '<h2>', '</h2>');
 
@@ -685,7 +695,12 @@ class Generator extends Container
 		{
 			$sections[] = $v;
 
-			$html = Str::replace($html, $h1s[0][$k], '<h1 id="block_'.$section_key.'">'.$v.'</h1>');
+			$html = Str::replace
+			(
+				$html,
+				$h1s[0][$k],
+				'<h1 id="block_'.$section_key.'">'.$v.'</h1>'
+			);
 
 			$section_key++;
 		}
@@ -694,13 +709,17 @@ class Generator extends Container
 		{
 			$sections[] = $v;
 
-			$html = Str::replace($html, $h2s[0][$k], '<h2 id="block_'.$section_key.'">'.$v.'</h2>');
+			$html = Str::replace
+			(
+				$html,
+				$h2s[0][$k],
+				'<h2 id="block_'.$section_key.'">'.$v.'</h2>'
+			);
 
 			$section_key++;
 		}
 
 		// Create our blade view
-		// NOTE: We use a slightly different blade template for the home page
 		$html = $this->view
 			->make('layouts.home')
 			->withNav($tree)
@@ -718,6 +737,74 @@ class Generator extends Container
 
 		// Save the generated html
 		$this->writeDocument($this->outputPath.'/index.html', $html);
+	}
+
+	/**
+	 * Method: buildAssets
+	 * =========================================================================
+	 * Here we build the javascript and stylesheet assets into 2 main files.
+	 *
+	 *   - ```$this->outputPath.'/assets/script.js'```
+	 *   - ```$this->outputPath.'/assets/style.css'```
+	 *
+	 * We also copy some additional static assets, such as fonts and images,
+	 * into the output path's ```/assets``` directory.
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * n/a
+	 *
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * void
+	 */
+	protected function buildAssets()
+	{
+		// Intialise some variables to keep the compiled assets
+		$js = ''; $css = '';
+
+		// Loop through and build the js assets
+		foreach ($this->jsAssets as $asset)
+		{
+			$js .= file_get_contents($asset);
+		}
+
+		// Loop through and build the css assets
+		foreach ($this->cssAssets as $asset)
+		{
+			$css .= file_get_contents($asset);
+		}
+
+		// Create the lunr index view
+		$js .= $this->view
+			->make('snippets.lunr-index')
+			->withLunrIndex($this->lunrIndex)
+			->withLunrIndexLookup($this->lunrIndexLookup)
+		;
+
+		// Minify the assets
+		if ($this->assetMin)
+		{
+			$js = $this['jsMin']($js);
+			$css = $this['cssMin']($css);
+		}
+
+		// Save some compiled assets
+		$this->writeDocument($this->outputPath.'/assets/script.js', $js);
+		$this->writeDocument($this->outputPath.'/assets/style.css', $css);
+
+		// Copy across some other static assets
+		foreach ($this->staticAssets as $asset)
+		{
+			// Source folder
+			$from = $asset;
+
+			// Output folder
+			$to = $this->outputPath.'/assets/'.basename($asset);
+
+			// Mirror the folder
+			$this->filesystem->mirror($from, $to);
+		}
 	}
 
 	/**
@@ -963,60 +1050,6 @@ class Generator extends Container
 	}
 
 	/**
-	 * Method: buildAssets
-	 * =========================================================================
-	 * Here we build the javascript and stylesheet assets into 2 main files.
-	 *
-	 *   - ```$this->outputPath.'/assets/script.js'```
-	 *   - ```$this->outputPath.'/assets/style.css'```
-	 *
-	 * We also copy some additional static assets, such as fonts and images,
-	 * into the output path's ```/assets``` directory.
-	 * 
-	 * Parameters:
-	 * -------------------------------------------------------------------------
-	 * n/a
-	 *
-	 * Returns:
-	 * -------------------------------------------------------------------------
-	 * void
-	 */
-	protected function buildAssets()
-	{
-		// Intialise some variables to keep the compiled assets
-		$js = ''; $css = '';
-
-		// Loop through and build the js assets
-		foreach ($this->jsAssets as $asset)
-		{
-			$js .= $this['jsMin'](file_get_contents($asset));
-		}
-
-		// Loop through and build the css assets
-		foreach ($this->cssAssets as $asset)
-		{
-			$css .= $this['cssMin'](file_get_contents($asset));
-		}
-
-		// Save some compiled assets
-		$this->writeDocument($this->outputPath.'/assets/script.js', $js);
-		$this->writeDocument($this->outputPath.'/assets/style.css', $css);
-
-		// Copy across some other static assets
-		foreach ($this->staticAssets as $asset)
-		{
-			// Source folder
-			$from = $asset;
-
-			// Output folder
-			$to = $this->outputPath.'/assets/'.basename($asset);
-
-			// Mirror the folder
-			$this->filesystem->mirror($from, $to);
-		}
-	}
-
-	/**
 	 * Method: generateLunrIndex
 	 * =========================================================================
 	 * We are using a jquery plugin that implements the *Lucene* search.
@@ -1025,11 +1058,9 @@ class Generator extends Container
 	 * This generates an array which then gets converted to JSON. The browser
 	 * then loops over the JSON to create the final index. I almost could have
 	 * passed the "blocks" array directly but needed to remove HTML tags, etc.
-	 * 
-	 * > NOTE: That currently every single document that we write gets a copy
-	 * > of the index. From a space perspective this isn't very efficient.
-	 * > And for very large projects this may need to be refactored to use 
-	 * > some AJAX. But for now the searches are indeed *very fast* :)
+	 *
+	 * The final js index is built by using a blade view,
+	 * see here for further details: [```make('snippets.lunr-index')```](#)
 	 * 
 	 * Parameters:
 	 * -------------------------------------------------------------------------

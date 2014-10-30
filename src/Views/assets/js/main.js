@@ -1,23 +1,4 @@
 /**
- * Section: Lunr Index
- * =============================================================================
- * One of the first things we do is setup the lunr index
- * so that it is ready to go when someone makes a search.
- */
-var lunrIndex = lunr(function()
-{
-	this.ref("id")
-	this.field("title", {boost: 10})
-	this.field("signature")
-	this.field("body")
-});
-
-$.each(lunr_index, function(key, value)
-{
-	lunrIndex.add(value);
-});
-
-/**
  * Section: Dom Ready
  * =============================================================================
  * Everything inside here will be run on dom ready.
@@ -171,7 +152,7 @@ $(document).ready(function()
 	 */
 	$('form.search button').click(function()
 	{
-		var query = $('form.search input').val();
+		var query = $('#search-query').val();
 
 		var results = lunrIndex.search(query);
 
@@ -337,4 +318,36 @@ $(document).ready(function()
 			});
 		}, 500);
 	});
+
+	/**
+	 * Section: Typeahead Auto-complete
+	 * =========================================================================
+	 * The following sets up twitters typeahead auto-complete plugin.
+	 * For more info see: https://twitter.github.io/typeahead.js/
+	 */
+	
+	// Create a bloodhound suggestion engine based on the existing lunr_index
+	var blocks = new Bloodhound
+	({
+		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('title', 'body'),
+		queryTokenizer: Bloodhound.tokenizers.whitespace,
+		local: lunr_index
+	});
+
+	blocks.initialize();
+
+	// Assign typeahead to our search input
+	$('#search-query').typeahead
+	(
+		{
+			hint: true,
+			highlight: true,
+			minLength: 1
+		},
+		{
+			name: 'blocks',
+			displayKey: 'title',
+			source: blocks.ttAdapter()
+		}
+	);
 });

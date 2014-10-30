@@ -22,12 +22,10 @@
 		@yield('source-modal')
 
 		@include('snippets.search-modal')
-
+		
 		<script>
 			var relative_urls = {{ json_encode($relative_urls) }};
 			var fancy_tree = {{ json_encode($nav) }};
-			var lunr_index = {{ json_encode($lunr_index) }};
-			var lunr_index_lookup = {{ json_encode($lunr_index_lookup) }};
 		</script>
 		<script src="{{ $script_path }}"></script>
 	</body>
