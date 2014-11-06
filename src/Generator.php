@@ -698,32 +698,38 @@ class Generator extends Container
 		$h1s = Str::betweenRegx($html, '<h1>', '</h1>');
 		$h2s = Str::betweenRegx($html, '<h2>', '</h2>');
 
-		foreach ($h1s[1] as $k => $v)
+		if (!empty($h1s))
 		{
-			$sections[] = $v;
+			foreach ($h1s[1] as $k => $v)
+			{
+				$sections[] = $v;
 
-			$html = Str::replace
-			(
-				$html,
-				$h1s[0][$k],
-				'<h1 id="block_'.$section_key.'">'.$v.'</h1>'
-			);
+				$html = Str::replace
+				(
+					$html,
+					$h1s[0][$k],
+					'<h1 id="block_'.$section_key.'">'.$v.'</h1>'
+				);
 
-			$section_key++;
+				$section_key++;
+			}
 		}
 
-		foreach ($h2s[1] as $k => $v)
+		if (!empty($h2s))
 		{
-			$sections[] = $v;
+			foreach ($h2s[1] as $k => $v)
+			{
+				$sections[] = $v;
 
-			$html = Str::replace
-			(
-				$html,
-				$h2s[0][$k],
-				'<h2 id="block_'.$section_key.'">'.$v.'</h2>'
-			);
+				$html = Str::replace
+				(
+					$html,
+					$h2s[0][$k],
+					'<h2 id="block_'.$section_key.'">'.$v.'</h2>'
+				);
 
-			$section_key++;
+				$section_key++;
+			}
 		}
 
 		// Create our blade view
