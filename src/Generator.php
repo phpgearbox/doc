@@ -102,8 +102,8 @@ class Generator extends Container
 	 * without any modification, giving you ultimate control.
 	 * 
 	 * If the document ends in ```.md``` we of course will convert the markdown
-	 * into HTML for you. But unlike the markdown *docblocks* we do no further
-	 * processing.
+	 * into HTML for you. Each main section heading will be placed into the
+	 * Table of Contents navigation in the right hand sidebar.
 	 * 
 	 * Defaults to: ```$this->inputPath.'/../README.md'```
 	 */
@@ -142,7 +142,7 @@ class Generator extends Container
 	 * Property: exts
 	 * =========================================================================
 	 * An array of file extensions to parse.
-	 * Only extensions listed here will be checked for docblocks.
+	 * Only extensions listed here will be checked for doc blocks.
 	 * 
 	 * Defaults to: ```php, js, css, less, sccs```
 	 */
@@ -261,7 +261,7 @@ class Generator extends Container
 	/**
 	 * Property: cssAssets
 	 * =========================================================================
-	 * Same idea as the jsAssets above, this is an array of stylesheet files
+	 * Same idea as the jsAssets above, this is an array of style sheet files
 	 * that will get concatenated and minifed together. 
 	 */
 	protected $injectCssAssets;
@@ -275,7 +275,6 @@ class Generator extends Container
 	 *
 	 * For Example:
 	 * -------------------------------------------------------------------------
-	 *
 	 * ```php
 	 * $g = new Generator();
 	 * $g->outputPath = '/path/to/generated/docs';
@@ -590,6 +589,7 @@ class Generator extends Container
 		foreach ($views as $output_file => $data)
 		{
 			// Reset our relative urls, these change per file obviously.
+			// NOTE: generateJsonTree() populates the array for us.
 			$this->relativeUrls = [];
 
 			// Create the fancy tree json
@@ -639,7 +639,7 @@ class Generator extends Container
 		}
 
 		// Create the index / home page for our documentation site.
-		$this->generateHomePage();
+		$this->generateHomePage($views);
 
 		// Lets build some css and js assets
 		$this->buildAssets();
@@ -656,13 +656,13 @@ class Generator extends Container
 	 * 
 	 * Parameters:
 	 * -------------------------------------------------------------------------
-	 * n/a
+	 *  - $views: We need a copy of the views array for the internal links
 	 * 
 	 * Returns:
 	 * -------------------------------------------------------------------------
 	 * void
 	 */
-	protected function generateHomePage()
+	protected function generateHomePage($views)
 	{
 		// Reset our relative urls, these change per file obviously.
 		$this->relativeUrls = [];
@@ -681,6 +681,13 @@ class Generator extends Container
 		{
 			$html = $this->parsedown->text($html);
 		}
+
+		// Make internal links work
+		$html = $this->searchForInternalLinks
+		(
+			['blocks' => [['html' => $html]]],
+			$views
+		)[0]['html'];
 
 		/*
 		 * Lets build an array of the sections, delimited by <h1> and <h2>
@@ -1338,7 +1345,7 @@ class Generator extends Container
 	 * 
 	 * Returns:
 	 * -------------------------------------------------------------------------
-	 * Symfony\Component\Finder\Finder
+	 * ```Symfony\Component\Finder\Finder```
 	 */
 	protected function getInputFiles()
 	{
@@ -1418,7 +1425,7 @@ class Generator extends Container
 	 * 
 	 * Throws:
 	 * -------------------------------------------------------------------------
-	 *  - RuntimeException: When we failed to write the new file.
+	 *  - ```RuntimeException```: When we failed to write the new file.
 	 */
 	protected function writeDocument($filepath, $data)
 	{

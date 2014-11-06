@@ -14,7 +14,6 @@
 use Gears\Doc\Console\Commands\Generate;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Finder\Finder;
 
 class Application extends SymfonyApplication
 {
@@ -29,7 +28,7 @@ class Application extends SymfonyApplication
 	 *
 	 * Returns:
 	 * -------------------------------------------------------------------------
-	 * static
+	 * self
 	 */
 	public static function boot()
 	{
@@ -39,9 +38,28 @@ class Application extends SymfonyApplication
 	}
 
 	/**
+	 * Method: getCommandName
+	 * =========================================================================
+	 * Force the use of our command.
+	 *
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * n/a
+	 *
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * string
+	 */
+	protected function getCommandName(InputInterface $input)
+	{
+		return 'generate';
+	}
+
+	/**
 	 * Method: getDefaultCommands
 	 * =========================================================================
-	 * Add our commands to the list of default commands.
+	 * Add our generate command as the one and only command, along with the
+	 * default commands and arguments such as ```--help```.
 	 *
 	 * Parameters:
 	 * -------------------------------------------------------------------------
@@ -53,20 +71,29 @@ class Application extends SymfonyApplication
 	 */
 	protected function getDefaultCommands()
 	{
-		// Grab the default commands from upstream
 		$defaultCommands = parent::getDefaultCommands();
-
-		// Loop through our own command classes and add them.
-		$finder = new Finder();
-		$finder->files()->in(__DIR__.'/Commands')->name('*.php');
-		foreach ($finder as $file)
-		{
-			$base = $file->getBasename('.php');
-			$command = '\Gears\Doc\Console\Commands\\'.$base;
-			$defaultCommands[] = new $command();
-		}
-
-		// Finally return the modified array
+		$defaultCommands[] = new Generate();
 		return $defaultCommands;
+	}
+
+    /**
+     * Method: getDefinition
+     * =========================================================================
+     * Overridden so that the application doesn't expect
+     * the command name to be the first argument.
+     * 
+     * Parameters:
+     * -------------------------------------------------------------------------
+     * n/a
+     * 
+     * Returns:
+     * -------------------------------------------------------------------------
+     * array
+     */
+	public function getDefinition()
+	{
+		$inputDefinition = parent::getDefinition();
+		$inputDefinition->setArguments();
+		return $inputDefinition;
 	}
 }
