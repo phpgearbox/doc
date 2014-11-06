@@ -1212,6 +1212,10 @@ class Generator extends Container
 								array_shift($segments_file);
 								array_shift($segments_link);
 							}
+							else
+							{
+								break;
+							}
 						}
 						else
 						{
