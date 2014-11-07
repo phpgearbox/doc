@@ -11,6 +11,7 @@
 // -----------------------------------------------------------------------------
 ////////////////////////////////////////////////////////////////////////////////
 
+use Gears\String as Str;
 use Gears\Doc\Generator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -156,7 +157,14 @@ class Generate extends Command
 		// Set the header links
 		if (!empty($links = $input->getOption('link')))
 		{
-			$generator->headerLinks = $links;
+			$parsedLinks = [];
+			foreach ($links as $link)
+			{
+				$matches = Str::wildCardMatch($link, '[*](*)');
+				$parsedLinks[$matches[2][0]] = $matches[1][0];
+			}
+
+			$generator->headerLinks = $parsedLinks;
 		}
 
 		// Set the file extensions
